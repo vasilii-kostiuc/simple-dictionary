@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LanguageResource;
 use App\Models\Language;
-use Illuminate\Http\Request;
 
 class LanguageController extends Controller
 {
