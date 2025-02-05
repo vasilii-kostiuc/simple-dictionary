@@ -13,4 +13,9 @@ class LanguageController extends Controller
     {
         return LanguageResource::collection(Language::all());
     }
+
+    public function show(Language $language)
+    {
+        return new LanguageResource($language);
+    }
 }
