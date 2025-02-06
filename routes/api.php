@@ -13,6 +13,9 @@ Route::prefix('v1')/*->middleware('auth:sanctum')*/ ->group(function () {
         Route::get('languages', [\App\Http\Controllers\Api\V1\LanguageController::class, 'index']);
         Route::get('languages/{language}', [\App\Http\Controllers\Api\V1\LanguageController::class, 'show']);
 
+
+        Route::get('dictionaries', [\App\Http\Controllers\Api\V1\DictionaryController ::class, 'index']);
+
         Route::get('/user', function (Request $request) {
             return $request->user();
         });
