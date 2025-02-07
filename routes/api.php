@@ -13,8 +13,10 @@ Route::prefix('v1')/*->middleware('auth:sanctum')*/ ->group(function () {
         Route::get('languages', [\App\Http\Controllers\Api\V1\LanguageController::class, 'index']);
         Route::get('languages/{language}', [\App\Http\Controllers\Api\V1\LanguageController::class, 'show']);
 
-
         Route::get('dictionaries', [\App\Http\Controllers\Api\V1\DictionaryController ::class, 'index']);
+        Route::post('dictionaries', [\App\Http\Controllers\Api\V1\DictionaryController ::class, 'store']);
+        Route::get('dictionaries/{dictionary}', [\App\Http\Controllers\Api\V1\DictionaryController ::class, 'show']);
+        Route::delete('dictionaries/{dictionary}', [\App\Http\Controllers\Api\V1\DictionaryController ::class, 'destroy']);
 
         Route::get('/user', function (Request $request) {
             return $request->user();
