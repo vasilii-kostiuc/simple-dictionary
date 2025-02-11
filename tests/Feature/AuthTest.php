@@ -14,7 +14,7 @@ class AuthTest extends TestCase
 
     public function test_registration_succeeds(): void
     {
-        $response = $this->postJson('/api/v1/auth/register', [
+        $response = $this->postJson(route('auth.register'), [
             'name' => 'Valid name',
             'email' => 'valid@email.com',
             'password' => '12345678',
@@ -33,7 +33,7 @@ class AuthTest extends TestCase
         $user = User::factory()->create();
         $user->save();
 
-        $response = $this->postJson('/api/v1/auth/login', [
+        $response = $this->postJson(route('auth.login'), [
             'email' => $user->email,
             'password' => 'password',
         ]);

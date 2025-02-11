@@ -17,7 +17,9 @@ class DictionaryResource extends JsonResource
         return [
             'id' => $this->id,
             'language_from_id' => $this->language_from_id,
+            'language_from' => LanguageResource::make($this->languageFrom),
             'language_to_id' => $this->language_to_id,
+            'language_to' => LanguageResource::make($this->languageTo),
         ];
     }
 }

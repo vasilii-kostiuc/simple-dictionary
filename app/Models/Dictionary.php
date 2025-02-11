@@ -12,6 +12,8 @@ class Dictionary extends Model
     /** @use HasFactory<\Database\Factories\DictionaryFactory> */
     use HasFactory;
 
+    protected $fillable = ['user_id', 'language_from_id', 'language_to_id'];
+
     protected static function booted()
     {
         static::addGlobalScope('user', function (Builder $builder) {
