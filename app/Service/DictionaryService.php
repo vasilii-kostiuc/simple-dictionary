@@ -16,4 +16,9 @@ class DictionaryService
 
         return $dictionary;
     }
+
+    public function delete(Dictionary $dictionary): void
+    {
+        $dictionary->delete();
+    }
 }
