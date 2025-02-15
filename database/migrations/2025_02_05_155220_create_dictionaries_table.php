@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('dictionaries', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\App\Models\User::class);
+            $table->foreignIdFor(\App\Models\Language::class, 'language_from_id');
+            $table->foreignIdFor(\App\Models\Language::class, 'language_to_id');
             $table->timestamps();
         });
     }
