@@ -12,7 +12,6 @@ use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
-
     public function __invoke(LoginUserRequest $request)
     {
         $user = User::where('email', $request->email)->first();
