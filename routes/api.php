@@ -9,6 +9,8 @@ Route::prefix('v1')/*->middleware('auth:sanctum')*/ ->group(function () {
     Route::post('auth/login', \App\Http\Controllers\Api\V1\Auth\LoginController::class)->name('auth.login');
 
     Route::middleware(['auth:sanctum'])->group(function () {
+        Route::post('auth/logout', \App\Http\Controllers\Api\V1\Auth\LogoutController::class)->name('auth.logout');
+
         Route::get('languages', [\App\Http\Controllers\Api\V1\LanguageController::class, 'index'])->name('languages.index');
         Route::get('languages/{language}', [\App\Http\Controllers\Api\V1\LanguageController::class, 'show'])->name('languages.show');
 
