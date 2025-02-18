@@ -14,7 +14,7 @@ class DictionaryTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_api_return_dictionaries_list(): void
+    public function test_api_return_dictionaries_list_successful(): void
     {
         $user = User::factory()->create();
 
@@ -39,7 +39,7 @@ class DictionaryTest extends TestCase
             ]);;
     }
 
-    public function test_api_dictionary_show(): void
+    public function test_api_dictionary_show_successful(): void
     {
         $user = User::factory()->create();
 
@@ -61,7 +61,7 @@ class DictionaryTest extends TestCase
             ->assertJsonStructure(['data' => ['id', 'language_from_id', 'language_to_id', 'language_from', 'language_to']]);
     }
 
-    public function test_api_dictionary_store(): void
+    public function test_api_dictionary_store_successful(): void
     {
         $user = User::factory()->create();
 
@@ -78,7 +78,7 @@ class DictionaryTest extends TestCase
             ->assertJsonStructure(['data' => ['id', 'language_from_id', 'language_to_id', 'language_from', 'language_to']]);
     }
 
-    public function test_api_dictionary_destroy(): void
+    public function test_api_dictionary_destroy_successful(): void
     {
         $user = User::factory()->create();
 
