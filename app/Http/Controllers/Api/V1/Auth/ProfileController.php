@@ -17,8 +17,9 @@ class ProfileController extends Controller
 
         $this->userService = $userService;
     }
-    public function show(User $user)
+    public function show()
     {
+        $user = Auth::user();
         return new ProfileResource($user);
     }
 
