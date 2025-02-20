@@ -18,10 +18,9 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'name' => ['string', 'max:255'],
-            'email' => ['string', 'email', 'max:255', 'unique:users'],
+            'email' => ['string', 'email', 'max:255', 'unique:users,email' ],
             'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,', 'max:200048'],
             'current_dictionary' => [Rule::exists('dictionaries', 'id')->where(function (Builder &$query) {
-                //dd($this->current_dictionary, Auth::user()->id);
                 $query->where('user_id', Auth::user()->id);
                 $query->where('id', (int)$this->current_dictionary);
             }),],
