@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Http\Controllers\Api\V1\Training;
+
+use App\Http\Controllers\Controller;
+use App\Service\TrainingService;
+use Illuminate\Http\Request;
+
+class TrainingController extends Controller
+{
+
+    private TrainingService $trainingService;
+
+    public function __construct(TrainingService $trainingService)
+    {
+        $this->trainingService = $trainingService;
+    }
+
+    public function store(StoreTrainingRequest $request)
+    {
+        $training = $this->trainingService->create($request->validated());
+
+        return response()->json($training);
+    }
+}
