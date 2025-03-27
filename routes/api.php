@@ -21,5 +21,8 @@ Route::prefix('v1')/*->middleware('auth:sanctum')*/ ->group(function () {
         Route::post('dictionaries', [\App\Http\Controllers\Api\V1\DictionaryController ::class, 'store'])->name('dictionaries.store');
         Route::get('dictionaries/{dictionary}', [\App\Http\Controllers\Api\V1\DictionaryController ::class, 'show'])->name('dictionaries.show');
         Route::delete('dictionaries/{dictionary}', [\App\Http\Controllers\Api\V1\DictionaryController ::class, 'destroy'])->name('dictionaries.destroy');
+
+        Route::post('trainings', [\App\Http\Controllers\Api\V1\Training\TrainingController::class, 'store'])->name('trainings.store');
+
     });
 });

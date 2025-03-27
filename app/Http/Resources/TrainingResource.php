@@ -8,7 +8,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class TrainingResource extends JsonResource
 {
     /**
-     * Transform the resource into an array.
+     * Transform the resource int
+     *
+     o an array.
      *
      * @return array<string, mixed>
      */
@@ -16,7 +18,8 @@ class TrainingResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'training_type' => $this->training_type,
+            'training_type_id' => $this->training_type_id,
+            'dictionary_id' =>$this->dictionary_id,
         ];
     }
 }
