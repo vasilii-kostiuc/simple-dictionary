@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f60f8b6e279e6de64f92f6b9fb420141",
+    "content-hash": "1d210179c843cbbac1b51bf0b6a7883b",
     "packages": [
         {
             "name": "brick/math",
@@ -2646,6 +2646,77 @@
                 }
             ],
             "time": "2024-07-20T21:41:07+00:00"
+        },
+        {
+            "name": "predis/predis",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/predis/predis.git",
+                "reference": "99c253733dee9447d26257dc669d33d5ac84713d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/predis/predis/zipball/99c253733dee9447d26257dc669d33d5ac84713d",
+                "reference": "99c253733dee9447d26257dc669d33d5ac84713d",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.0 || ~9.4.4"
+            },
+            "suggest": {
+                "ext-curl": "Allows access to Webdis when paired with phpiredis",
+                "ext-phpiredis": "Allows faster serialization and deserialization of the Redis protocol"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Predis\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Daniele Alessandri",
+                    "email": "suppakilla@gmail.com",
+                    "homepage": "http://clorophilla.net",
+                    "role": "Creator & Maintainer"
+                },
+                {
+                    "name": "Till Krüss",
+                    "homepage": "https://till.im",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "A flexible and feature-complete Redis client for PHP.",
+            "homepage": "http://github.com/predis/predis",
+            "keywords": [
+                "nosql",
+                "predis",
+                "redis"
+            ],
+            "support": {
+                "issues": "https://github.com/predis/predis/issues",
+                "source": "https://github.com/predis/predis/tree/v2.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/tillkruss",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-06-08T13:14:56+00:00"
         },
         {
             "name": "psr/clock",
@@ -5645,6 +5716,43 @@
                 "source": "https://github.com/tijsverkoyen/CssToInlineStyles/tree/v2.3.0"
             },
             "time": "2024-12-21T16:25:41+00:00"
+        },
+        {
+            "name": "vasilii-kostiuc/laravel-messaging-library",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vasilii-kostiuc/laravel-messaging-library.git",
+                "reference": "24549124246ea70ab57a085be193a79a3230f79e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vasilii-kostiuc/laravel-messaging-library/zipball/24549124246ea70ab57a085be193a79a3230f79e",
+                "reference": "24549124246ea70ab57a085be193a79a3230f79e",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "VasiliiKostiuc\\LaravelMessagingLibrary\\MessagingServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "VasiliiKostiuc\\LaravelMessagingLibrary\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "A messaging library for handling message brokers initialy developed for dictionary project",
+            "support": {
+                "source": "https://github.com/vasilii-kostiuc/laravel-messaging-library/tree/1.0.1",
+                "issues": "https://github.com/vasilii-kostiuc/laravel-messaging-library/issues"
+            },
+            "time": "2025-05-15T13:52:01+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
