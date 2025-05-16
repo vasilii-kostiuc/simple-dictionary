@@ -8,11 +8,20 @@
         "framework"
     ],
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/vasilii-kostiuc/laravel-messaging-library.git"
+        }
+    ],
     "require": {
         "php": "^8.2",
         "laravel/framework": "^11.31",
         "laravel/sanctum": "^4.0",
-        "laravel/tinker": "^2.9"
+        "laravel/tinker": "^2.9",
+        "predis/predis": "2.0",
+        "vasilii-kostiuc/laravel-messaging-library": "^1.0",
+        "ext-pcntl": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

@@ -1,10 +1,22 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 
+Route::get('publish', function () {
+    Redis::publish('test-channel', json_encode([
+        'name' => 'Adam Wathan'
+    ]));
+});
 
-Route::prefix('v1')/*->middleware('auth:sanctum')*/ ->group(function () {
+Route::get('subscribe', function () {
+    Redis::psubscribe(['*'], function (string $message, string $channel) {
+        echo $message;
+    });
+});
+
+Route::prefix('v1')->group(function () {
     Route::post('auth/register', \App\Http\Controllers\Api\V1\Auth\RegisterController::class)->name('auth.register');
     Route::post('auth/login', \App\Http\Controllers\Api\V1\Auth\LoginController::class)->name('auth.login');
 
