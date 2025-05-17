@@ -27,11 +27,11 @@ class TrainingTest extends TestCase
             'language_to_id' => $langTo->id,
         ]);
 
-
         $response = $this->actingAs($user)->post(route('trainings.store'), [
             'dictionary_id' => $dictionary->id,
             'training_type_id' => TrainingType::TopWords->value,
         ]);
 
         $response->assertStatus(201)->assertJsonStructure(['data' => ['id', 'dictionary_id', 'training_type_id']]);
-    }}
+    }
+}

@@ -1,12 +1,11 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 
 Route::get('publish', function () {
     Redis::publish('test-channel', json_encode([
-        'name' => 'Adam Wathan'
+        'name' => 'Adam Wathan',
     ]));
 });
 
@@ -29,10 +28,10 @@ Route::prefix('v1')->group(function () {
         Route::get('languages', [\App\Http\Controllers\Api\V1\LanguageController::class, 'index'])->name('languages.index');
         Route::get('languages/{language}', [\App\Http\Controllers\Api\V1\LanguageController::class, 'show'])->name('languages.show');
 
-        Route::get('dictionaries', [\App\Http\Controllers\Api\V1\DictionaryController ::class, 'index'])->name('dictionaries.index');
-        Route::post('dictionaries', [\App\Http\Controllers\Api\V1\DictionaryController ::class, 'store'])->name('dictionaries.store');
-        Route::get('dictionaries/{dictionary}', [\App\Http\Controllers\Api\V1\DictionaryController ::class, 'show'])->name('dictionaries.show');
-        Route::delete('dictionaries/{dictionary}', [\App\Http\Controllers\Api\V1\DictionaryController ::class, 'destroy'])->name('dictionaries.destroy');
+        Route::get('dictionaries', [\App\Http\Controllers\Api\V1\DictionaryController::class, 'index'])->name('dictionaries.index');
+        Route::post('dictionaries', [\App\Http\Controllers\Api\V1\DictionaryController::class, 'store'])->name('dictionaries.store');
+        Route::get('dictionaries/{dictionary}', [\App\Http\Controllers\Api\V1\DictionaryController::class, 'show'])->name('dictionaries.show');
+        Route::delete('dictionaries/{dictionary}', [\App\Http\Controllers\Api\V1\DictionaryController::class, 'destroy'])->name('dictionaries.destroy');
 
         Route::post('trainings', [\App\Http\Controllers\Api\V1\Training\TrainingController::class, 'store'])->name('trainings.store');
 

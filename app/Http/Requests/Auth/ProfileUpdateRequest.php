@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Auth;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
-use Illuminate\Database\Query\Builder;
 
 class ProfileUpdateRequest extends FormRequest
 {
@@ -18,13 +18,12 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'name' => ['string', 'max:255'],
-            'email' => ['string', 'email', 'max:255', 'unique:users,email' ],
+            'email' => ['string', 'email', 'max:255', 'unique:users,email'],
             'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,', 'max:200048'],
             'current_dictionary' => [Rule::exists('dictionaries', 'id')->where(function (Builder &$query) {
                 $query->where('user_id', Auth::user()->id);
-                $query->where('id', (int)$this->current_dictionary);
-            }),],
+                $query->where('id', (int) $this->current_dictionary);
+            }), ],
         ];
     }
-
 }

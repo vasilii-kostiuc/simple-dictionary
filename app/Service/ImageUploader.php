@@ -9,6 +9,6 @@ class ImageUploader implements ImageUploaderInterface
 {
     public function uploadImage(string $fileName, UploadedFile $uploadedFile)
     {
-        Storage::disk('public')->putFileAs("", $uploadedFile,$fileName);
+        Storage::disk('public')->putFileAs('', $uploadedFile, $fileName);
     }
 }
