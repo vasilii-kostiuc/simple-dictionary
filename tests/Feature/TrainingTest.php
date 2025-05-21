@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Enums\TrainingType;
 use App\Models\Dictionary;
 use App\Models\Language;
 use App\Models\User;
+use App\Training\Enums\TrainingType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

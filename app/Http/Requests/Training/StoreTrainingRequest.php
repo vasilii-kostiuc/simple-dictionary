@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Training;
 
-use App\Enums\TrainingType;
+use App\Training\Enums\TrainingType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
