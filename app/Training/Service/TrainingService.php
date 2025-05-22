@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Service;
+namespace App\Training\Service;
 
-use App\Models\Training\Training;
+use App\Training\Models\Training;
+use App\Training\Models\TrainingStep;
 
 class TrainingService
 {
@@ -13,5 +14,10 @@ class TrainingService
         $training->save();
 
         return $training;
+    }
+
+    public function completeStep(TrainingStep $trainingStep): bool
+    {
+
     }
 }

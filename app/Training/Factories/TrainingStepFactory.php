@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Training;
+namespace App\Training\Factories;
 
 use App\Models\TopWord;
-use App\Models\Training\Training;
 use App\Training\Enums\TrainingStepType;
 use App\Training\Enums\TrainingType;
+use App\Training\Models\Training;
 use App\Training\Steps\ChooseCorrectAnswerStep;
 use App\Training\Steps\EstablishComplianceStep;
 use App\Training\Steps\WordTrainingStep;

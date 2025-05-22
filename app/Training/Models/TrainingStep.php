@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Training;
+namespace App\Training\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

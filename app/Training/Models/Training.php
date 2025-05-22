@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Training;
+namespace App\Training\Models;
 
 use App\Models\Dictionary;
 use Illuminate\Database\Eloquent\Model;

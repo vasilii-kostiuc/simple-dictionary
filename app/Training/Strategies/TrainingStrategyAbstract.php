@@ -2,8 +2,8 @@
 
 namespace App\Training\Strategies;
 
-use App\Models\Training\TrainingStep;
-use App\Training\TrainingStepFactory;
+use App\Training\Factories\TrainingStepFactory;
+use App\Training\Models\TrainingStep;
 
 abstract class TrainingStrategyAbstract
 {

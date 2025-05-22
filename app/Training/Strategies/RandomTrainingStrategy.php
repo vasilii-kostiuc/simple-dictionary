@@ -2,8 +2,8 @@
 
 namespace App\Training\Strategies;
 
-use App\Models\Training\TrainingStep;
 use App\Training\Enums\TrainingStepType;
+use App\Training\Models\TrainingStep;
 
 class RandomTrainingStrategy extends TrainingStrategyAbstract
 {
