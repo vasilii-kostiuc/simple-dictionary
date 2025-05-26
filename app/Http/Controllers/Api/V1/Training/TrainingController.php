@@ -4,18 +4,31 @@ namespace App\Http\Controllers\Api\V1\Training;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Training\StoreTrainingRequest;
+use App\Http\Resources\ApiResponseResource;
 use App\Http\Resources\TrainingResource;
+use App\Http\Resources\TrainingStepAttemptResource;
+use App\Training\Enums\TrainingStatus;
+use App\Training\Factories\TrainingStepFactory;
+use App\Training\Models\Training;
 use App\Training\Models\TrainingStep;
+use App\Training\Models\TrainingStepAttempt;
+use App\Training\Service\StepCheckService;
 use App\Training\Service\TrainingService;
+use App\Training\Service\TrainingStepAttemptService;
 use Illuminate\Http\Request;
 
 class TrainingController extends Controller
 {
     private TrainingService $trainingService;
+    private StepCheckService $stepCheckService;
+    private TrainingStepAttemptService $trainingStepAttemptService;
 
-    public function __construct(TrainingService $trainingService)
+    public function __construct(TrainingStepFactory $trainingStepFactory, TrainingService $trainingService, TrainingStepAttemptService $trainingStepAttemptService, StepCheckService $stepCheckService)
     {
+        $this->trainingStepFactory = $trainingStepFactory;
         $this->trainingService = $trainingService;
+        $this->trainingStepAttemptService = $trainingStepAttemptService;
+        $this->stepCheckService = $stepCheckService;
     }
 
     public function store(StoreTrainingRequest $request)
@@ -25,7 +38,40 @@ class TrainingController extends Controller
         return new TrainingResource($training);
     }
 
-    public  function completeStep(TrainingStep $trainingStep, Request $request){
-        $this->trainingService->completeStep($trainingStep);
+    public function nextStep(Training $training)
+    {
+        if ($training->status == TrainingStatus::Finished) {
+            return (new ApiResponseResource(
+                [
+                    'succes' => false,
+                    'error' => 'training_finished',
+                    'message' => 'Training is finished',
+                ]))->response()->setStatusCode(409);
+        }
+
+        if ($this->trainingService->isLastStepCompletedOrSkipped($training)) {
+            return (new ApiResponseResource(
+                [
+                    'succes' => false,
+                    'error' => 'previous_step_not_completed',
+                    'message' => 'New step can be created only after compliting prev step',
+                ]))->response()->setStatusCode(409);
+        }
+
+        $nextStep = $this->train->create($training);
+       // $nextStep = this-
+
+
+    }
+
+    public function completeStep(TrainingStep $step, Request $request)
+    {
+        $attemptData = $request->all('attempt_data');
+
+        $isPassed = $this->stepCheckService->check($step, $attemptData);
+
+        $attempt = $this->trainingStepAttemptService->create($step->id, $attemptData, $isPassed);
+
+        return new TrainingStepAttemptResource($attempt);
     }
 }

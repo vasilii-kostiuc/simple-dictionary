@@ -2,6 +2,7 @@
 
 namespace App\Training\Service;
 
+use App\Training\Enums\TrainingStepType;
 use App\Training\Models\Training;
 use App\Training\Models\TrainingStep;
 
@@ -16,8 +17,18 @@ class TrainingService
         return $training;
     }
 
-    public function completeStep(TrainingStep $trainingStep): bool
+    public function isLastStepCompletedOrSkipped(Training $training): bool
     {
+        $lastStep = $training->steps()->orderBy('id', 'desc')->first();
 
+        if ($lastStep === null) {
+            return true;
+        }
+
+        if ($lastStep->isPassed() || $lastStep->is_skipped) {
+            return true;
+        }
+
+        return false;
     }
 }

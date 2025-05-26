@@ -4,6 +4,7 @@ namespace App\Training\Strategies;
 
 use App\Training\Factories\TrainingStepFactory;
 use App\Training\Models\TrainingStep;
+use App\Training\Steps\WordTrainingStep;
 
 abstract class TrainingStrategyAbstract
 {
@@ -16,5 +17,5 @@ abstract class TrainingStrategyAbstract
         $this->trainingStepFactory = $trainingStepFactory;
     }
 
-    public abstract function generateNextStep(): ?TrainingStep;
+    public abstract function generateNextStep(): WordTrainingStep;
 }
