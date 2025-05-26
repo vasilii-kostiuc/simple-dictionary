@@ -6,8 +6,6 @@ use App\Models\Dictionary;
 use App\Models\Language;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Arr;
 use Tests\TestCase;
 
 class DictionaryTest extends TestCase
@@ -34,9 +32,9 @@ class DictionaryTest extends TestCase
             ->assertJsonCount(1, 'data')
             ->assertJsonStructure([
                 'data' => [
-                    '*' => ['id', 'language_from_id', 'language_to_id', 'language_from', 'language_to']
-                ]
-            ]);;
+                    '*' => ['id', 'language_from_id', 'language_to_id', 'language_from', 'language_to'],
+                ],
+            ]);
     }
 
     public function test_api_dictionary_show_successful(): void
@@ -100,5 +98,4 @@ class DictionaryTest extends TestCase
 
         $this->assertDatabaseMissing('dictionaries', ['id' => $dictionary->id]);
     }
-
 }

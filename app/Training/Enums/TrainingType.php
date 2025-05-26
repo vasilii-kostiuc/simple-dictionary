@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Enums;
+namespace App\Training\Enums;
 
 enum TrainingType: int
 {

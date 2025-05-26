@@ -19,7 +19,7 @@ class TrainingResource extends JsonResource
         return [
             'id' => $this->id,
             'training_type_id' => $this->training_type_id,
-            'dictionary_id' =>$this->dictionary_id,
+            'dictionary_id' => $this->dictionary_id,
         ];
     }
 }

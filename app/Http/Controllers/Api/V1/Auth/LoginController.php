@@ -16,7 +16,7 @@ class LoginController extends Controller
     {
         $user = User::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
@@ -27,7 +27,7 @@ class LoginController extends Controller
 
         return response()->json([
             'access_token' => $user->createToken($device, expiresAt: $expiresAt)->plainTextToken,
-            'user' => new UserResource($user)
+            'user' => new UserResource($user),
         ], Response::HTTP_OK);
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreDictionaryRequest extends FormRequest
 {
@@ -16,7 +15,7 @@ class StoreDictionaryRequest extends FormRequest
     {
         return [
             'language_from_id' => ['required', 'integer'],
-            'language_to_id' => ['required', 'integer']
+            'language_to_id' => ['required', 'integer'],
         ];
     }
 }
