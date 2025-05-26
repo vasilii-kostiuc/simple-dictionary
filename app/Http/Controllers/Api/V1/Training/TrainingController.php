@@ -8,10 +8,9 @@ use App\Http\Resources\ApiResponseResource;
 use App\Http\Resources\TrainingResource;
 use App\Http\Resources\TrainingStepAttemptResource;
 use App\Training\Enums\TrainingStatus;
-use App\Training\Factories\TrainingStepFactory;
+use App\Training\Factories\TrainingStrategyFactory;
 use App\Training\Models\Training;
 use App\Training\Models\TrainingStep;
-use App\Training\Models\TrainingStepAttempt;
 use App\Training\Service\StepCheckService;
 use App\Training\Service\TrainingService;
 use App\Training\Service\TrainingStepAttemptService;
@@ -23,9 +22,10 @@ class TrainingController extends Controller
     private StepCheckService $stepCheckService;
     private TrainingStepAttemptService $trainingStepAttemptService;
 
-    public function __construct(TrainingStepFactory $trainingStepFactory, TrainingService $trainingService, TrainingStepAttemptService $trainingStepAttemptService, StepCheckService $stepCheckService)
+    private TrainingStrategyFactory $trainingStrategyFactory;
+    public function __construct(TrainingStrategyFactory $trainingStrategyFactory, TrainingService $trainingService, TrainingStepAttemptService $trainingStepAttemptService, StepCheckService $stepCheckService)
     {
-        $this->trainingStepFactory = $trainingStepFactory;
+        $this->trainingStrategyFactory = $trainingStrategyFactory;
         $this->trainingService = $trainingService;
         $this->trainingStepAttemptService = $trainingStepAttemptService;
         $this->stepCheckService = $stepCheckService;
@@ -58,10 +58,9 @@ class TrainingController extends Controller
                 ]))->response()->setStatusCode(409);
         }
 
-        $nextStep = $this->train->create($training);
-       // $nextStep = this-
+        $nextStep = $this->trainingStrategyFactory->create($training)->generateNextStep();
 
-
+        return ApiResponseResource::make(['data' => new TrainingStepResource($nextStep), 'message' => 'Next step generated successfully']);
     }
 
     public function completeStep(TrainingStep $step, Request $request)

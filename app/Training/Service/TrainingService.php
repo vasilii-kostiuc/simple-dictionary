@@ -2,9 +2,7 @@
 
 namespace App\Training\Service;
 
-use App\Training\Enums\TrainingStepType;
 use App\Training\Models\Training;
-use App\Training\Models\TrainingStep;
 
 class TrainingService
 {
