@@ -7,6 +7,7 @@ use App\Http\Requests\Training\StoreTrainingRequest;
 use App\Http\Resources\ApiResponseResource;
 use App\Http\Resources\TrainingResource;
 use App\Http\Resources\TrainingStepAttemptResource;
+use App\Http\Resources\TrainingStepResource;
 use App\Training\Enums\TrainingStatus;
 use App\Training\Factories\TrainingStrategyFactory;
 use App\Training\Models\Training;
