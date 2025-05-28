@@ -7,7 +7,6 @@ use Nette\NotImplementedException;
 
 class WriteCorrectAnswerStepAnalyzer implements StepAnalyzer
 {
-
     public function isPassed(TrainingStep $trainingStep, array $attemptData): bool
     {
         throw new NotImplementedException();

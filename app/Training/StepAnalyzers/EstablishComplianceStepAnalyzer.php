@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Training\Factories;
+namespace App\Training\StepAnalyzers;
 
 use App\Training\Models\TrainingStep;
-use App\Training\StepAnalyzers\StepAnalyzer;
 
 class EstablishComplianceStepAnalyzer implements StepAnalyzer
 {

@@ -5,9 +5,9 @@ namespace App\Training\Factories;
 use App\Training\Enums\TrainingStepType;
 use App\Training\Models\TrainingStep;
 use App\Training\StepAnalyzers\ChooseCorrectAnswerStepAnalyzer;
+use App\Training\StepAnalyzers\EstablishComplianceStepAnalyzer;
 use App\Training\StepAnalyzers\StepAnalyzer;
 use App\Training\StepAnalyzers\WriteCorrectAnswerStepAnalyzer;
-use App\Training\Steps\EstablishComplianceStep;
 
 class StepAnalyzerFactory
 {
