@@ -13,6 +13,8 @@ return new class extends Migration {
         Schema::table('trainings', function (Blueprint $table) {
             $table->string('completion_type')->default('manual')->after('training_type_id');
             $table->json('completion_type_params')->nullable()->after('completion_type');
+            $table->timestamp('started_at')->nullable();
+            $table->timestamp('completed_at')->nullable();
         });
     }
 
@@ -24,6 +26,8 @@ return new class extends Migration {
         Schema::table('trainings', function (Blueprint $table) {
             $table->dropColumn('completion_type_params');
             $table->dropColumn('completion_type');
+            $table->dropColumn('started_at');
+            $table->dropColumn('completed_at');
         });
     }
 };
