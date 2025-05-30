@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api\V1\Training;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Training\StoreTrainingRequest;
 use App\Http\Resources\ApiResponseResource;
-use App\Http\Resources\TrainingResource;
-use App\Http\Resources\TrainingStepAttemptResource;
-use App\Http\Resources\TrainingStepResource;
+use App\Http\Resources\Training\TrainingResource;
+use App\Http\Resources\Training\TrainingStepAttemptResource;
+use App\Http\Resources\Training\TrainingStepResource;
 use App\Training\Enums\TrainingStatus;
 use App\Training\Factories\TrainingStrategyFactory;
 use App\Training\Models\Training;
@@ -41,6 +41,8 @@ class TrainingController extends Controller
 
         return new TrainingResource($training);
     }
+
+
 
     public function nextStep(Training $training)
     {
