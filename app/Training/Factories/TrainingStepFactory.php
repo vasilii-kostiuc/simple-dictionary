@@ -15,11 +15,9 @@ use Illuminate\Support\Collection;
 class TrainingStepFactory
 {
     const MULTIPLE_CHOICE_OPTIONS_COUNT = 4;
-    private TrainingType $trainingType;
 
-    public function __construct(TrainingType $trainingType)
+    public function __construct()
     {
-        $this->trainingType = $trainingType;
     }
 
     public function create(Training $training, TrainingStepType $stepType): WordTrainingStep
@@ -101,7 +99,7 @@ class TrainingStepFactory
             'is_top_word' => true,
         ], $words->toArray());
 
-        $answersOrder = array_column( $words, 'word_id');
+        $answersOrder = array_column($words, 'word_id');
         shuffle($answersOrder);
 
         return new EstablishComplianceStep(

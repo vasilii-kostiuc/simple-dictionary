@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api\V1\Training;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Training\StoreTrainingRequest;
 use App\Http\Resources\ApiResponseResource;
-use App\Http\Resources\TrainingResource;
-use App\Http\Resources\TrainingStepAttemptResource;
-use App\Http\Resources\TrainingStepResource;
+use App\Http\Resources\Training\TrainingResource;
+use App\Http\Resources\Training\TrainingStepAttemptResource;
+use App\Http\Resources\Training\TrainingStepResource;
 use App\Training\Enums\TrainingStatus;
 use App\Training\Factories\TrainingStrategyFactory;
 use App\Training\Models\Training;
@@ -16,13 +16,16 @@ use App\Training\Service\StepCheckService;
 use App\Training\Service\TrainingService;
 use App\Training\Service\TrainingStepAttemptService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TrainingController extends Controller
 {
+    private const ERROR_TRAINING_FINISHED = 'training_finished';
+    private const ERROR_STEP_NOT_COMPLETED = 'previous_step_not_completed';
+
     private TrainingService $trainingService;
     private StepCheckService $stepCheckService;
     private TrainingStepAttemptService $trainingStepAttemptService;
-
     private TrainingStrategyFactory $trainingStrategyFactory;
     public function __construct(TrainingStrategyFactory $trainingStrategyFactory, TrainingService $trainingService, TrainingStepAttemptService $trainingStepAttemptService, StepCheckService $stepCheckService)
     {
@@ -39,24 +42,26 @@ class TrainingController extends Controller
         return new TrainingResource($training);
     }
 
+
+
     public function nextStep(Training $training)
     {
         if ($training->status == TrainingStatus::Finished) {
             return (new ApiResponseResource(
                 [
                     'succes' => false,
-                    'error' => 'training_finished',
+                    'error' => self::ERROR_TRAINING_FINISHED,
                     'message' => 'Training is finished',
-                ]))->response()->setStatusCode(409);
+                ]))->response()->setStatusCode(Response::HTTP_CONFLICT);
         }
 
         if ($this->trainingService->isLastStepCompletedOrSkipped($training)) {
             return (new ApiResponseResource(
                 [
                     'succes' => false,
-                    'error' => 'previous_step_not_completed',
+                    'error' => self::ERROR_STEP_NOT_COMPLETED,
                     'message' => 'New step can be created only after compliting prev step',
-                ]))->response()->setStatusCode(409);
+                ]))->response()->setStatusCode(Response::HTTP_CONFLICT);;
         }
 
         $nextStep = $this->trainingStrategyFactory->create($training)->generateNextStep();

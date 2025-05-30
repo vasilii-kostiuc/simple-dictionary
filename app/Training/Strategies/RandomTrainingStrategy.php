@@ -3,7 +3,6 @@
 namespace App\Training\Strategies;
 
 use App\Training\Enums\TrainingStepType;
-use App\Training\Models\TrainingStep;
 use App\Training\Steps\WordTrainingStep;
 
 class RandomTrainingStrategy extends TrainingStrategyAbstract

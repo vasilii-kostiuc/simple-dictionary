@@ -34,6 +34,7 @@ Route::prefix('v1')->group(function () {
         Route::delete('dictionaries/{dictionary}', [\App\Http\Controllers\Api\V1\DictionaryController::class, 'destroy'])->name('dictionaries.destroy');
 
         Route::post('trainings', [\App\Http\Controllers\Api\V1\Training\TrainingController::class, 'store'])->name('trainings.store');
+        Route::post('trainings/{training}/start', [\App\Http\Controllers\Api\V1\Training\TrainingController::class, 'start'])->name('trainings.start');
 
     });
 });
