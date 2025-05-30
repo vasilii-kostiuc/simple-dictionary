@@ -42,6 +42,11 @@ class TrainingController extends Controller
         return new TrainingResource($training);
     }
 
+    public function start(Training $training)
+    {
+        $this->trainingService->start($training);
+        return new ApiResponseResource(['message' => 'Training started successfully', 'data' => new TrainingResource($training)]);
+    }
 
 
     public function nextStep(Training $training)

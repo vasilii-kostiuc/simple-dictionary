@@ -2,6 +2,7 @@
 
 namespace App\Training\Service;
 
+use App\Training\Enums\TrainingStatus;
 use App\Training\Models\Training;
 
 class TrainingService
@@ -28,5 +29,14 @@ class TrainingService
         }
 
         return false;
+    }
+
+    public function start(Training $training)
+    {
+        $training->status = TrainingStatus::InProgress;
+        $training->started_at = now();
+        $training->save();
+
+        return $training;
     }
 }
