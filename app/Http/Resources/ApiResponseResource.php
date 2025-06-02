@@ -10,7 +10,7 @@ class ApiResponseResource extends JsonResource
     {
         return [
             'success' => $this->resource['success'] ?? true,
-            'error' => $this->resource['error'] ?? null,
+            'errors' => $this->resource['errors'] ?? null,
             'message' => $this->resource['message'] ?? null,
             'data' => $this->resource['data'] ?? null,
         ];

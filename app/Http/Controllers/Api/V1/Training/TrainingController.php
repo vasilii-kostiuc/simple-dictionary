@@ -27,6 +27,7 @@ class TrainingController extends Controller
     private StepCheckService $stepCheckService;
     private TrainingStepAttemptService $trainingStepAttemptService;
     private TrainingStrategyFactory $trainingStrategyFactory;
+
     public function __construct(TrainingStrategyFactory $trainingStrategyFactory, TrainingService $trainingService, TrainingStepAttemptService $trainingStepAttemptService, StepCheckService $stepCheckService)
     {
         $this->trainingStrategyFactory = $trainingStrategyFactory;
@@ -39,11 +40,15 @@ class TrainingController extends Controller
     {
         $training = $this->trainingService->create($request->validated());
 
-        return new TrainingResource($training);
+        return new ApiResponseResource(['data' => new TrainingResource($training)])->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function start(Training $training)
     {
+        if ( TrainingStatus::from($training->status) !== TrainingStatus::New) {
+            return new ApiResponseResource(['message' => 'Training already started', 'errors' => ['training_can_be_started_only_in_new_state' => 'Training can be started only in new state']]);
+        }
+
         $this->trainingService->start($training);
         return new ApiResponseResource(['message' => 'Training started successfully', 'data' => new TrainingResource($training)]);
     }
@@ -55,7 +60,7 @@ class TrainingController extends Controller
             return (new ApiResponseResource(
                 [
                     'succes' => false,
-                    'error' => self::ERROR_TRAINING_FINISHED,
+                    'errors' => [self::ERROR_TRAINING_FINISHED => 'Training is finished'],
                     'message' => 'Training is finished',
                 ]))->response()->setStatusCode(Response::HTTP_CONFLICT);
         }
@@ -64,7 +69,7 @@ class TrainingController extends Controller
             return (new ApiResponseResource(
                 [
                     'succes' => false,
-                    'error' => self::ERROR_STEP_NOT_COMPLETED,
+                    'errors' => [self::ERROR_STEP_NOT_COMPLETED => 'Previous step is not completed'],
                     'message' => 'New step can be created only after compliting prev step',
                 ]))->response()->setStatusCode(Response::HTTP_CONFLICT);;
         }

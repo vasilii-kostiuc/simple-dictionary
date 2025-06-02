@@ -11,6 +11,7 @@ class TrainingService
     {
         $training = new Training;
         $training->fill($data);
+        $training->status = TrainingStatus::New;
         $training->save();
 
         return $training;
