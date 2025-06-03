@@ -4,7 +4,6 @@ namespace App\Training\Strategies;
 
 use App\Training\Factories\TrainingStepFactory;
 use App\Training\Models\Training;
-use App\Training\Models\TrainingStep;
 use App\Training\Steps\WordTrainingStep;
 
 abstract class TrainingStrategyAbstract
