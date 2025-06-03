@@ -5,8 +5,8 @@ namespace Tests\Feature;
 use App\Models\Dictionary;
 use App\Models\Language;
 use App\Models\User;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -47,7 +47,7 @@ class ProfileTest extends TestCase
         $avatar = UploadedFile::fake()->image('test-avatar.jpg');
 
         $response = $this->actingAs($user)->post(route('profile.update'), [
-            'avatar' => $avatar
+            'avatar' => $avatar,
         ]);
 
         $response->assertStatus(200);
@@ -62,7 +62,7 @@ class ProfileTest extends TestCase
         $langFrom = Language::factory()->create();
         $langTo = Language::factory()->create();
 
-        $dictionary1 = Dictionary::factory()->create(['user_id' => $user->id, 'language_from_id' => $langFrom->id, 'language_to_id' => $langTo->id,]);
+        $dictionary1 = Dictionary::factory()->create(['user_id' => $user->id, 'language_from_id' => $langFrom->id, 'language_to_id' => $langTo->id]);
 
         $dictionary2 = Dictionary::factory()->create(['user_id' => $user->id, 'language_from_id' => $langTo->id, 'language_to_id' => $langFrom->id]);
 
@@ -83,7 +83,7 @@ class ProfileTest extends TestCase
         $langFrom = Language::factory()->create();
         $langTo = Language::factory()->create();
 
-        $dictionary1 = Dictionary::factory()->create(['user_id' => $user->id, 'language_from_id' => $langFrom->id, 'language_to_id' => $langTo->id,]);
+        $dictionary1 = Dictionary::factory()->create(['user_id' => $user->id, 'language_from_id' => $langFrom->id, 'language_to_id' => $langTo->id]);
 
         $dictionary2 = Dictionary::factory()->create(['user_id' => $user2->id, 'language_from_id' => $langTo->id, 'language_to_id' => $langFrom->id]);
 
@@ -95,6 +95,4 @@ class ProfileTest extends TestCase
 
         $this->assertDatabaseMissing('dictionaries', ['id' => $user->id, 'current_dictionary' => $dictionary1->id]);
     }
-
-
 }

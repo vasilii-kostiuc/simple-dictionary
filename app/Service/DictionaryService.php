@@ -6,7 +6,7 @@ use App\Models\Dictionary;
 
 class DictionaryService
 {
-    public function create(array $data ): Dictionary
+    public function create(array $data): Dictionary
     {
         $dictionary = Dictionary::create([
             'user_id' => $data['user_id'],

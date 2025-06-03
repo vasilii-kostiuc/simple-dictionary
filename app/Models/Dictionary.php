@@ -35,5 +35,4 @@ class Dictionary extends Model
     {
         return $this->belongsTo(Language::class, 'language_to_id');
     }
-
 }

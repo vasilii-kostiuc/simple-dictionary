@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Auth;
 
 class LogoutController extends Controller
 {
-    public function __invoke(){
+    public function __invoke()
+    {
         $user = Auth::user();
         $user->tokens()->delete();
 

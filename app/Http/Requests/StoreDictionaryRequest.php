@@ -15,7 +15,7 @@ class StoreDictionaryRequest extends FormRequest
     {
         return [
             'language_from_id' => ['required', 'integer'],
-            'language_to_id' => ['required', 'integer']
+            'language_to_id' => ['required', 'integer'],
         ];
     }
 }
