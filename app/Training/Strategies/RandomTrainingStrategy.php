@@ -11,6 +11,6 @@ class RandomTrainingStrategy extends TrainingStrategyAbstract
     {
         $stepType = TrainingStepType::getRandomInstance();
 
-        return $this->trainingStepFactory->create($stepType);
+        return $this->trainingStepFactory->create($this->training ,$stepType);
     }
 }

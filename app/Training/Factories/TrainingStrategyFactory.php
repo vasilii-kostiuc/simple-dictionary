@@ -17,7 +17,7 @@ class TrainingStrategyFactory
 
     public function create(Training $training): TrainingStrategyAbstract
     {
-         $trainingStrategy = new RandomTrainingStrategy($training->toArray(), $this->stepFactory);
+         $trainingStrategy = new RandomTrainingStrategy($training, $this->stepFactory);
 
          return $trainingStrategy;
     }

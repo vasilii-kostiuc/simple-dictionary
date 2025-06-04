@@ -2,6 +2,7 @@
 
 namespace App\Training\Factories;
 
+use App\Models\Dictionary;
 use App\Models\TopWord;
 use App\Training\Enums\TrainingStepType;
 use App\Training\Enums\TrainingType;
@@ -47,9 +48,10 @@ class TrainingStepFactory
             self::MULTIPLE_CHOICE_OPTIONS_COUNT - 1
         );
 
-        $allWords = array_merge([$correctWord], $incorrectWords->toArray());
+        $allWords = array_merge([$correctWord], $incorrectWords);
         shuffle($allWords);
 
+        dd($allWords);
         $answers = array_map(
             fn(TopWord $word) => [
                 'word_id' => $word->id,
@@ -132,10 +134,12 @@ class TrainingStepFactory
 
     private function getRandomTopWords(int $langFrom, int $langTo, array $exceptTopWordsIds = [], int $count = 1): Collection
     {
-        $ids = $this->getTopWordsQuery($langFrom, $langTo, $exceptTopWordsIds)->pluck('id');
+        $ids = $this->getTopWordsQuery($langFrom, $langTo, $exceptTopWordsIds)->get()->pluck('id');
+
+
         $randomIds = $ids->random($count);
 
-        return TopWord::query()->find($randomIds);
+        return TopWord::query()->whereIn('id', $randomIds)->get();
     }
 
 }

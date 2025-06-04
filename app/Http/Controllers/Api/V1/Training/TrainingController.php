@@ -65,7 +65,7 @@ class TrainingController extends Controller
                 ]))->response()->setStatusCode(Response::HTTP_CONFLICT);
         }
 
-        if ($this->trainingService->isLastStepCompletedOrSkipped($training)) {
+        if (!$this->trainingService->isLastStepCompletedOrSkipped($training)) {
             return (new ApiResponseResource(
                 [
                     'succes' => false,
