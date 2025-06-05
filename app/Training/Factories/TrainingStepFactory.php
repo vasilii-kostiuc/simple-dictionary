@@ -46,12 +46,11 @@ class TrainingStepFactory
             $toLanguageId,
             [$correctWord->id],
             self::MULTIPLE_CHOICE_OPTIONS_COUNT - 1
-        );
+        )->all();
 
         $allWords = array_merge([$correctWord], $incorrectWords);
         shuffle($allWords);
 
-        dd($allWords);
         $answers = array_map(
             fn(TopWord $word) => [
                 'word_id' => $word->id,
@@ -92,14 +91,12 @@ class TrainingStepFactory
         $fromLanguageId = $training->dictionary->language_from_id;
         $toLanguageId = $training->dictionary->language_to_id;
 
-        $words = $this->getRandomTopWords($fromLanguageId, $toLanguageId);
-
-        $words = array_map(fn(TopWord $word) => [
+        $words = $this->getRandomTopWords($fromLanguageId, $toLanguageId)->map(fn(TopWord $word) => [
             'word_id' => $word->word_id,
             'word' => $word->word,
             'translation' => $word->translation,
             'is_top_word' => true,
-        ], $words->toArray());
+        ])->all();
 
         $answersOrder = array_column($words, 'word_id');
         shuffle($answersOrder);

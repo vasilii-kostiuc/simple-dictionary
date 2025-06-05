@@ -15,6 +15,7 @@ use App\Training\Models\TrainingStep;
 use App\Training\Service\StepCheckService;
 use App\Training\Service\TrainingService;
 use App\Training\Service\TrainingStepAttemptService;
+use App\Training\Service\TrainingStepService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -74,8 +75,9 @@ class TrainingController extends Controller
                 ]))->response()->setStatusCode(Response::HTTP_CONFLICT);;
         }
 
-        $nextStep = $this->trainingStrategyFactory->create($training)->generateNextStep();
+        $generatedStep = $this->trainingStrategyFactory->create($training)->generateNextStep();
 
+        $nextStep = new TrainingStepService()->create($generatedStep, $training);
         return ApiResponseResource::make(['data' => new TrainingStepResource($nextStep), 'message' => 'Next step generated successfully']);
     }
 
