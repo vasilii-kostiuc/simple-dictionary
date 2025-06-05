@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Http\Resources\UserResource;
 use App\Service\UserService;
-use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -27,7 +26,7 @@ class RegisterController extends Controller
 
         return response()->json([
             'access_token' => $accessToken,
-            'user' => new UserResource($user)
+            'user' => new UserResource($user),
         ]);
     }
 }

@@ -17,7 +17,7 @@ class ProfileResource extends JsonResource
         return [
             'name' => $this->name,
             'email' => $this->email,
-            'avatar' => env('APP_URL') . $this->avatar,
+            'avatar' => env('APP_URL').$this->avatar,
             'current_dictionary' => new DictionaryResource($this->currentDictionary),
         ];
     }

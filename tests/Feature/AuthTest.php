@@ -60,7 +60,7 @@ class AuthTest extends TestCase
 
         $response->assertStatus(200);
 
-        $response = $this->actingAs($user)->postJson(route('auth.logout'),[]);
+        $response = $this->actingAs($user)->postJson(route('auth.logout'), []);
 
         $response->assertStatus(200)->assertJsonStructure(['message']);
 
