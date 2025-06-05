@@ -7,6 +7,7 @@ use App\Models\TopWord;
 use App\Training\Enums\TrainingStepType;
 use App\Training\Enums\TrainingType;
 use App\Training\Models\Training;
+use App\Training\Models\TrainingStep;
 use App\Training\Steps\ChooseCorrectAnswerStep;
 use App\Training\Steps\EstablishComplianceStep;
 use App\Training\Steps\WordTrainingStep;
@@ -21,15 +22,26 @@ class TrainingStepFactory
     {
     }
 
-    public function create(Training $training, TrainingStepType $stepType): WordTrainingStep
+    public function createStep(Training $training, TrainingStepType $stepType): WordTrainingStep
     {
         return match ($stepType) {
             TrainingStepType::ChooseCorrectAnswer => $this->createChooseCorrectAnswerStep($training),
             TrainingStepType::WriteCorrectAnswer => $this->createWriteAnswerStep($training),
             TrainingStepType::EstablishCompliance => $this->createEstablishComplianceStep($training),
-            default => throw new \InvalidArgumentException("Неподдерживаемый тип шага тренировки: {$stepType->name}")
+            default => throw new \InvalidArgumentException("Unsupported training step type: {$stepType->name}")
         };
     }
+
+    public function createStepFromData(array $trainingStepData, TrainingStepType $stepType): WordTrainingStep
+    {
+        return match ($stepType) {
+            TrainingStepType::ChooseCorrectAnswer => $this->createChooseCorrectAnswerStepFromData($trainingStepData),
+            TrainingStepType::WriteCorrectAnswer => $this->createWriteAnswerStepFromData($trainingStepData),
+            TrainingStepType::EstablishCompliance => $this->createEstablishComplianceStepFromData($trainingStepData),
+            default => throw new \InvalidArgumentException("Unsupported training step type: {$stepType->name}")
+        };
+    }
+
 
     private function createChooseCorrectAnswerStep(Training $training): ChooseCorrectAnswerStep
     {
@@ -137,6 +149,20 @@ class TrainingStepFactory
         $randomIds = $ids->random($count);
 
         return TopWord::query()->whereIn('id', $randomIds)->get();
+    }
+
+    private function createChooseCorrectAnswerStepFromData(array $trainingStepData)
+    {
+        
+    }
+
+    private function createWriteAnswerStepFromData(array $trainingStepData)
+    {
+        
+    }
+
+    private function createEstablishComplianceStepFromData(array $trainingStepData)
+    {
     }
 
 }

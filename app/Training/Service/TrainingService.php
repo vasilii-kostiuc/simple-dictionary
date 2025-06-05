@@ -3,6 +3,7 @@
 namespace App\Training\Service;
 
 use App\Training\Enums\TrainingStatus;
+use App\Training\Events\TrainingCompleted;
 use App\Training\Models\Training;
 
 class TrainingService
@@ -25,11 +26,7 @@ class TrainingService
             return true;
         }
 
-        if ($lastStep->isPassed() || $lastStep->is_skipped) {
-            return true;
-        }
-
-        return false;
+        return $lastStep->isPassed() || $lastStep->is_skipped;
     }
 
     public function start(Training $training)
@@ -40,4 +37,14 @@ class TrainingService
 
         return $training;
     }
+
+    public function setCompleted(Training $training)
+    {
+        $training->status = TrainingStatus::Finished;
+        $training->completed_at = now();
+        $training->save();
+
+        TrainingCompleted::dispatch($training);
+    }
+
 }

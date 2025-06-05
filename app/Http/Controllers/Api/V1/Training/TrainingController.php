@@ -9,6 +9,7 @@ use App\Http\Resources\Training\TrainingResource;
 use App\Http\Resources\Training\TrainingStepAttemptResource;
 use App\Http\Resources\Training\TrainingStepResource;
 use App\Training\Enums\TrainingStatus;
+use App\Training\Factories\CompletionConditionFactory;
 use App\Training\Factories\TrainingStrategyFactory;
 use App\Training\Models\Training;
 use App\Training\Models\TrainingStep;
@@ -28,14 +29,22 @@ class TrainingController extends Controller
     private StepCheckService $stepCheckService;
     private TrainingStepAttemptService $trainingStepAttemptService;
     private TrainingStrategyFactory $trainingStrategyFactory;
+    private CompletionConditionFactory $completionConditionFactory;
 
-    public function __construct(TrainingStrategyFactory $trainingStrategyFactory, TrainingService $trainingService, TrainingStepAttemptService $trainingStepAttemptService, StepCheckService $stepCheckService)
-    {
+    public function __construct(
+        TrainingStrategyFactory $trainingStrategyFactory,
+        TrainingService $trainingService,
+        TrainingStepAttemptService $trainingStepAttemptService,
+        StepCheckService $stepCheckService,
+        CompletionConditionFactory $completionConditionFactory
+    ) {
         $this->trainingStrategyFactory = $trainingStrategyFactory;
         $this->trainingService = $trainingService;
         $this->trainingStepAttemptService = $trainingStepAttemptService;
         $this->stepCheckService = $stepCheckService;
+        $this->completionConditionFactory = $completionConditionFactory;
     }
+
 
     public function store(StoreTrainingRequest $request)
     {
@@ -46,7 +55,7 @@ class TrainingController extends Controller
 
     public function start(Training $training)
     {
-        if ( TrainingStatus::from($training->status) !== TrainingStatus::New) {
+        if (TrainingStatus::from($training->status) !== TrainingStatus::New) {
             return new ApiResponseResource(['message' => 'Training already started', 'errors' => ['training_can_be_started_only_in_new_state' => 'Training can be started only in new state']]);
         }
 
@@ -81,13 +90,19 @@ class TrainingController extends Controller
         return ApiResponseResource::make(['data' => new TrainingStepResource($nextStep), 'message' => 'Next step generated successfully']);
     }
 
-    public function completeStep(TrainingStep $step, Request $request)
+    public function completeStep(Training $training, TrainingStep $step, Request $request)
     {
         $attemptData = $request->all('attempt_data');
 
         $isPassed = $this->stepCheckService->check($step, $attemptData);
 
         $attempt = $this->trainingStepAttemptService->create($step->id, $attemptData, $isPassed);
+
+        $completionCondition = $this->completionConditionFactory->create($training);
+
+        if ($completionCondition->isCompleted()) {
+            $this->trainingService->setCompleted($training);
+        }
 
         return new TrainingStepAttemptResource($attempt);
     }

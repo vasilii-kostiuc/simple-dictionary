@@ -8,16 +8,16 @@ use App\Training\Steps\WordTrainingStep;
 
 class TrainingStepService
 {
-    public function create(WordTrainingStep $trainingStep, Training $training): WordTrainingStep
+    public function create(WordTrainingStep $wordTrainingStep, Training $training): TrainingStep
     {
-        TrainingStep::create([
+         $step = TrainingStep::create([
             'training_id' => $training->id,
-            'step_data' => $trainingStep->toArray(),
-            'training_step_type' => $trainingStep->getTrainingStepType()->value,
+            'step_data' => $wordTrainingStep->toArray(),
+            'step_type_id' => $wordTrainingStep->getTrainingStepType()->value,
             'step_number' => $this->calculateNextStepNumber($training),
         ]);
 
-        return $trainingStep;
+        return $step;
     }
 
     private function calculateNextStepNumber(Training $training): int

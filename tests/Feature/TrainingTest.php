@@ -115,4 +115,30 @@ class TrainingTest extends TestCase
     }
 
 
+    public function test_api_step_attempt_successfull(){
+
+        $this->seed(TopWordSeeder::class);
+
+        $response = $this->actingAs($this->user)
+            ->postJson('api/v1/trainings', [
+                'dictionary_id' => $this->dictionary->id,
+                'training_type_id' => TrainingType::TopWords->value,
+                'completion_type' => TrainingCompletionType::Steps->value,
+            ]);
+
+        $trainingId = $response->json('data.id');
+
+        $startResponse = $this->actingAs($this->user)
+            ->postJson("/api/v1/trainings/{$trainingId}/start");
+        $startResponse->assertOk();
+        $startResponse->assertJsonFragment(['id' => $trainingId, 'status' => TrainingStatus::InProgress->value]);
+
+        $nextStepResponse = $this->actingAs($this->user)
+            ->postJson("/api/v1/trainings/{$trainingId}/next-step");
+        $nextStepResponse->assertOk();
+
+
+    }
+
+
 }
