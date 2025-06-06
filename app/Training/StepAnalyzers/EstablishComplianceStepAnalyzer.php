@@ -9,6 +9,6 @@ class EstablishComplianceStepAnalyzer implements StepAnalyzer
 {
     public function isPassed(WordTrainingStep $trainingStep, array $attemptData): bool
     {
-        // TODO: Implement isPassed() method.
+        // TODO: Implement siPassed() method.
     }
 }

@@ -26,25 +26,12 @@ class TrainingController extends Controller
     private const ERROR_STEP_NOT_COMPLETED = 'previous_step_not_completed';
 
     private TrainingService $trainingService;
-    private StepCheckService $stepCheckService;
-    private TrainingStepAttemptService $trainingStepAttemptService;
-    private TrainingStrategyFactory $trainingStrategyFactory;
-    private CompletionConditionFactory $completionConditionFactory;
 
-    public function __construct(
-        TrainingStrategyFactory $trainingStrategyFactory,
-        TrainingService $trainingService,
-        TrainingStepAttemptService $trainingStepAttemptService,
-        StepCheckService $stepCheckService,
-        CompletionConditionFactory $completionConditionFactory
-    ) {
-        $this->trainingStrategyFactory = $trainingStrategyFactory;
+
+    public function __construct(TrainingService $trainingService)
+    {
         $this->trainingService = $trainingService;
-        $this->trainingStepAttemptService = $trainingStepAttemptService;
-        $this->stepCheckService = $stepCheckService;
-        $this->completionConditionFactory = $completionConditionFactory;
     }
-
 
     public function store(StoreTrainingRequest $request)
     {
@@ -55,7 +42,7 @@ class TrainingController extends Controller
 
     public function start(Training $training)
     {
-        if (TrainingStatus::from($training->status) !== TrainingStatus::New) {
+        if (TrainingStatus::from((int)$training->status) !== TrainingStatus::New) {
             return new ApiResponseResource(['message' => 'Training already started', 'errors' => ['training_can_be_started_only_in_new_state' => 'Training can be started only in new state']]);
         }
 
@@ -63,47 +50,4 @@ class TrainingController extends Controller
         return new ApiResponseResource(['message' => 'Training started successfully', 'data' => new TrainingResource($training)]);
     }
 
-
-    public function nextStep(Training $training)
-    {
-        if ($training->status == TrainingStatus::Finished) {
-            return (new ApiResponseResource(
-                [
-                    'succes' => false,
-                    'errors' => [self::ERROR_TRAINING_FINISHED => 'Training is finished'],
-                    'message' => 'Training is finished',
-                ]))->response()->setStatusCode(Response::HTTP_CONFLICT);
-        }
-
-        if (!$this->trainingService->isLastStepCompletedOrSkipped($training)) {
-            return (new ApiResponseResource(
-                [
-                    'succes' => false,
-                    'errors' => [self::ERROR_STEP_NOT_COMPLETED => 'Previous step is not completed'],
-                    'message' => 'New step can be created only after compliting prev step',
-                ]))->response()->setStatusCode(Response::HTTP_CONFLICT);;
-        }
-
-        $generatedStep = $this->trainingStrategyFactory->create($training)->generateNextStep();
-
-        $nextStep = new TrainingStepService()->create($generatedStep, $training);
-        return ApiResponseResource::make(['data' => new TrainingStepResource($nextStep), 'message' => 'Next step generated successfully']);
-    }
-
-    public function completeStep(Training $training, TrainingStep $step, Request $request)
-    {
-        $attemptData = $request->all('attempt_data');
-
-        $isPassed = $this->stepCheckService->check($step, $attemptData);
-
-        $attempt = $this->trainingStepAttemptService->create($step->id, $attemptData, $isPassed);
-
-        $completionCondition = $this->completionConditionFactory->create($training);
-
-        if ($completionCondition->isCompleted()) {
-            $this->trainingService->setCompleted($training);
-        }
-
-        return new TrainingStepAttemptResource($attempt);
-    }
 }

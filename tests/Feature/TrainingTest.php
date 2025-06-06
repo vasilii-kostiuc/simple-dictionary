@@ -136,9 +136,6 @@ class TrainingTest extends TestCase
         $nextStepResponse = $this->actingAs($this->user)
             ->postJson("/api/v1/trainings/{$trainingId}/next-step");
         $nextStepResponse->assertOk();
-
-
     }
-
 
 }

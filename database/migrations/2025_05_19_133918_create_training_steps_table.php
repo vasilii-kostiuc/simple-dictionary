@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignIdFor(\App\Training\Models\Training::class);
             $table->integer('step_type_id');
             $table->json('step_data')->nullable();
+            $table->json('required_answers_count')->default(1);
             $table->timestamps();
         });
     }
