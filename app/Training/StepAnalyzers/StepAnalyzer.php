@@ -7,5 +7,5 @@ use App\Training\Steps\WordTrainingStep;
 
 interface StepAnalyzer
 {
-    public function isPassed(WordTrainingStep $trainingStep, array $attemptData): bool;
+    public function isPassed(TrainingStep $trainingStep, array $attemptData): bool;
 }

@@ -26,4 +26,8 @@ class TrainingStep extends Model
             ->where('is_passed', true)
             ->exists();
     }
+    public function isPassedOrSkipped(): bool
+    {
+        return $this->isPassed() || $this->is_skipped;
+    }
 }

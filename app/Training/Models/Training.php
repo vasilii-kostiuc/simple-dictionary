@@ -3,6 +3,8 @@
 namespace App\Training\Models;
 
 use App\Models\Dictionary;
+use App\Training\Enums\TrainingStatus;
+use App\Training\Events\TrainingCompleted;
 use Illuminate\Database\Eloquent\Concerns\HasRelationships;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,4 +23,24 @@ class Training extends Model
     {
         return $this->hasMany(TrainingStep::class);
     }
+
+    public function lastStep(): TrainingStep
+    {
+        return $this->steps()->orderBy('step_number', 'desc')->first();
+    }
+
+    public function completeTraining(): void
+    {
+        $this->updateCompletionStatus();
+        $this->save();
+
+        TrainingCompleted::dispatch($this);
+    }
+
+    private function updateCompletionStatus(): void
+    {
+        $this->status = TrainingStatus::Completed;
+        $this->completed_at = now();
+    }
+
 }
