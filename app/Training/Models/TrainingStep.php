@@ -15,7 +15,7 @@ class TrainingStep extends Model
         return $this->belongsTo(Training::class);
     }
 
-    public function getAttempts(): HasMany
+    public function attempts(): HasMany
     {
         return $this->hasMany(TrainingStepAttempt::class);
     }
@@ -30,4 +30,15 @@ class TrainingStep extends Model
     {
         return $this->isPassed() || $this->is_skipped;
     }
+
+
+    public function getNextAttemptSubIndex(): int
+    {
+        if ($this->attempts->isEmpty()) {
+            return 1;
+        }
+
+        return $this->attempts()->max('sub_index') + 1;
+    }
+
 }

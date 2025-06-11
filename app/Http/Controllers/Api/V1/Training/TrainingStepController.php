@@ -29,10 +29,11 @@ class TrainingStepController extends Controller
     private TrainingStepAttemptService $trainingStepAttemptService;
     private TrainingStrategyFactory $trainingStrategyFactory;
     private CompletionConditionFactory $completionConditionFactory;
+    private TrainingStepService $trainingStepService;
 
     public function __construct(
+        TrainingStepService $trainingStepService,
         TrainingStrategyFactory    $trainingStrategyFactory,
-        TrainingService            $trainingService,
         TrainingStepAttemptService $trainingStepAttemptService,
         StepCheckService           $stepCheckService,
         CompletionConditionFactory $completionConditionFactory
@@ -42,6 +43,7 @@ class TrainingStepController extends Controller
         $this->trainingStepAttemptService = $trainingStepAttemptService;
         $this->stepCheckService = $stepCheckService;
         $this->completionConditionFactory = $completionConditionFactory;
+        $this->trainingStepService = $trainingStepService;
     }
 
     public function nextStep(Training $training)
@@ -73,18 +75,19 @@ class TrainingStepController extends Controller
 
     public function stepAttempt(Training $training, TrainingStep $step, Request $request)
     {
-        if ($this->trainingStepService->isPassed($step)) {
-            return new ApiResponseResource(['message' => 'Training is finished', 'data' => null, 'errors' => ['training_is_finished' => 'Training is finished']])
+        if ($this->trainingStepService->isStepPassed($step)) {
+            return new ApiResponseResource(['message' => 'Training step is passed', 'data' => null, 'errors' => ['training_step_is_finished' => 'Training step is passed']])
                 ->response()
                 ->setStatusCode(Response::HTTP_CONFLICT);
         }
 
         $attemptData = $request->all('attempt_data');
 
-        $attempt = $this->trainingStepAttemptService->create($step->id, $attemptData);
+        $attempt = $this->trainingStepAttemptService->create($step, $attemptData);
 
+        $isStepPassed = $this->trainingStepService->isStepPassed($step);
 
-        $isStepPassed = $this->stepCheckService->check($step);
+        $stepProgress = $this->trainingStepService->getProgress($step);
 
         $completionCondition = $this->completionConditionFactory->create($training);
 
