@@ -22,10 +22,25 @@ class TrainingStep extends Model
 
     public function isPassed(): bool
     {
-        return $this->attempts()
-            ->where('is_passed', true)
-            ->exists();
+        $lastAttemptNum = $this->attempts()->max('attempt_number');
+
+        if (!$lastAttemptNum) {
+            return false;
+        }
+
+        $attempts = $this->attempts()->where([
+            'attempt_number' => $lastAttemptNum,
+        ])->get();
+
+        if ($attempts->isEmpty()) {
+            return false;
+        }
+
+        $correctAnswers = $attempts->where('is_correct', true)->count();
+
+        return $correctAnswers >= $this->required_answers_count;
     }
+
     public function isPassedOrSkipped(): bool
     {
         return $this->isPassed() || $this->is_skipped;

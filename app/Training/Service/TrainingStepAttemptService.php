@@ -26,7 +26,7 @@ class TrainingStepAttemptService
 
         return TrainingStepAttempt::create([
             'training_step_id' => $trainingStep->id,
-            'attempt_data' => $atemptData,
+            'attempt_data' => $attemptData,
             'sub_index' => $subIndex,
             'is_correct' => $isCorrect,
         ]);

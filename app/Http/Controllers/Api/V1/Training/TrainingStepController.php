@@ -85,9 +85,7 @@ class TrainingStepController extends Controller
 
         $attempt = $this->trainingStepAttemptService->create($step, $attemptData);
 
-        $isStepPassed = $this->trainingStepService->isStepPassed($step);
 
-        $stepProgress = $this->trainingStepService->getProgress($step);
 
         $completionCondition = $this->completionConditionFactory->create($training);
 
@@ -96,5 +94,11 @@ class TrainingStepController extends Controller
         }
 
         return new TrainingStepAttemptResource($attempt);
+    }
+
+    public function progress(Training $training, TrainingStep $step){
+        $isStepPassed = $this->trainingStepService->isStepPassed($step);
+
+        $stepProgress = $this->trainingStepService->getProgress($step);
     }
 }
