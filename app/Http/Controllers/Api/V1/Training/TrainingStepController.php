@@ -32,11 +32,11 @@ class TrainingStepController extends Controller
     private TrainingStepService $trainingStepService;
 
     public function __construct(
-        TrainingStepService $trainingStepService,
         TrainingStrategyFactory    $trainingStrategyFactory,
         TrainingStepAttemptService $trainingStepAttemptService,
         StepCheckService           $stepCheckService,
-        CompletionConditionFactory $completionConditionFactory
+        CompletionConditionFactory $completionConditionFactory,
+        TrainingStepService        $trainingStepService
     )
     {
         $this->trainingStrategyFactory = $trainingStrategyFactory;
@@ -75,17 +75,18 @@ class TrainingStepController extends Controller
 
     public function stepAttempt(Training $training, TrainingStep $step, Request $request)
     {
-        if ($this->trainingStepService->isStepPassed($step)) {
-            return new ApiResponseResource(['message' => 'Training step is passed', 'data' => null, 'errors' => ['training_step_is_finished' => 'Training step is passed']])
+        if ($this->trainingStepService->isPassed($step)) {
+            return new ApiResponseResource(['message' => 'Training is finished', 'data' => null, 'errors' => ['training_is_finished' => 'Training is finished']])
                 ->response()
                 ->setStatusCode(Response::HTTP_CONFLICT);
         }
 
         $attemptData = $request->all('attempt_data');
 
-        $attempt = $this->trainingStepAttemptService->create($step, $attemptData);
+        $attempt = $this->trainingStepAttemptService->create($step->id, $attemptData);
 
 
+        $isStepPassed = $this->stepCheckService->check($step);
 
         $completionCondition = $this->completionConditionFactory->create($training);
 
@@ -94,11 +95,5 @@ class TrainingStepController extends Controller
         }
 
         return new TrainingStepAttemptResource($attempt);
-    }
-
-    public function progress(Training $training, TrainingStep $step){
-        $isStepPassed = $this->trainingStepService->isStepPassed($step);
-
-        $stepProgress = $this->trainingStepService->getProgress($step);
     }
 }
