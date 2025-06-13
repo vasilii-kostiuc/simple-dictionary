@@ -17,7 +17,10 @@ class TrainingStepAttemptResource extends JsonResource
         return [
             'id' => $this->id,
             'training_step_id' => $this->training_step_id,
+            'is_correct' => $this->is_correct,
             'attempt_data' => $this->attempt_data,
+            'attempt_number' => $this->attempt_number,
+            'sub_index' =>$this->sub_index,
             'is_passed' => $this->is_passed,
         ];
     }

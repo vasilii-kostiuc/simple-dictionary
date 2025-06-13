@@ -21,55 +21,6 @@ class TrainingStepService
         return $step;
     }
 
-    public function isStepPassed($step): bool
-    {
-        $lastAttemptNum = TrainingStepAttempt::where([
-            'step_id' => $step->id,
-        ])->max('attempt_number');
-
-        if (!$lastAttemptNum) {
-            return false;
-        }
-
-        $attempts = $step->attempts()->where([
-            'attempt_number' => $lastAttemptNum,
-        ])->get();
-
-        if ($attempts->isEmpty()) {
-            return false;
-        }
-
-        $correctAnswers = $attempts->where('is_correct', true)->count();
-
-        return $correctAnswers >= $step->required_answers_count;
-    }
-
-    public function getProgress(TrainingStep $step): array
-    {
-        $total = $step->required_answers_count;
-
-        $lastAttemptNum = $step->attempts()->max('attempt_number');
-        if (!$lastAttemptNum) {
-            return [
-                'total' => $total,
-                'answered' => 0,
-                'completed' => false,
-            ];
-        }
-
-        $answered = $step->attempts()
-            ->where('attempt_number', $lastAttemptNum)
-            ->where('is_correct', true)
-            ->count();
-
-        return [
-            'total' => $total,
-            'answered' => $answered,
-            'completed' => $answered >= $total,
-        ];
-    }
-
-
     private function calculateNextStepNumber(Training $training): int
     {
         return $training->steps()->count() + 1;

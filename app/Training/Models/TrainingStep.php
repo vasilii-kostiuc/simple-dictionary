@@ -15,19 +15,45 @@ class TrainingStep extends Model
         return $this->belongsTo(Training::class);
     }
 
-    public function getAttempts(): HasMany
+    public function attempts(): HasMany
     {
         return $this->hasMany(TrainingStepAttempt::class);
     }
 
     public function isPassed(): bool
     {
-        return $this->attempts()
-            ->where('is_passed', true)
-            ->exists();
+        $lastAttemptNum = $this->attempts()->max('attempt_number');
+
+        if (!$lastAttemptNum) {
+            return false;
+        }
+
+        $attempts = $this->attempts()->where([
+            'attempt_number' => $lastAttemptNum,
+        ])->get();
+
+        if ($attempts->isEmpty()) {
+            return false;
+        }
+
+        $correctAnswers = $attempts->where('is_correct', true)->count();
+
+        return $correctAnswers >= $this->required_answers_count;
     }
+
     public function isPassedOrSkipped(): bool
     {
-        return $this->isPassed() || $this->is_skipped;
+        return $this->isPassed() || $this->skipped;
     }
+
+
+    public function getNextAttemptSubIndex(): int
+    {
+        if ($this->attempts->isEmpty()) {
+            return 1;
+        }
+
+        return $this->attempts()->max('sub_index') + 1;
+    }
+
 }
