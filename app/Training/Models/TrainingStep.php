@@ -43,7 +43,7 @@ class TrainingStep extends Model
 
     public function isPassedOrSkipped(): bool
     {
-        return $this->isPassed() || $this->is_skipped;
+        return $this->isPassed() || $this->skipped;
     }
 
 

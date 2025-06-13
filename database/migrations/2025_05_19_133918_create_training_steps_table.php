@@ -18,6 +18,8 @@ return new class extends Migration
             $table->integer('step_type_id');
             $table->json('step_data')->nullable();
             $table->json('required_answers_count')->default(1);
+            $table->boolean('skipped')->default(false);
+            $table->timestamp('skipped_at')->nullable();
             $table->timestamps();
         });
     }
