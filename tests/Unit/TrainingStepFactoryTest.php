@@ -1,17 +1,14 @@
 <?php
 
-use App\Training\Factories\TrainingStepFactory;
+use App\Domain\Dictionary\Models\Dictionary;
+use App\Domain\Training\Enums\TrainingStepType;
+use App\Domain\Training\Factories\TrainingStepFactory;
+use App\Domain\Training\Models\Training;
+use App\Domain\Training\Steps\ChooseCorrectAnswerStep;
+use App\Domain\Training\Steps\EstablishComplianceStep;
+use App\Domain\Training\Steps\WriteAnswerStep;
 use Database\Seeders\TopWordSeeder;
 use Tests\TestCase;
-use App\Training\Models\Training;
-use App\Models\Dictionary;
-use App\Models\TopWord;
-use App\Training\Enums\TrainingStepType;
-use App\Training\Steps\ChooseCorrectAnswerStep;
-use App\Training\Steps\WriteAnswerStep;
-use App\Training\Steps\EstablishComplianceStep;
-use Mockery;
-use Illuminate\Support\Collection;
 
 class TrainingStepFactoryTest extends TestCase
 {

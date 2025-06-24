@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ProfileUpdateRequest;
-use App\Http\Resources\ProfileResource;
+use App\Http\Resources\Auth\ProfileResource;
 use App\Service\UserService;
 use Illuminate\Support\Facades\Auth;
 
