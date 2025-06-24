@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Models\Dictionary;
-use App\Models\Language;
+use App\Domain\Dictionary\Models\Dictionary;
+use App\Domain\Language\Models\Language;
+use App\Domain\Training\Enums\TrainingCompletionType;
+use App\Domain\Training\Enums\TrainingStatus;
+use App\Domain\Training\Enums\TrainingType;
 use App\Models\User;
-use App\Training\Enums\TrainingCompletionType;
-use App\Training\Enums\TrainingStatus;
-use App\Training\Enums\TrainingType;
 use Database\Seeders\TopWordSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

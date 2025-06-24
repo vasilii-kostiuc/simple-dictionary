@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('top_words', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Language::class, 'language_from_id');
-            $table->foreignIdFor(\App\Models\Language::class, 'language_to_id');
+            $table->foreignIdFor(\App\Domain\Language\Models\Language::class, 'language_from_id');
+            $table->foreignIdFor(\App\Domain\Language\Models\Language::class, 'language_to_id');
             $table->string('word');
             $table->string('translation');
             $table->timestamps();

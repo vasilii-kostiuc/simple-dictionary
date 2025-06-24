@@ -25,17 +25,21 @@ Route::prefix('v1')->group(function () {
 
         Route::post('auth/logout', \App\Http\Controllers\Api\V1\Auth\LogoutController::class)->name('auth.logout');
 
-        Route::get('languages', [\App\Http\Controllers\Api\V1\LanguageController::class, 'index'])->name('languages.index');
-        Route::get('languages/{language}', [\App\Http\Controllers\Api\V1\LanguageController::class, 'show'])->name('languages.show');
+        Route::get('languages', [\App\Http\Controllers\Api\V1\Language\LanguageController::class, 'index'])->name('languages.index');
+        Route::get('languages/{language}', [\App\Http\Controllers\Api\V1\Language\LanguageController::class, 'show'])->name('languages.show');
 
-        Route::get('dictionaries', [\App\Http\Controllers\Api\V1\DictionaryController::class, 'index'])->name('dictionaries.index');
-        Route::post('dictionaries', [\App\Http\Controllers\Api\V1\DictionaryController::class, 'store'])->name('dictionaries.store');
-        Route::get('dictionaries/{dictionary}', [\App\Http\Controllers\Api\V1\DictionaryController::class, 'show'])->name('dictionaries.show');
-        Route::delete('dictionaries/{dictionary}', [\App\Http\Controllers\Api\V1\DictionaryController::class, 'destroy'])->name('dictionaries.destroy');
+        Route::get('dictionaries', [\App\Http\Controllers\Api\V1\Dictionary\DictionaryController::class, 'index'])->name('dictionaries.index');
+        Route::post('dictionaries', [\App\Http\Controllers\Api\V1\Dictionary\DictionaryController::class, 'store'])->name('dictionaries.store');
+        Route::get('dictionaries/{dictionary}', [\App\Http\Controllers\Api\V1\Dictionary\DictionaryController::class, 'show'])->name('dictionaries.show');
+        Route::delete('dictionaries/{dictionary}', [\App\Http\Controllers\Api\V1\Dictionary\DictionaryController::class, 'destroy'])->name('dictionaries.destroy');
 
         Route::post('trainings', [\App\Http\Controllers\Api\V1\Training\TrainingController::class, 'store'])->name('trainings.store');
         Route::post('trainings/{training}/start', [\App\Http\Controllers\Api\V1\Training\TrainingController::class, 'start'])->name('trainings.start');
-        Route::post('trainings/{training}/next-step', [\App\Http\Controllers\Api\V1\Training\TrainingController::class, 'nextStep'])->name('trainings.start');
+        Route::post('trainings/{training}/steps/next', [\App\Http\Controllers\Api\V1\Training\TrainingStepController::class, 'nextStep'])->name('training-steps.next');
+        Route::post('trainings/{training}/steps/current', [\App\Http\Controllers\Api\V1\Training\TrainingStepController::class, 'current'])->name('training-steps.next');
+        Route::get('trainings/{training}/steps/{step}/attempts', [\App\Http\Controllers\Api\V1\Training\TrainingStepController::class, 'attempts'])->name('trainings-steps.attempts');
+        Route::get('trainings/{training}/steps/{step}/progress', [\App\Http\Controllers\Api\V1\Training\TrainingStepController::class, 'progress'])->name('trainings-steps.attempts');
+        Route::post('trainings/{training}/steps/{step}/attempts', [\App\Http\Controllers\Api\V1\Training\TrainingStepController::class, 'attempt'])->name('trainings-steps.attempts');
 
 
     });

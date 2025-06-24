@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Models\Dictionary;
+use App\Domain\Dictionary\Models\Dictionary;
 
 class DictionaryService
 {
