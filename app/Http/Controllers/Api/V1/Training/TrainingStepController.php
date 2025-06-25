@@ -23,7 +23,6 @@ class TrainingStepController extends Controller
 {
     private const ERROR_TRAINING_FINISHED = 'training_finished';
     private const ERROR_STEP_NOT_COMPLETED = 'previous_step_not_completed';
-
     private TrainingStrategyFactory $trainingStrategyFactory;
     private TrainingStepService $trainingStepService;
     private TrainingStepProgressService $trainingStepProgressService;
@@ -45,7 +44,7 @@ class TrainingStepController extends Controller
         return new TrainingStepResource($step);
     }
 
-    public function nextStep(Training $training)
+    public function next(Training $training)
     {
         if ($training->status == TrainingStatus::Completed) {
             return (new ApiResponseResource(
@@ -70,6 +69,22 @@ class TrainingStepController extends Controller
 
         $nextStep = $this->trainingStepService->create($generatedStep, $training);
         return ApiResponseResource::make(['data' => new TrainingStepResource($nextStep), 'message' => 'Next step generated successfully']);
+    }
+
+    public function current(Training $training)
+    {
+        if ($training->status == TrainingStatus::Completed) {
+            return (new ApiResponseResource(
+                [
+                    'succes' => false,
+                    'errors' => [self::ERROR_TRAINING_FINISHED => 'Training is finished'],
+                    'message' => 'Training is finished',
+                ]))->response()->setStatusCode(Response::HTTP_CONFLICT);
+        }
+
+        $currentStep = $training->lastStep();
+        return ApiResponseResource::make(['data' => new TrainingStepResource($currentStep), 'message' => 'Next step generated successfully']);
+
     }
 
     public function progress(TrainingStep $step)

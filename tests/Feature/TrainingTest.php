@@ -110,7 +110,7 @@ class TrainingTest extends TestCase
         $startResponse->assertJsonFragment(['id' => $trainingId, 'status' => TrainingStatus::InProgress->value]);
 
         $nextStepResponse = $this->actingAs($this->user)
-            ->postJson("/api/v1/trainings/{$trainingId}/next-step");
+            ->getJson("/api/v1/trainings/{$trainingId}/steps/next");
         $nextStepResponse->assertOk();
     }
 
@@ -134,7 +134,7 @@ class TrainingTest extends TestCase
         $startResponse->assertJsonFragment(['id' => $trainingId, 'status' => TrainingStatus::InProgress->value]);
 
         $nextStepResponse = $this->actingAs($this->user)
-            ->postJson("/api/v1/trainings/{$trainingId}/next-step");
+            ->getJson("/api/v1/trainings/{$trainingId}/steps/next");
         $nextStepResponse->assertOk();
     }
 
