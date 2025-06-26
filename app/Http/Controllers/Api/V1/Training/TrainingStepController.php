@@ -24,26 +24,18 @@ class TrainingStepController extends Controller
     private const ERROR_TRAINING_FINISHED = 'training_finished';
     private const ERROR_STEP_NOT_COMPLETED = 'previous_step_not_completed';
 
-    private StepCheckService $stepCheckService;
-    private TrainingStepAttemptService $trainingStepAttemptService;
     private TrainingStrategyFactory $trainingStrategyFactory;
-    private CompletionConditionFactory $completionConditionFactory;
     private TrainingStepService $trainingStepService;
     private TrainingStepProgressService $trainingStepProgressService;
 
     public function __construct(
         TrainingStrategyFactory     $trainingStrategyFactory,
-        TrainingStepAttemptService  $trainingStepAttemptService,
         StepCheckService            $stepCheckService,
-        CompletionConditionFactory  $completionConditionFactory,
         TrainingStepService         $trainingStepService,
         TrainingStepProgressService $trainingStepProgressService,
     )
     {
         $this->trainingStrategyFactory = $trainingStrategyFactory;
-        $this->trainingStepAttemptService = $trainingStepAttemptService;
-        $this->stepCheckService = $stepCheckService;
-        $this->completionConditionFactory = $completionConditionFactory;
         $this->trainingStepService = $trainingStepService;
         $this->trainingStepProgressService = $trainingStepProgressService;
     }
@@ -76,29 +68,8 @@ class TrainingStepController extends Controller
 
         $generatedStep = $this->trainingStrategyFactory->create($training)->generateNextStep();
 
-        $nextStep = new TrainingStepService()->create($generatedStep, $training);
+        $nextStep = $this->trainingStepService->create($generatedStep, $training);
         return ApiResponseResource::make(['data' => new TrainingStepResource($nextStep), 'message' => 'Next step generated successfully']);
-    }
-
-    public function attempt(Training $training, TrainingStep $step, Request $request)
-    {
-        if ($this->trainingStepService->isPassed($step)) {
-            return new ApiResponseResource(['message' => 'Training is finished', 'data' => null, 'errors' => ['training_is_finished' => 'Training is finished']])
-                ->response()
-                ->setStatusCode(Response::HTTP_CONFLICT);
-        }
-
-        $attemptData = $request->all('attempt_data');
-
-        $attempt = $this->trainingStepAttemptService->create($step->id, $attemptData);
-
-        $completionCondition = $this->completionConditionFactory->create($training);
-
-        if ($completionCondition->isCompleted()) {
-            $training->complete();
-        }
-
-        return ApiResponseResource::make(['data' => new TrainingStepAttemptResource($attempt)]);
     }
 
     public function progress(TrainingStep $step)
@@ -108,15 +79,4 @@ class TrainingStepController extends Controller
         return ApiResponseResource::make(['data' => new TrainingStepProgressResource($progress)]);
     }
 
-    public function attempts(Request $request, TrainingStep $step)
-    {
-        if ($request->has('is_correct')) {
-            $isCorrect = filter_var($request->input('is_correct'), FILTER_VALIDATE_BOOLEAN);
-            $attempts = $step->attempts()->where('is_correct', $isCorrect)->get();
-        } else {
-            $attempts = $step->attempts()->get();
-        }
-
-        return new ApiResponseResource(['data' => TrainingStepAttemptResource::collection($attempts)]);
-    }
 }
