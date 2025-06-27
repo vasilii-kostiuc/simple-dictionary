@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api\V1\Dictionary;
 
 use App\Domain\Dictionary\Models\Dictionary;
+use App\Domain\Dictionary\Services\DictionaryService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dictionary\StoreDictionaryRequest;
 use App\Http\Resources\ApiResponseResource;
 use App\Http\Resources\Dictionary\DictionaryResource;
-use App\Service\DictionaryService;
 use Illuminate\Http\Response;
 
 class DictionaryController extends Controller

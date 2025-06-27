@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Domain\Dictionary\Services;
 
 use App\Domain\Dictionary\Models\Dictionary;
 
