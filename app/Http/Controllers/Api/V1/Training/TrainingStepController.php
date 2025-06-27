@@ -3,20 +3,16 @@
 namespace App\Http\Controllers\Api\V1\Training;
 
 use App\Domain\Training\Enums\TrainingStatus;
-use App\Domain\Training\Factories\CompletionConditionFactory;
 use App\Domain\Training\Factories\TrainingStrategyFactory;
 use App\Domain\Training\Models\Training;
 use App\Domain\Training\Models\TrainingStep;
 use App\Domain\Training\Service\StepCheckService;
-use App\Domain\Training\Service\TrainingStepAttemptService;
 use App\Domain\Training\Service\TrainingStepProgressService;
 use App\Domain\Training\Service\TrainingStepService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiResponseResource;
-use App\Http\Resources\Training\TrainingStepAttemptResource;
 use App\Http\Resources\Training\TrainingStepProgressResource;
 use App\Http\Resources\Training\TrainingStepResource;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class TrainingStepController extends Controller
