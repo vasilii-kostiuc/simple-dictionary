@@ -1,18 +1,17 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "E-Shop Catalog",
-        "description": "API Documentation",
+        "title": "Simple Dictionary API",
         "version": "1.0.0"
     },
     "paths": {
-        "/categories": {
+        "/languages": {
             "get": {
                 "tags": [
-                    "Categories"
+                    "Languages"
                 ],
                 "summary": "Get list of categories",
-                "operationId": "dcc3c097c9fb5b4a1991bb22f0b8530e",
+                "operationId": "01d65d5b764ab39166999d4ac4a90ff1",
                 "responses": {
                     "200": {
                         "description": "Successful operation"
@@ -29,8 +28,18 @@
     },
     "tags": [
         {
-            "name": "Categories",
-            "description": "Categories"
+            "name": "Languages",
+            "description": "Languages"
         }
-    ]
+    ],
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    }
 }
