@@ -132,7 +132,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             },
             "patch": {
                 "tags": [
@@ -200,7 +205,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/v1/auth/register": {
@@ -284,24 +294,82 @@
                 }
             }
         },
-        "/languages": {
+        "/api/v1/languages": {
             "get": {
                 "tags": [
                     "Languages"
                 ],
-                "summary": "Get list of categories",
-                "operationId": "01d65d5b764ab39166999d4ac4a90ff1",
+                "summary": "List all languages",
+                "description": "Get list of available languages",
+                "operationId": "listLanguages",
                 "responses": {
                     "200": {
-                        "description": "Successful operation"
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Language"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/languages/{language}": {
+            "get": {
+                "tags": [
+                    "Languages"
+                ],
+                "summary": "Show language details",
+                "description": "Get detailed information about specific language",
+                "operationId": "showLanguage",
+                "parameters": [
+                    {
+                        "name": "language",
+                        "in": "path",
+                        "description": "Language ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Language"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         }
     },
@@ -369,6 +437,27 @@
                         "format": "int64",
                         "example": 1,
                         "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Language": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "English"
+                    },
+                    "code": {
+                        "type": "string",
+                        "example": "en"
+                    },
+                    "icon": {
+                        "type": "string",
+                        "example": "http://example.com/storage/flags/en.svg"
                     }
                 },
                 "type": "object"

@@ -24,6 +24,7 @@ class ProfileController extends Controller
         summary: 'Get user profile',
         description: 'Returns authenticated user profile information',
         operationId: 'showProfile',
+        security: [['sanctum' => []]],
         tags: ['Profile'],
         responses: [
             new OA\Response(
@@ -45,6 +46,7 @@ class ProfileController extends Controller
         summary: 'Update user profile',
         description: 'Update authenticated user profile information',
         operationId: 'updateProfile',
+        security: [['sanctum' => []]],
         tags: ['Profile'],
         requestBody: new OA\RequestBody(
             required: true,

@@ -6,16 +6,17 @@ use App\Domain\Language\Models\Language;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiResponseResource;
 use App\Http\Resources\Language\LanguageResource;
+use OpenApi\Attributes as OA;
+use OpenApi\Attributes\SecurityScheme;
 
-#[OA\Tag(name: 'Languages', description: 'Language management endpoints')]
 class LanguageController extends Controller
 {
-
     #[OA\Get(
         path: '/api/v1/languages',
         operationId: 'listLanguages',
         description: 'Get list of available languages',
         summary: 'List all languages',
+        security: [['sanctum' => []]],
         tags: ['Languages'],
         responses: [
             new OA\Response(
@@ -43,6 +44,7 @@ class LanguageController extends Controller
         operationId: 'showLanguage',
         description: 'Get detailed information about specific language',
         summary: 'Show language details',
+        security: [['sanctum' => []]],
         tags: ['Languages'],
         parameters: [
             new OA\Parameter(
