@@ -15,6 +15,7 @@ class TrainingStepService
             'step_data' => $wordTrainingStep->toArray(),
             'step_type_id' => $wordTrainingStep->getTrainingStepType()->value,
             'step_number' => $this->calculateNextStepNumber($training),
+            'required_answers_count' => $wordTrainingStep->getRequiredAnswersCount(),
         ]);
 
         return $step;

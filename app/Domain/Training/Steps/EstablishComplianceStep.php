@@ -13,6 +13,7 @@ class EstablishComplianceStep extends WordTrainingStep
     {
         parent::__construct(TrainingStepType::EstablishCompliance);
         $this->words = $words;
+        $this->requiredAnswersCount = count($words);
         $this->answersOrder = $answersOrder;
     }
 

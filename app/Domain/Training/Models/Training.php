@@ -23,7 +23,7 @@ class Training extends Model
         return $this->hasMany(TrainingStep::class);
     }
 
-    public function lastStep(): TrainingStep
+    public function lastStep(): ?TrainingStep
     {
         return $this->steps()->orderBy('step_number', 'desc')->first();
     }

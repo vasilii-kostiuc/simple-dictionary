@@ -8,7 +8,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TrainingStep extends Model
 {
-    protected $fillable = ['training_id', 'step_type_id', 'step_number'];
+    protected $fillable = [
+        'training_id',
+        'step_type_id',
+        'step_number',
+        'skipped',
+        'required_answers_count',
+        'step_data'
+    ];
+
+    protected $casts = [
+        'step_data' => 'array'
+    ];
+
 
     public function getTraining(): BelongsTo
     {
