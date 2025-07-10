@@ -8,5 +8,4 @@ use App\Domain\Training\Steps\WordTrainingStep;
 interface StepResolverInterface
 {
     public function resolve(TrainingStep $trainingStep): array;
-
 }
