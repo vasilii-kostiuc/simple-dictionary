@@ -9,6 +9,7 @@ class EstablishComplianceResolver implements StepResolverInterface
 
     public function resolve(TrainingStep $trainingStep): array
     {
+        $correctAnswers = $trainingStep->correctAnswers();
 
     }
 }
