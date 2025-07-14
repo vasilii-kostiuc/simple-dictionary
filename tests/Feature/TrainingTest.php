@@ -6,7 +6,10 @@ use App\Domain\Dictionary\Models\Dictionary;
 use App\Domain\Language\Models\Language;
 use App\Domain\Training\Enums\TrainingCompletionType;
 use App\Domain\Training\Enums\TrainingStatus;
+use App\Domain\Training\Enums\TrainingStepType;
 use App\Domain\Training\Enums\TrainingType;
+use App\Domain\Training\Factories\StepResolverFactory;
+use App\Domain\Training\Models\TrainingStep;
 use App\Models\User;
 use Database\Seeders\TopWordSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -135,6 +138,18 @@ class TrainingTest extends TestCase
 
         $nextStepResponse = $this->actingAs($this->user)
             ->getJson("/api/v1/trainings/{$trainingId}/steps/next");
+
+
+        $stepId = $nextStepResponse->json('data.id');
+
+        $step = TrainingStep::find($stepId);
+        $attempt_data = new StepResolverFactory()->create(TrainingStepType::from($step->step_type_id))->resolve($step);
+
+        dd($attempt_data);;
+        $attemptResponse = $this->actingAs($this->user)->postJson("/api/v1/trainings/{$trainingId}/steps/{$stepId}/attempts", $attempt_data);
+
+        $attemptResponse->assertOk();
+
         $nextStepResponse->assertOk();
     }
 

@@ -48,7 +48,7 @@ class TrainingStepAttemptController extends Controller
 
         $attemptData = $request->all('attempt_data');
 
-        $attempt = $this->trainingStepAttemptService->create($step->id, $attemptData);
+        $attempt = $this->trainingStepAttemptService->create($step, $attemptData);
 
         $completionCondition = $this->completionConditionFactory->create($training);
 
