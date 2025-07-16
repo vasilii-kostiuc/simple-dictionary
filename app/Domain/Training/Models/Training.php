@@ -11,7 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Training extends Model
 {
-    protected $fillable = ['dictionary_id', 'training_type_id', 'completion_type', 'completion_params', 'status', 'started_at', 'completed_at'];
+    protected $fillable = ['dictionary_id', 'training_type_id', 'completion_type', 'completion_type_params', 'status', 'started_at', 'completed_at'];
+
+    protected $casts = ['completion_type_params' => 'array'];
 
     public function dictionary(): BelongsTo
     {

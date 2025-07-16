@@ -13,11 +13,14 @@ class CompletionConditionFactory
 {
     public function create(Training $training): CompletionConditionInterface
     {
-        return match ($training->completion_type) {
+        //dd($training->completion_type);
+        $completionType = TrainingCompletionType::from($training->completion_type);
+
+        return match ($completionType) {
             TrainingCompletionType::Time => new TimeCompletionCondition($training->completion_type_params->duration, $training->started_at),
-            TrainingCompletionType::Steps => new StepsCompletionCondition($training->completion_type_params->steps_count, $training->steps),
+            TrainingCompletionType::Steps => new StepsCompletionCondition($training->completion_type_params['steps_count'], $training->steps),
             TrainingCompletionType::Unlimited => new UnlimitedCompletionCondition(),
-            default => throw new \Exception('Completion condition not found'),
+            default =>  new StepsCompletionCondition($training->completion_type_params['steps_count'], $training->steps),
         };
     }
 }

@@ -4,7 +4,7 @@ namespace App\Domain\Training\CompletionConditions;
 
 use Illuminate\Support\Collection;
 
-class StepsCompletionCondition
+class StepsCompletionCondition implements CompletionConditionInterface
 {
     protected readonly int $requiredStepsCount;
     protected readonly Collection $trainingSteps;

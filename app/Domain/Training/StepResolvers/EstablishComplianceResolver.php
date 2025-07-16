@@ -13,8 +13,6 @@ class EstablishComplianceResolver implements StepResolverInterface
 
         $alreadyEstablished = $correctAnswers->pluck('word_id')->toArray();
 
-        dd($answers_order);
-
         $notEstablished = array_diff($answers_order, $alreadyEstablished);
         $word_id = $answers_order[array_rand($notEstablished)];
 

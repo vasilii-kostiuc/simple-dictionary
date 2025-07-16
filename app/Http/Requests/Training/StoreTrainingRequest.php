@@ -20,7 +20,7 @@ class StoreTrainingRequest extends FormRequest
             'training_type_id' => ['required', 'integer', Rule::enum(TrainingType::class)],
             'dictionary_id' => ['required', 'integer', Rule::exists('dictionaries', 'id')],
             'completion_type' => ['required', Rule::enum(TrainingCompletionType::class)],
-            'completion_type_params' => ['nullable', 'object'],
+            'completion_type_params' => ['nullable', 'array'],
         ];
     }
 }
