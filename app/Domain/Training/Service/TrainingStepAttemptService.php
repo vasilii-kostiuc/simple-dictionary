@@ -18,7 +18,7 @@ class TrainingStepAttemptService
 
     public function create(TrainingStep $trainingStep, array $attemptData): TrainingStepAttempt
     {
-        $stepVerifier = $this->stepAttemptVerifierFactory->create(TrainingStepType::from($trainingStep->step_type));
+        $stepVerifier = $this->stepAttemptVerifierFactory->create(TrainingStepType::from($trainingStep->step_type_id));
 
         $isCorrect = $stepVerifier->verify($trainingStep, $attemptData);
 

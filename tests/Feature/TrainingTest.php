@@ -6,7 +6,10 @@ use App\Domain\Dictionary\Models\Dictionary;
 use App\Domain\Language\Models\Language;
 use App\Domain\Training\Enums\TrainingCompletionType;
 use App\Domain\Training\Enums\TrainingStatus;
+use App\Domain\Training\Enums\TrainingStepType;
 use App\Domain\Training\Enums\TrainingType;
+use App\Domain\Training\Factories\StepResolverFactory;
+use App\Domain\Training\Models\TrainingStep;
 use App\Models\User;
 use Database\Seeders\TopWordSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -112,8 +115,8 @@ class TrainingTest extends TestCase
         $nextStepResponse = $this->actingAs($this->user)
             ->getJson("/api/v1/trainings/{$trainingId}/steps/next");
         $nextStepResponse->assertOk();
-    }
 
+    }
 
     public function test_api_step_attempt_successfull(){
 
@@ -124,6 +127,7 @@ class TrainingTest extends TestCase
                 'dictionary_id' => $this->dictionary->id,
                 'training_type_id' => TrainingType::TopWords->value,
                 'completion_type' => TrainingCompletionType::Steps->value,
+                'completion_type_params' => ['steps_count' => 10]
             ]);
 
         $trainingId = $response->json('data.id');
@@ -135,6 +139,22 @@ class TrainingTest extends TestCase
 
         $nextStepResponse = $this->actingAs($this->user)
             ->getJson("/api/v1/trainings/{$trainingId}/steps/next");
+
+        //dd($nextStepResponse->json());
+
+        $stepId = $nextStepResponse->json('data.id');
+
+        $step = TrainingStep::find($stepId);
+        //dump($step->attributesToArray());;
+        do {
+            $attempt_data = new StepResolverFactory()->create(TrainingStepType::from($step->step_type_id))->resolve($step);
+            $attemptResponse = $this->actingAs($this->user)->postJson("/api/v1/trainings/{$trainingId}/steps/{$stepId}/attempts", ['attempt_data' => $attempt_data]);
+
+            $attemptResponse->assertOk();
+
+            dump($attemptResponse->json('data'));
+
+        }while (!$attemptResponse->json('data.is_passed'));
         $nextStepResponse->assertOk();
     }
 

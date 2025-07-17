@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class TrainingStepAttempt extends Model
 {
     protected $fillable = [
-        'training_id',
+        'training_step_id',
         'attempt_data',
-        'is_passed',
+        'sub_index',
+        'is_correct',
     ];
 
     protected $casts = [

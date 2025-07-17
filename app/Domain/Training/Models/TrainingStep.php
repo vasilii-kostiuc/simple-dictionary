@@ -48,9 +48,14 @@ class TrainingStep extends Model
             return false;
         }
 
-        $correctAnswers = $attempts->where('is_correct', true)->count();
+        $correctAnswers = $this->correctAnswers()->count();
 
         return $correctAnswers >= $this->required_answers_count;
+    }
+
+    public function correctAnswers()
+    {
+        return $this->attempts()->where('is_correct', true)->get();
     }
 
     public function isPassedOrSkipped(): bool

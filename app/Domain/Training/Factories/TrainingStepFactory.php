@@ -22,10 +22,10 @@ class TrainingStepFactory
     public function createStep(Training $training, TrainingStepType $stepType): WordTrainingStep
     {
         return match ($stepType) {
-            TrainingStepType::ChooseCorrectAnswer => $this->createChooseCorrectAnswerStep($training),
-            TrainingStepType::WriteCorrectAnswer => $this->createWriteAnswerStep($training),
-            TrainingStepType::EstablishCompliance => $this->createEstablishComplianceStep($training),
-            default => throw new \InvalidArgumentException("Unsupported training step type: {$stepType->name}")
+//            TrainingStepType::ChooseCorrectAnswer => $this->createChooseCorrectAnswerStep($training),
+//            TrainingStepType::WriteCorrectAnswer => $this->createWriteAnswerStep($training),
+//            TrainingStepType::EstablishCompliance => $this->createEstablishComplianceStep($training),
+            default => $this->createEstablishComplianceStep($training)
         };
     }
 
@@ -100,8 +100,8 @@ class TrainingStepFactory
         $fromLanguageId = $training->dictionary->language_from_id;
         $toLanguageId = $training->dictionary->language_to_id;
 
-        $words = $this->getRandomTopWords($fromLanguageId, $toLanguageId)->map(fn(TopWord $word) => [
-            'word_id' => $word->word_id,
+        $words = $this->getRandomTopWords($fromLanguageId, $toLanguageId, [],self::MULTIPLE_CHOICE_OPTIONS_COUNT)->map(fn(TopWord $word) => [
+            'word_id' => $word->id,
             'word' => $word->word,
             'translation' => $word->translation,
             'is_top_word' => true,
