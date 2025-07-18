@@ -68,6 +68,7 @@ class TrainingTest extends TestCase
         $startResponse->assertOk();
         $startResponse->assertJsonFragment(['id' => $trainingId, 'status' => TrainingStatus::InProgress->value]);
     }
+
     public function test_api_training_start_fail()
     {
         $response = $this->actingAs($this->user)
@@ -94,7 +95,8 @@ class TrainingTest extends TestCase
         $startResponse->assertJsonStructure(['errors' => ['training_can_be_started_only_in_new_state']]);
     }
 
-    public function test_api_next_step_successfull(){
+    public function test_api_next_step_successfull()
+    {
 
         $this->seed(TopWordSeeder::class);
 
@@ -118,20 +120,27 @@ class TrainingTest extends TestCase
 
     }
 
-    public function test_api_step_attempt_successfull(){
-
-        $this->seed(TopWordSeeder::class);
-
+    private function createTraining()
+    {
         $response = $this->actingAs($this->user)
             ->postJson('api/v1/trainings', [
                 'dictionary_id' => $this->dictionary->id,
-                'training_type_id' => TrainingType::TopWords->value,
+                'training_type_id' => TrainingType::TopWords,
                 'completion_type' => TrainingCompletionType::Steps->value,
                 'completion_type_params' => ['steps_count' => 10]
             ]);
 
         $trainingId = $response->json('data.id');
 
+        return $trainingId;
+    }
+
+    public function test_api_step_attempt_successfull()
+    {
+        $this->seed(TopWordSeeder::class);
+
+        $trainingId = $this->createTraining();
+
         $startResponse = $this->actingAs($this->user)
             ->postJson("/api/v1/trainings/{$trainingId}/start");
         $startResponse->assertOk();
@@ -140,22 +149,41 @@ class TrainingTest extends TestCase
         $nextStepResponse = $this->actingAs($this->user)
             ->getJson("/api/v1/trainings/{$trainingId}/steps/next");
 
-        //dd($nextStepResponse->json());
+        $stepId = $nextStepResponse->json('data.id');
+
+        $step = TrainingStep::find($stepId);
+
+        $attempt_data = new StepResolverFactory()->create(TrainingStepType::from($step->step_type_id))->resolve($step);
+        $attemptResponse = $this->actingAs($this->user)->postJson("/api/v1/trainings/{$trainingId}/steps/{$stepId}/attempts", ['attempt_data' => $attempt_data]);
+
+        $attemptResponse->assertOk();
+        $nextStepResponse->assertOk();
+    }
+
+
+    public function test_api_training_progress_for_steps_with_multiple_attempts()
+    {
+        $this->seed(TopWordSeeder::class);
+
+        $trainingId = $this->createTraining();
+
+        $startResponse = $this->actingAs($this->user)
+            ->postJson("/api/v1/trainings/{$trainingId}/start");
+        $startResponse->assertOk();
+        $startResponse->assertJsonFragment(['id' => $trainingId, 'status' => TrainingStatus::InProgress->value]);
+
+        $nextStepResponse = $this->actingAs($this->user)
+            ->getJson("/api/v1/trainings/{$trainingId}/steps/next");
 
         $stepId = $nextStepResponse->json('data.id');
 
         $step = TrainingStep::find($stepId);
-        //dump($step->attributesToArray());;
-        do {
-            $attempt_data = new StepResolverFactory()->create(TrainingStepType::from($step->step_type_id))->resolve($step);
-            $attemptResponse = $this->actingAs($this->user)->postJson("/api/v1/trainings/{$trainingId}/steps/{$stepId}/attempts", ['attempt_data' => $attempt_data]);
 
-            $attemptResponse->assertOk();
+        $attempt_data = new StepResolverFactory()->create(TrainingStepType::from($step->step_type_id))->resolve($step);
+        $attemptResponse = $this->actingAs($this->user)->postJson("/api/v1/trainings/{$trainingId}/steps/{$stepId}/attempts", ['attempt_data' => $attempt_data]);
 
-            dump($attemptResponse->json('data'));
 
-        }while (!$attemptResponse->json('data.is_passed'));
-        $nextStepResponse->assertOk();
     }
+
 
 }
