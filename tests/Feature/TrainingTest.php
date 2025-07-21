@@ -9,6 +9,9 @@ use App\Domain\Training\Enums\TrainingStatus;
 use App\Domain\Training\Enums\TrainingStepType;
 use App\Domain\Training\Enums\TrainingType;
 use App\Domain\Training\Factories\StepResolverFactory;
+use App\Domain\Training\Factories\TrainingStepFactory;
+use App\Domain\Training\Factories\TrainingStrategyFactory;
+use App\Domain\Training\Models\Training;
 use App\Domain\Training\Models\TrainingStep;
 use App\Models\User;
 use Database\Seeders\TopWordSeeder;
@@ -164,6 +167,15 @@ class TrainingTest extends TestCase
     public function test_api_training_progress_for_steps_with_multiple_attempts()
     {
         $this->seed(TopWordSeeder::class);
+
+        $this->mock(TrainingStrategyFactory::class, function ($mock) {
+            $mock->shouldReceive('create')
+                ->andReturnUsing(function(Training $training) {
+                   // return new Trai
+                });
+        });
+
+
 
         $trainingId = $this->createTraining();
 
