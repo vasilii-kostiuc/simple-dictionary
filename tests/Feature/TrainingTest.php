@@ -13,10 +13,12 @@ use App\Domain\Training\Factories\TrainingStepFactory;
 use App\Domain\Training\Factories\TrainingStrategyFactory;
 use App\Domain\Training\Models\Training;
 use App\Domain\Training\Models\TrainingStep;
+use App\Domain\Training\Strategies\RandomTrainingStrategy;
 use App\Domain\Training\Strategies\SpecificStepTypeTrainingStrategy;
 use App\Models\User;
 use Database\Seeders\TopWordSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class TrainingTest extends TestCase
@@ -61,19 +63,20 @@ class TrainingTest extends TestCase
      * @param $step
      * @param int $trainingId
      * @param mixed $stepId
-     * @return void
+     * @return \Illuminate\Testing\TestResponse
      */
-    public function submitStepAttempt($step, int $trainingId, mixed $stepId): void
+    public function submitStepAttempt($step, int $trainingId, mixed $stepId): \Illuminate\Testing\TestResponse
     {
         $attempt_data = new StepResolverFactory()
             ->create(TrainingStepType::from($step->step_type_id))
             ->resolve($step);
-
         $attemptResponse = $this->actingAs($this->user)
             ->postJson(
                 "/api/v1/trainings/{$trainingId}/steps/{$stepId}/attempts",
                 ['attempt_data' => $attempt_data]
             );
+
+        return $attemptResponse;
     }
 
     protected function setUp(): void
@@ -191,7 +194,28 @@ class TrainingTest extends TestCase
         $attemptResponse = $this->submitStepAttempt($step, $trainingId, $stepId);
 
         $attemptResponse->assertOk();
-        $nextStepResponse->assertOk();
+    }
+
+    public function test_step_attemps_list()
+    {
+        $this->seed(TopWordSeeder::class);
+
+        $trainingId = $this->createTraining();
+        $this->startTraining($trainingId);
+
+        $nextStepResponse = $this->actingAs($this->user)
+            ->getJson("/api/v1/trainings/{$trainingId}/steps/next");
+
+        $stepId = $nextStepResponse->json('data.id');
+        $step = TrainingStep::find($stepId);
+
+        $attemptResponse = $this->submitStepAttempt($step, $trainingId, $stepId);
+
+        $this->actingAs($this->user)
+            ->getJson("/api/v1/trainings/{$trainingId}/steps/{$stepId}/attempts")
+            ->assertOk();
+
+
     }
 
     public function test_api_training_progress_for_steps_with_multiple_attempts()
@@ -218,17 +242,25 @@ class TrainingTest extends TestCase
         $isPassed = $progressResponse->json('data.is_passed');
         $this->assertFalse($isPassed);
 
+        $attemptResponse = $this->submitStepAttempt($step, $trainingId, $stepId);
         $this->submitStepAttempt($step, $trainingId, $stepId);
         $this->submitStepAttempt($step, $trainingId, $stepId);
-        $this->submitStepAttempt($step, $trainingId, $stepId);
-
-
 
         $progressResponse = $this->actingAs($this->user)
             ->getJson(
                 "/api/v1/trainings/{$trainingId}/steps/{$stepId}/progress",
             );
         $isPassed = $progressResponse->json('data.is_passed');
+        dd($progressResponse->json());
         $this->assertTrue($isPassed);
+
+        $attemptResult = $this->submitStepAttempt($step, $trainingId, $stepId);
+
+        $attemptResult->assertStatus(Response::HTTP_CONFLICT);
+        $attemptResult->assertJsonStructure([
+            'errors' => [
+                'training_step_is_already_passed'
+            ]
+        ]);
     }
 }
