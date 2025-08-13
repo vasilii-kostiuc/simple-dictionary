@@ -251,7 +251,7 @@ class TrainingTest extends TestCase
                 "/api/v1/trainings/{$trainingId}/steps/{$stepId}/progress",
             );
         $isPassed = $progressResponse->json('data.is_passed');
-        dd($progressResponse->json());
+        //dd($progressResponse->json());
         $this->assertTrue($isPassed);
 
         $attemptResult = $this->submitStepAttempt($step, $trainingId, $stepId);
