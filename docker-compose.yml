@@ -18,7 +18,13 @@ services:
     volumes:
       - ./:/var/www
     depends_on:
-        - db
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: simple-dictionary
+      DB_USERNAME: root
+      DB_PASSWORD: root
     container_name: project_app
   db:
     image: mysql:8.1
