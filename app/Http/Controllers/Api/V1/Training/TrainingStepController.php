@@ -83,7 +83,7 @@ class TrainingStepController extends Controller
 
     }
 
-    public function progress(TrainingStep $step)
+    public function progress(Training $training, TrainingStep $step)
     {
         $progress = $this->trainingStepProgressService->getProgress($step);
 

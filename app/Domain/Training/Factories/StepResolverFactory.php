@@ -11,9 +11,9 @@ class StepResolverFactory
 {
     public function create(TrainingStepType $stepType){
         return match($stepType){
-            //TrainingStepType::ChooseCorrectAnswer => new ChooseCorrectAnswerResolver(),
-            //TrainingStepType::WriteCorrectAnswer => new WriteAnswerResolver(),
-            //TrainingStepType::EstablishCompliance => new EstablishComplianceResolver(),
+            TrainingStepType::ChooseCorrectAnswer => new ChooseCorrectAnswerResolver(),
+            TrainingStepType::WriteCorrectAnswer => new WriteAnswerResolver(),
+            TrainingStepType::EstablishCompliance => new EstablishComplianceResolver(),
             default => new EstablishComplianceResolver(),
         };
     }

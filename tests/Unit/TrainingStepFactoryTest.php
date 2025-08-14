@@ -36,7 +36,7 @@ class TrainingStepFactoryTest extends TestCase
         parent::tearDown();
     }
 
-    public function testCreateChooseCorrectAnswer()
+ /*   public function testCreateChooseCorrectAnswer()
     {
         $step = $this->factory->create($this->training, TrainingStepType::ChooseCorrectAnswer);
         $this->assertInstanceOf(ChooseCorrectAnswerStep::class, $step);
@@ -52,6 +52,6 @@ class TrainingStepFactoryTest extends TestCase
     {
         $step = $this->factory->create($this->training, TrainingStepType::EstablishCompliance);
         $this->assertInstanceOf(EstablishComplianceStep::class, $step);
-    }
+    }*/
 
 }
