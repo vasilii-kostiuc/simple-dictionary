@@ -12,7 +12,7 @@ if [ ! -f vendor/autoload.php ]; then
     composer install --no-interaction --prefer-dist --optimize-autoloader
 fi
 
-echo "Жду MySQL: $DB_HOST:$DB_PORT (база: $DB_DATABASE)..."
+echo "Жду MySQL: $DB_HOST:$DB_PORT (база: $MYSQL_DATABASE)..."
 until mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USERNAME" -p"$DB_PASSWORD" \
     -e "USE $DB_DATABASE;" &> /dev/null
 do
