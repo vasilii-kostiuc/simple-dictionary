@@ -22,10 +22,10 @@ class TrainingStepFactory
     public function createStep(Training $training, TrainingStepType $stepType): WordTrainingStep
     {
         return match ($stepType) {
-//            TrainingStepType::ChooseCorrectAnswer => $this->createChooseCorrectAnswerStep($training),
-//            TrainingStepType::WriteCorrectAnswer => $this->createWriteAnswerStep($training),
-//            TrainingStepType::EstablishCompliance => $this->createEstablishComplianceStep($training),
-            default => $this->createEstablishComplianceStep($training)
+            TrainingStepType::ChooseCorrectAnswer => $this->createChooseCorrectAnswerStep($training),
+            TrainingStepType::WriteCorrectAnswer => $this->createWriteAnswerStep($training),
+            TrainingStepType::EstablishCompliance => $this->createEstablishComplianceStep($training),
+            default => $this->createChooseCorrectAnswerStep($training)
         };
     }
 

@@ -18,13 +18,11 @@ class TrainingStepProgressResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'dictionary_id' => $this->dictionary_id,
-            'training_type_id' => $this->training_type_id,
-            'status' => $this->status,
-            'completion_type' => $this->completion_type,
-            'completion_type_params' => $this->completion_type_params,
-            'started_at' => $this->started_at,
-            'completed_at' => $this->completed_at,
+            'required_answers_count' => $this->required_answers_count,
+            'answered' => $this->answered,
+            'is_passed' => $this->is_passed,
+            'skipped' => $this->skipped,
+            'skipped_at' => $this->skipped_at,
         ];
     }
 }

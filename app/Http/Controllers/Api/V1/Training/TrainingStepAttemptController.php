@@ -24,7 +24,7 @@ class TrainingStepAttemptController extends Controller
         $this->completionConditionFactory = $completionConditionFactory;
     }
 
-    public function index(Request $request, TrainingStep $step): JsonResponse
+    public function index(Request $request, Training $training, TrainingStep $step): JsonResponse
     {
         if ($request->has('is_correct')) {
             $isCorrect = filter_var($request->input('is_correct'), FILTER_VALIDATE_BOOLEAN);
@@ -39,7 +39,7 @@ class TrainingStepAttemptController extends Controller
     public function store(Training $training, TrainingStep $step, Request $request): JsonResponse
     {
         if ($step->isPassed()) {
-            return new ApiResponseResource(['message' => 'Training step is passed, there is unposible to attempt already passed step', 'data' => null, 'errors' => ['training_step_is_already_passed' => 'Training step is passed']])
+            return new ApiResponseResource(['success' => false, 'message' => 'Training step is passed, there is unposible to attempt already passed step', 'data' => null, 'errors' => ['training_step_is_already_passed' => 'Training step is passed']])
                 ->response()
                 ->setStatusCode(Response::HTTP_CONFLICT);
         }

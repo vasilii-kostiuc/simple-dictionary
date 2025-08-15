@@ -43,6 +43,19 @@ class AuthTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function test_user_login_fails_with_incorrect_credentials(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->postJson(route('auth.login'), [
+            'email' => $user->email,
+            'password' => 'wrong_password',
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure(['message']);
+    }
+
     public function test_user_logout_success(): void
     {
         $user = User::factory()->create();
