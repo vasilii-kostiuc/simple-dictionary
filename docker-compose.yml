@@ -17,9 +17,12 @@ services:
         dockerfile: _docker/app/Dockerfile
     volumes:
       - ./:/var/www
+      - ./_docker/app/entrypoint.sh:/usr/local/bin/entrypoint.sh
     depends_on:
       - db
     environment:
+      MYSQL_DATABASE: simple-dictionary
+      MYSQL_ROOT_PASSWORD: root
       DB_HOST: db
       DB_PORT: 3306
       DB_DATABASE: simple-dictionary
@@ -37,5 +40,10 @@ services:
     ports:
       - 8101:3306
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot" ]
+      interval: 5s
+      retries: 20
+      start_period: 10s
     container_name: project_db
 
