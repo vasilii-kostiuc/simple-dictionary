@@ -27,7 +27,7 @@ services:
       DB_PORT: 3306
       DB_USERNAME: root
       DB_PASSWORD: root
-    container_name: project_app
+    container_name: app
   db:
     image: mysql:8.1
     restart: always
@@ -39,10 +39,5 @@ services:
     ports:
       - 8101:3306
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot" ]
-      interval: 5s
-      retries: 20
-      start_period: 10s
-    container_name: project_db
+    container_name: db
 
