@@ -190,9 +190,7 @@ class TrainingTest extends TestCase
 
         $stepId = $nextStepResponse->json('data.id');
         $step = TrainingStep::find($stepId);
-
         $attemptResponse = $this->submitStepAttempt($step, $trainingId, $stepId);
-
         $attemptResponse->assertOk();
     }
 
