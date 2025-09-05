@@ -21,8 +21,12 @@ class Dictionary extends Model
     protected static function booted()
     {
         static::addGlobalScope('user', function (Builder $builder) {
-            $builder->where('user_id', auth()->id());
+            if (auth()->check()) {
+                $builder->where('user_id', auth()->id());
+            }
+
         });
+
     }
 
     public function user(): BelongsTo
