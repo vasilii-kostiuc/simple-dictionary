@@ -30,6 +30,11 @@ class TrainingController extends Controller
         return new ApiResponseResource(['data' => new TrainingResource($training)])->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
+    public function show(Training $training)
+    {
+        return new ApiResponseResource(['data' => $training])->response()->setStatusCode(Response::HTTP_OK);
+    }
+
     public function start(Training $training)
     {
         if (TrainingStatus::from((int)$training->status) !== TrainingStatus::New) {
