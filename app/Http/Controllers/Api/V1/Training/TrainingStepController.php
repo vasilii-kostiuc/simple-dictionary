@@ -19,6 +19,7 @@ class TrainingStepController extends Controller
 {
     private const ERROR_TRAINING_FINISHED = 'training_finished';
     private const ERROR_STEP_NOT_COMPLETED = 'previous_step_not_completed';
+    private const ERROR_CURRENT_STEP_NOT_FOUND = 'current_step_not_found';
     private TrainingStrategyFactory $trainingStrategyFactory;
     private TrainingStepService $trainingStepService;
     private TrainingStepProgressService $trainingStepProgressService;
@@ -79,6 +80,14 @@ class TrainingStepController extends Controller
         }
 
         $currentStep = $training->lastStep();
+
+        if ($currentStep === null) {
+            return (new ApiResponseResource([
+                'succes' => false,
+                'errors' => [self::ERROR_CURRENT_STEP_NOT_FOUND => 'Current step not found'],
+                'message' => 'Current step not found',
+            ]))->response()->setStatusCode(Response::HTTP_CONFLICT);
+        }
         return ApiResponseResource::make(['data' => new TrainingStepResource($currentStep), 'message' => 'Next step generated successfully']);
 
     }
