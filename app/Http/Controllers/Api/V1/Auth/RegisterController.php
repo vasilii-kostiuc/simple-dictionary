@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Domain\Dictionary\Models\Dictionary;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterUserRequest;
+use App\Http\Resources\Auth\ProfileResource;
 use App\Http\Resources\Auth\UserResource;
 use App\Service\UserService;
 use OpenApi\Attributes as OA;
@@ -67,9 +69,11 @@ class RegisterController extends Controller
 
         $accessToken = $user->createToken($device)->plainTextToken;
 
+        $user->refresh();
+
         return response()->json([
             'access_token' => $accessToken,
-            'user' => new UserResource($user),
+            'user' => new ProfileResource($user),
         ]);
     }
 }
