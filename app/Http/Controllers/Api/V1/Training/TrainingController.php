@@ -10,6 +10,7 @@ use App\Http\Requests\Training\StoreTrainingRequest;
 use App\Http\Resources\ApiResponseResource;
 use App\Http\Resources\Training\TrainingResource;
 use Illuminate\Http\Response;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class TrainingController extends Controller
 {
@@ -21,6 +22,14 @@ class TrainingController extends Controller
     public function __construct(TrainingService $trainingService)
     {
         $this->trainingService = $trainingService;
+    }
+
+    public function index()
+    {
+        $trainings = QueryBuilder::for(Training::class)
+            ->allowedFilters(['status'])
+            ->get();
+        return new ApiResponseResource(['data' => TrainingResource::collection($trainings)])->response()->setStatusCode(Response::HTTP_OK);
     }
 
     public function store(StoreTrainingRequest $request)
