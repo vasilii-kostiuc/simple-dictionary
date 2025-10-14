@@ -28,7 +28,7 @@ class TrainingController extends Controller
     {
         $trainings = QueryBuilder::for(Training::class)
             ->allowedFilters(['status'])
-            ->get();
+            ->orderBy('started_at', 'DESC')->get();
         return new ApiResponseResource(['data' => TrainingResource::collection($trainings)])->response()->setStatusCode(Response::HTTP_OK);
     }
 

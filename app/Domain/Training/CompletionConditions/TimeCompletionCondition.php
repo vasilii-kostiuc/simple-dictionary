@@ -3,6 +3,7 @@
 namespace App\Domain\Training\CompletionConditions;
 
 use Carbon\Carbon;
+use Carbon\Traits\Timestamp;
 
 class TimeCompletionCondition implements CompletionConditionInterface
 {
@@ -18,7 +19,7 @@ class TimeCompletionCondition implements CompletionConditionInterface
     public function isCompleted(): bool
     {
         $startedTimestamp = Carbon::parse($this->startedAt);
-        if ($startedTimestamp->diffInSeconds(Carbon::now()) > $this->duration) {
+        if ($startedTimestamp->diffInSeconds(Carbon::now()) > $this->duration * 60) {
             return true;
         }
 

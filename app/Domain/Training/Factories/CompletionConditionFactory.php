@@ -17,7 +17,7 @@ class CompletionConditionFactory
         $completionType = TrainingCompletionType::from($training->completion_type);
 
         return match ($completionType) {
-            TrainingCompletionType::Time => new TimeCompletionCondition($training->completion_type_params->duration, $training->started_at),
+            TrainingCompletionType::Time => new TimeCompletionCondition($training->completion_type_params['duration'], $training->started_at),
             TrainingCompletionType::Steps => new StepsCompletionCondition($training->completion_type_params['steps_count'], $training->steps),
             TrainingCompletionType::Unlimited => new UnlimitedCompletionCondition(),
             default =>  new StepsCompletionCondition($training->completion_type_params['steps_count'], $training->steps),

@@ -2,8 +2,10 @@
 
 namespace App\Domain\Training\Factories;
 
+use App\Domain\Training\Enums\TrainingStepType;
 use App\Domain\Training\Models\Training;
 use App\Domain\Training\Strategies\RandomTrainingStrategy;
+use App\Domain\Training\Strategies\SpecificStepTypeTrainingStrategy;
 use App\Domain\Training\Strategies\TrainingStrategyAbstract;
 
 class TrainingStrategyFactory
@@ -17,7 +19,7 @@ class TrainingStrategyFactory
 
     public function create(Training $training): TrainingStrategyAbstract
     {
-         $trainingStrategy = new RandomTrainingStrategy($training, $this->stepFactory);
+         $trainingStrategy = new SpecificStepTypeTrainingStrategy($training, $this->stepFactory,TrainingStepType::WriteCorrectAnswer);
 
          return $trainingStrategy;
     }
