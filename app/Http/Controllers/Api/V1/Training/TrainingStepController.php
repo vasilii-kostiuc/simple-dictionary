@@ -43,6 +43,7 @@ class TrainingStepController extends Controller
 
     public function next(Training $training)
     {
+        sleep(3);
         if ($training->status == TrainingStatus::Completed) {
             return (new ApiResponseResource(
                 [
@@ -70,6 +71,7 @@ class TrainingStepController extends Controller
 
     public function current(Training $training)
     {
+        sleep(3);
         if ($training->status == TrainingStatus::Completed) {
             return (new ApiResponseResource(
                 [
@@ -93,6 +95,7 @@ class TrainingStepController extends Controller
 
     public function progress(Training $training, TrainingStep $step)
     {
+        sleep(2);
         $progress = $this->trainingStepProgressService->getProgress($step);
 
         return ApiResponseResource::make(['data' => new TrainingStepProgressResource($progress)]);
