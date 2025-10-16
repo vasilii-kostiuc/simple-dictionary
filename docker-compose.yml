@@ -1,22 +1,28 @@
 version: '3'
 
+networks:
+  my_network:
+    driver: bridge
+
 services:
   nginx:
     image: nginx:latest
     volumes:
-      - ./:/var/www
+      - ./:/var/www/simple_dictionary_api
       - ./_docker/nginx/conf.d/:/etc/nginx/conf.d/
     ports:
       - "8876:80"
     depends_on:
       - app
     container_name: project_nginx
+    networks:
+      - my_network
   app:
     build:
         context: .
         dockerfile: _docker/app/Dockerfile
     volumes:
-      - ./:/var/www
+      - ./:/var/www/simple_dictionary_api
       - ./_docker/app/entrypoint.sh:/usr/local/bin/entrypoint.sh
     depends_on:
       - db
@@ -28,6 +34,8 @@ services:
       DB_USERNAME: root
       DB_PASSWORD: root
     container_name: app
+    networks:
+        - my_network
   db:
     image: mysql:8.1
     restart: always
@@ -40,4 +48,5 @@ services:
       - 8101:3306
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
     container_name: db
-
+    networks:
+        - my_network

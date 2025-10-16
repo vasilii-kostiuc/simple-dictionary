@@ -19,6 +19,7 @@ class TrainingStepController extends Controller
 {
     private const ERROR_TRAINING_FINISHED = 'training_finished';
     private const ERROR_STEP_NOT_COMPLETED = 'previous_step_not_completed';
+    private const ERROR_CURRENT_STEP_NOT_FOUND = 'current_step_not_found';
     private TrainingStrategyFactory $trainingStrategyFactory;
     private TrainingStepService $trainingStepService;
     private TrainingStepProgressService $trainingStepProgressService;
@@ -37,11 +38,12 @@ class TrainingStepController extends Controller
 
     public function show(Training $training, TrainingStep $step)
     {
-        return new TrainingStepResource($step);
+        return ApiResponseResource::make(['data' =>new TrainingStepResource($step)])->response()->setStatusCode(Response::HTTP_OK);;
     }
 
     public function next(Training $training)
     {
+        sleep(3);
         if ($training->status == TrainingStatus::Completed) {
             return (new ApiResponseResource(
                 [
@@ -52,10 +54,10 @@ class TrainingStepController extends Controller
         }
 
         $lastStep = $training->lastStep();
-        if ($lastStep && $lastStep->isPassedOrSkipped()) {
+        if ($lastStep && !$lastStep->isPassedOrSkipped()) {
             return (new ApiResponseResource(
                 [
-                    'succes' => false,
+                    'success' => false,
                     'errors' => [self::ERROR_STEP_NOT_COMPLETED => 'Previous step is not completed'],
                     'message' => 'New step can be created only after compliting prev step',
                 ]))->response()->setStatusCode(Response::HTTP_CONFLICT);;
@@ -69,6 +71,7 @@ class TrainingStepController extends Controller
 
     public function current(Training $training)
     {
+        sleep(3);
         if ($training->status == TrainingStatus::Completed) {
             return (new ApiResponseResource(
                 [
@@ -77,14 +80,22 @@ class TrainingStepController extends Controller
                     'message' => 'Training is finished',
                 ]))->response()->setStatusCode(Response::HTTP_CONFLICT);
         }
-
         $currentStep = $training->lastStep();
-        return ApiResponseResource::make(['data' => new TrainingStepResource($currentStep), 'message' => 'Next step generated successfully']);
 
+        if ($currentStep === null) {
+            return (new ApiResponseResource([
+                'success' => false,
+                'errors' => [self::ERROR_CURRENT_STEP_NOT_FOUND => 'Current step not found'],
+                'message' => 'Current step not found',
+            ]))->response()->setStatusCode(Response::HTTP_CONFLICT);
+        }
+
+        return ApiResponseResource::make(['data' => new TrainingStepResource($currentStep)]);
     }
 
     public function progress(Training $training, TrainingStep $step)
     {
+        sleep(2);
         $progress = $this->trainingStepProgressService->getProgress($step);
 
         return ApiResponseResource::make(['data' => new TrainingStepProgressResource($progress)]);

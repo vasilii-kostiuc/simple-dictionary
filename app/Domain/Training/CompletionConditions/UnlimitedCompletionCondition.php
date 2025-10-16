@@ -10,6 +10,6 @@ class UnlimitedCompletionCondition implements CompletionConditionInterface
 {
     public function isCompleted(): bool
     {
-        return true;
+        return false;
     }
 }

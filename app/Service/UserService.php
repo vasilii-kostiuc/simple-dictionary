@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Domain\Dictionary\Services\DictionaryService;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\Authenticatable;

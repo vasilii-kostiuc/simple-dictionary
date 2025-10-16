@@ -21,6 +21,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "predis/predis": "2.0",
+        "spatie/laravel-query-builder": "^6.3",
         "vasilii-kostiuc/laravel-messaging-library": "^1.0"
     },
     "require-dev": {
