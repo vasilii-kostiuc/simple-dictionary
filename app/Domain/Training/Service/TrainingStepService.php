@@ -21,6 +21,17 @@ class TrainingStepService
         return $step;
     }
 
+    public function skip(TrainingStep $step)
+    {
+        if ($step->isPassedOrSkipped()) {
+            return;
+        }
+
+        $step->skipped = true;
+        $step->skipped_at = now();
+        $step->save();
+    }
+
     private function calculateNextStepNumber(Training $training): int
     {
         return $training->steps()->count() + 1;

@@ -18,7 +18,7 @@ class TrainingStepProgressService
             'answered' => $answered,
             'is_passed' => $step->isPassed(),
             'skipped' => $step->skipped,
-            'skipped_at' => $step->skipped,
+            'skipped_at' => $step->skipped_at,
         ];
     }
 

@@ -40,7 +40,8 @@ Route::prefix('v1')->group(function () {
         Route::get('trainings/{training}/steps/next', [\App\Http\Controllers\Api\V1\Training\TrainingStepController::class, 'next'])->name('training-steps.next');
         Route::get('trainings/{training}/steps/current', [\App\Http\Controllers\Api\V1\Training\TrainingStepController::class, 'current'])->name('training-steps.current');
         Route::get('trainings/{training}/steps/{step}', [\App\Http\Controllers\Api\V1\Training\TrainingStepController::class, 'show'])->name('training-steps.show');
-        Route::get('trainings/{training}/steps/{step}/progress', [\App\Http\Controllers\Api\V1\Training\TrainingStepController::class, 'progress'])->name('trainings-steps.attempts');
+        Route::get('trainings/{training}/steps/{step}/progress', [\App\Http\Controllers\Api\V1\Training\TrainingStepController::class, 'progress'])->name('trainings-steps.progress');
+        Route::patch('trainings/{training}/steps/{step}/skip', [\App\Http\Controllers\Api\V1\Training\TrainingStepController::class, 'skip'])->name('trainings-steps.skip');
         Route::post('trainings/{training}/steps/{step}/attempts', [\App\Http\Controllers\Api\V1\Training\TrainingStepAttemptController::class, 'store'])->name('trainings-steps.attempts');
         Route::get('trainings/{training}/steps/{step}/attempts', [\App\Http\Controllers\Api\V1\Training\TrainingStepAttemptController::class, 'index'])->name('trainings-steps.attempts');
     });
