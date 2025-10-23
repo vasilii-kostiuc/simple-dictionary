@@ -42,7 +42,7 @@ class TrainingStepAttemptController extends Controller
 
     public function store(Training $training, TrainingStep $step, Request $request): JsonResponse
     {
-        sleep(3);
+        //sleep(1);
         if ($step->isPassed()) {
             return new ApiResponseResource(['success' => false, 'message' => 'Training step is passed, there is unposible to attempt already passed step', 'data' => null, 'errors' => ['training_step_is_already_passed' => 'Training step is passed']])
                 ->response()

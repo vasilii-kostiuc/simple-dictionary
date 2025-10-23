@@ -18,7 +18,6 @@ class TrainingController extends Controller
 
     private TrainingService $trainingService;
 
-
     public function __construct(TrainingService $trainingService)
     {
         $this->trainingService = $trainingService;
