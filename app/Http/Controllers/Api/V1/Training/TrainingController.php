@@ -45,7 +45,7 @@ class TrainingController extends Controller
 
     public function start(Training $training)
     {
-        if (TrainingStatus::from((int)$training->status) !== TrainingStatus::New) {
+        if ($training->status !== TrainingStatus::New) {
             return new ApiResponseResource(['message' => 'Training already started', 'errors' => [self::TRAINING_CAN_BE_STARTED_ONLY_IN_NEW_STATE => 'Training can be started only in new state']]);
         }
 
