@@ -92,8 +92,8 @@ class TrainingTest extends TestCase
         $this->targetLang = Language::factory()->create();
         $this->dictionary = Dictionary::factory()->create([
             'user_id' => $this->user->id,
-            'language_from_id' => $this->sourceLang->id,
-            'language_to_id' => $this->targetLang->id,
+            'language_from_id' => $this->targetLang->id,
+            'language_to_id' => $this->sourceLang->id,
         ]);
     }
 

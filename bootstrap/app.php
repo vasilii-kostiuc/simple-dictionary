@@ -16,4 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })->withEvents([
+        __DIR__.'/../app/Domain/*/Listeners',
+    ])
+
+    ->create();

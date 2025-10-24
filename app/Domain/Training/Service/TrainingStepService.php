@@ -2,6 +2,7 @@
 
 namespace App\Domain\Training\Service;
 
+use App\Domain\Training\Events\StepSkippedEvent;
 use App\Domain\Training\Models\Training;
 use App\Domain\Training\Models\TrainingStep;
 use App\Domain\Training\Steps\WordTrainingStep;
@@ -30,6 +31,10 @@ class TrainingStepService
         $step->skipped = true;
         $step->skipped_at = now();
         $step->save();
+
+        event(new StepSkippedEvent($step->training, $step));
+
+        return $step;
     }
 
     private function calculateNextStepNumber(Training $training): int

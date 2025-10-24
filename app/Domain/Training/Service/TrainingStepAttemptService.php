@@ -3,6 +3,7 @@
 namespace App\Domain\Training\Service;
 
 use App\Domain\Training\Enums\TrainingStepType;
+use App\Domain\Training\Events\StepAttemptEvent;
 use App\Domain\Training\Factories\StepAttemptVerifierFactory;
 use App\Domain\Training\Models\TrainingStep;
 use App\Domain\Training\Models\TrainingStepAttempt;
@@ -24,11 +25,15 @@ class TrainingStepAttemptService
 
         $subIndex = $trainingStep->getNextAttemptSubIndex();
 
-        return TrainingStepAttempt::create([
+        $attempt = TrainingStepAttempt::create([
             'training_step_id' => $trainingStep->id,
             'attempt_data' => $attemptData,
             'sub_index' => $subIndex,
             'is_correct' => $isCorrect,
         ]);
+
+        event(new StepAttemptEvent($trainingStep->training, $attempt));
+
+        return $attempt;
     }
 }

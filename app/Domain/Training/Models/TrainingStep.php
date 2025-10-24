@@ -22,7 +22,7 @@ class TrainingStep extends Model
     ];
 
 
-    public function getTraining(): BelongsTo
+    public function training(): BelongsTo
     {
         return $this->belongsTo(Training::class);
     }
