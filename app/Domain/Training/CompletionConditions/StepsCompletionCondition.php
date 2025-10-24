@@ -21,8 +21,8 @@ class StepsCompletionCondition implements CompletionConditionInterface
             return false;
         }
 
-        $notPassedOrSkippedStepsCount = $this->trainingSteps->filter(fn($trainingStep) => !($trainingStep->isPassed() || $trainingStep->is_skipped))->count();
+        $skippedOrPassedCount = $this->trainingSteps->filter(fn($trainingStep) => ($trainingStep->isPassed() || $trainingStep->skipped))->count();
 
-        return $notPassedOrSkippedStepsCount === 0;
+        return $skippedOrPassedCount >= $this->requiredStepsCount;
     }
 }
