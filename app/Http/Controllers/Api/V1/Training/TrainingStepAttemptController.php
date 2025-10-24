@@ -50,15 +50,8 @@ class TrainingStepAttemptController extends Controller
         }
 
         $attemptData = $request->input('attempt_data') ?? [];
+
         $attempt = $this->trainingStepAttemptService->create($step, $attemptData);
-
-        $completionCondition = $this->completionConditionFactory->create($training);
-
-        if ($completionCondition->isCompleted()) {
-            $training->completeTraining();
-        }
-
-        $progress = $this->trainingStepProgressService->getProgress($step);
 
         return ApiResponseResource::make(['data' => new TrainingStepAttemptResource($attempt)])->response();
     }
