@@ -53,7 +53,7 @@ class TrainingTest extends TestCase
                     return new SpecificStepTypeTrainingStrategy(
                         $training,
                         app(TrainingStepFactory::class),
-                        TrainingStepType::EstablishCompliance
+                        [TrainingStepType::EstablishCompliance]
                     );
                 });
         });

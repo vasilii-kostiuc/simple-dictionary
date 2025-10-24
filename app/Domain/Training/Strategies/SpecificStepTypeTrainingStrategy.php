@@ -9,18 +9,18 @@ use App\Domain\Training\Steps\WordTrainingStep;
 
 class SpecificStepTypeTrainingStrategy extends TrainingStrategyAbstract
 {
-    private TrainingStepType $stepType;
+    private array $stepTypes;
 
-
-    public function __construct(Training $training, TrainingStepFactory $trainingStepFactory, TrainingStepType $stepType)
+    public function __construct(Training $training, TrainingStepFactory $trainingStepFactory, array $stepTypes)
     {
-        $this->stepType = $stepType;
+        $this->stepTypes = $stepTypes;
 
         parent::__construct($training, $trainingStepFactory);
     }
 
     public function generateNextStep(): WordTrainingStep
     {
-        return $this->trainingStepFactory->createStep($this->training ,$this->stepType);
+        $stepType = $this->stepTypes[array_rand($this->stepTypes)];
+        return $this->trainingStepFactory->createStep($this->training ,$stepType);
     }
 }
