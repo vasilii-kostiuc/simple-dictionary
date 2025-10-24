@@ -43,11 +43,10 @@ class TrainingStepController extends Controller
 
     public function next(Training $training)
     {
-        //sleep(1);
-        if ($training->status == TrainingStatus::Completed) {
+        if ($training->status === TrainingStatus::Completed) {
             return (new ApiResponseResource(
                 [
-                    'succes' => false,
+                    'success' => false,
                     'errors' => [self::ERROR_TRAINING_FINISHED => 'Training is finished'],
                     'message' => 'Training is finished',
                 ]))->response()->setStatusCode(Response::HTTP_CONFLICT);
@@ -95,7 +94,8 @@ class TrainingStepController extends Controller
 
     public function skip(Training $training, TrainingStep $step)
     {
-        $this->trainingStepService->skip($step);
+        $step = $this->trainingStepService->skip($step);
+        return ApiResponseResource::make(['message' => 'Step skipped successfully', 'data' => new TrainingStepResource($step)]);;
     }
 
     public function progress(Training $training, TrainingStep $step)
