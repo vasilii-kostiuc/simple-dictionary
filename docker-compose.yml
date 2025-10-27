@@ -1,6 +1,6 @@
 networks:
-  my_network:
-    driver: bridge
+  simple_dictionary_network:
+    external: true
 
 services:
   nginx:
@@ -14,7 +14,7 @@ services:
       - app
     container_name: project_nginx
     networks:
-      - my_network
+      - simple_dictionary_network
   app:
     build:
         context: .
@@ -33,7 +33,7 @@ services:
       DB_PASSWORD: root
     container_name: app
     networks:
-        - my_network
+        - simple_dictionary_network
   db:
     image: mysql:8.1
     restart: always
@@ -47,4 +47,4 @@ services:
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
     container_name: db
     networks:
-        - my_network
+        - simple_dictionary_network
