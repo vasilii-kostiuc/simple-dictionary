@@ -19,7 +19,7 @@ class TrainingStrategyFactory
 
     public function create(Training $training): TrainingStrategyAbstract
     {
-         $trainingStrategy = new SpecificStepTypeTrainingStrategy($training, $this->stepFactory,[TrainingStepType::WriteCorrectAnswer]);
+         $trainingStrategy = new SpecificStepTypeTrainingStrategy($training, $this->stepFactory,[TrainingStepType::ChooseCorrectAnswer, TrainingStepType::WriteCorrectAnswer]);
 
          return $trainingStrategy;
     }
