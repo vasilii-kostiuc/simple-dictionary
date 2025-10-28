@@ -14,7 +14,7 @@ class ChooseCorrectAnswerStepAttemptVerifier implements StepAttemptVerifier
 
         $words = $trainingStep->step_data['answers'];
 
-        $wordIds = array_column($words, 'id');
+        $wordIds = array_column($words, 'word_id');
 
         if(!in_array($atteptWordId, $wordIds)) {
             return false;
