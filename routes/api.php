@@ -24,7 +24,7 @@ Route::prefix('v1')->group(function () {
         Route::post('profile', [\App\Http\Controllers\Api\V1\Auth\ProfileController::class, 'update'])->name('profile.update');
 
         Route::post('auth/logout', \App\Http\Controllers\Api\V1\Auth\LogoutController::class)->name('auth.logout');
-        Route::get('auth/token/validate', [\App\Http\Controllers\Api\V1\Auth\TokenController::class, 'validateToken'])->name('auth.token.validate');;;
+        Route::post('auth/token/validate', [\App\Http\Controllers\Api\V1\Auth\TokenController::class, 'validateToken'])->name('auth.token.validate');;;
 
         Route::get('languages', [\App\Http\Controllers\Api\V1\Language\LanguageController::class, 'index'])->name('languages.index');
         Route::get('languages/{language}', [\App\Http\Controllers\Api\V1\Language\LanguageController::class, 'show'])->name('languages.show');

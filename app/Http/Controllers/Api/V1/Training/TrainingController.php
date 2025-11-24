@@ -40,6 +40,7 @@ class TrainingController extends Controller
 
     public function show(Training $training)
     {
+        sleep(2);
         return new ApiResponseResource(['data' => $training])->response()->setStatusCode(Response::HTTP_OK);
     }
 
