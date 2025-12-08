@@ -1,26 +1,25 @@
 <?php
 
-namespace App\Domain\Training\Events;
+namespace App\Events;
 
-use App\Domain\Training\Models\Training;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use VasiliiKostiuc\LaravelMessagingLibrary\Messaging\MessageBrokerFactory;
 
-class TrainingCompleted
+class PodcastProcessed
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public Training $training;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(Training $training)
+    public function __construct()
     {
-        $this->training = $training;
+        //
     }
 
     /**

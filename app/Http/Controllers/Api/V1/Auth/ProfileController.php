@@ -34,7 +34,7 @@ class ProfileController extends Controller
             )
         ]
     )]
-    public function show()
+    public function show(): ProfileResource
     {
         $user = Auth::user();
 
@@ -77,7 +77,7 @@ class ProfileController extends Controller
             )
         ]
     )]
-    public function update(ProfileUpdateRequest $request)
+    public function update(ProfileUpdateRequest $request): ProfileResource
     {
         $user = $this->userService->updateProfile(Auth::user(), $request->validated());
 

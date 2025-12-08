@@ -1,21 +1,45 @@
 <?php
 
+use App\Http\Resources\ApiResponseResource;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
+use React\EventLoop\Loop;
+use VasiliiKostiuc\LaravelMessagingLibrary\Messaging\MessageBrokerFactory;
 
-Route::get('publish', function () {
-    Redis::publish('test-channel', json_encode([
-        'name' => 'Adam Wathan',
-    ]));
-});
+// ОТКЛЮЧЕНО: Эти роуты блокируют PHP-FPM процессы
+// Route::get('publish', function () {
+//     Redis::publish('test-channel', json_encode([
+//         'name' => 'Adam Wathan',
+//     ]));
+// });
 
-Route::get('subscribe', function () {
-    Redis::psubscribe(['*'], function (string $message, string $channel) {
-        echo $message;
-    });
-});
+// ОПАСНО! psubscribe блокирует процесс навсегда
+// Route::get('subscribe', function () {
+//     Redis::psubscribe(['*'], function (string $message, string $channel) {
+//         echo $message;
+//     });
+// });
+
 
 Route::prefix('v1')->group(function () {
+    Route::post('send-to-wss', function (\Illuminate\Http\Request $request) {
+        try {
+            $data = $request->all();
+            $channel = $data['channel'] ?? '';
+            unset($data['channel']);
+
+            $broker = app(MessageBrokerFactory::class)->create();
+            // Используем нативный Redis Laravel вместо ReactPHP
+            $broker->publish($channel, json_encode($data));
+
+            Loop::get()->stop();
+            info("Published to channel: {$channel}", $data);
+            return new ApiResponseResource(['success' => true]);
+        } catch (\Exception $e) {
+            info("Error publishing: " . $e->getMessage());
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
+    });
     Route::post('auth/register', \App\Http\Controllers\Api\V1\Auth\RegisterController::class)->name('auth.register');
     Route::post('auth/login', \App\Http\Controllers\Api\V1\Auth\LoginController::class)->name('auth.login');
 
@@ -24,7 +48,9 @@ Route::prefix('v1')->group(function () {
         Route::post('profile', [\App\Http\Controllers\Api\V1\Auth\ProfileController::class, 'update'])->name('profile.update');
 
         Route::post('auth/logout', \App\Http\Controllers\Api\V1\Auth\LogoutController::class)->name('auth.logout');
-        Route::get('auth/token/validate', [\App\Http\Controllers\Api\V1\Auth\TokenController::class, 'validateToken'])->name('auth.token.validate');;;
+        Route::post('auth/token/validate', [\App\Http\Controllers\Api\V1\Auth\TokenController::class, 'validateToken'])->name('auth.token.validate');
+        ;
+        ;
 
         Route::get('languages', [\App\Http\Controllers\Api\V1\Language\LanguageController::class, 'index'])->name('languages.index');
         Route::get('languages/{language}', [\App\Http\Controllers\Api\V1\Language\LanguageController::class, 'show'])->name('languages.show');

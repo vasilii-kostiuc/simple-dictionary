@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 
 class TokenController extends Controller
 {
-    public function validateToken(Request $request){
+    public function validateToken(Request $request): ApiResponseResource
+    {
         return new ApiResponseResource(['message' => 'Token is valid']);
     }
 
