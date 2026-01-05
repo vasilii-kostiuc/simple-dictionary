@@ -150,7 +150,7 @@ class TrainingTest extends TestCase
             ->assertJsonStructure(['errors' => ['training_can_be_started_only_in_new_state']]);
     }
 
-    public function test_api_next_step_successfull()
+    public function test_api_next_step_successfully()
     {
         $this->seed(TopWordSeeder::class);
 

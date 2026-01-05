@@ -49,8 +49,6 @@ Route::prefix('v1')->group(function () {
 
         Route::post('auth/logout', \App\Http\Controllers\Api\V1\Auth\LogoutController::class)->name('auth.logout');
         Route::post('auth/token/validate', [\App\Http\Controllers\Api\V1\Auth\TokenController::class, 'validateToken'])->name('auth.token.validate');
-        ;
-        ;
 
         Route::get('languages', [\App\Http\Controllers\Api\V1\Language\LanguageController::class, 'index'])->name('languages.index');
         Route::get('languages/{language}', [\App\Http\Controllers\Api\V1\Language\LanguageController::class, 'show'])->name('languages.show');
@@ -64,6 +62,8 @@ Route::prefix('v1')->group(function () {
         Route::get('trainings', [\App\Http\Controllers\Api\V1\Training\TrainingController::class, 'index'])->name('trainings.index');
         Route::get('trainings/{training}', [\App\Http\Controllers\Api\V1\Training\TrainingController::class, 'show'])->name('trainings.show');
         Route::post('trainings/{training}/start', [\App\Http\Controllers\Api\V1\Training\TrainingController::class, 'start'])->name('trainings.start');
+        Route::post('trainings/{training}/expire', [\App\Http\Controllers\Api\V1\Training\TrainingController::class, 'expire'])->name('trainings.expire');
+
         Route::get('trainings/{training}/steps/next', [\App\Http\Controllers\Api\V1\Training\TrainingStepController::class, 'next'])->name('training-steps.next');
         Route::get('trainings/{training}/steps/current', [\App\Http\Controllers\Api\V1\Training\TrainingStepController::class, 'current'])->name('training-steps.current');
         Route::get('trainings/{training}/steps/{step}', [\App\Http\Controllers\Api\V1\Training\TrainingStepController::class, 'show'])->name('training-steps.show');

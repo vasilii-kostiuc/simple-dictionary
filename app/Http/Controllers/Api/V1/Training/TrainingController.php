@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1\Training;
 
+use App\Domain\Training\Enums\TrainingCompletionType;
 use App\Domain\Training\Enums\TrainingStatus;
+use App\Domain\Training\Enums\TrainingType;
 use App\Domain\Training\Models\Training;
 use App\Domain\Training\Service\TrainingService;
 use App\Http\Controllers\Controller;
@@ -52,6 +54,16 @@ class TrainingController extends Controller
 
         $this->trainingService->start($training);
         return new ApiResponseResource(['message' => 'Training started successfully', 'data' => new TrainingResource($training)]);
+    }
+
+    public function expire(Training $training)
+    {
+        if ($training->training_completion_type === TrainingCompletionType::Time) {
+            $training->completeTraining();
+            return new ApiResponseResource(['message' => 'Training completed successfully', 'data' => new TrainingResource($training)]);
+        }
+
+        return new ApiResponseResource(['success' => false, 'message' => 'Training expiration is not supported for tris training type'])->response()->setStatusCode(Response::HTTP_CONFLICT);
     }
 
 }
