@@ -3,6 +3,7 @@
 namespace App\Domain\Training\Models;
 
 use App\Domain\Dictionary\Models\Dictionary;
+use App\Domain\Training\Enums\TrainingCompletionType;
 use App\Domain\Training\Enums\TrainingStatus;
 use App\Domain\Training\Events\TrainingCompleted;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +14,7 @@ class Training extends Model
 {
     protected $fillable = ['dictionary_id', 'training_type_id', 'completion_type', 'completion_type_params', 'status', 'started_at', 'completed_at'];
 
-    protected $casts = ['completion_type_params' => 'array', 'status' => TrainingStatus::class, 'started_at' => 'datetime', 'completed_at' => 'datetime'];
+    protected $casts = ['completion_type_params' => 'array', 'status' => TrainingStatus::class, 'completion_type' => TrainingCompletionType::class, 'started_at' => 'datetime', 'completed_at' => 'datetime'];
 
     public function dictionary(): BelongsTo
     {

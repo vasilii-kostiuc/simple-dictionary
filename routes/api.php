@@ -32,7 +32,7 @@ Route::prefix('v1')->group(function () {
             // Используем нативный Redis Laravel вместо ReactPHP
             $broker->publish($channel, json_encode($data));
 
-            Loop::get()->stop();
+            //Loop::get()->stop();
             info("Published to channel: {$channel}", $data);
             return new ApiResponseResource(['success' => true]);
         } catch (\Exception $e) {
