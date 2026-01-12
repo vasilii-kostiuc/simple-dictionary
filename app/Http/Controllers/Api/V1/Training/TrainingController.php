@@ -58,7 +58,9 @@ class TrainingController extends Controller
 
     public function expire(Training $training)
     {
-        if ($training->training_completion_type === TrainingCompletionType::Time) {
+
+        if ($training->completion_type === TrainingCompletionType::Time) {
+
             $training->completeTraining();
             return new ApiResponseResource(['message' => 'Training completed successfully', 'data' => new TrainingResource($training)]);
         }

@@ -8,18 +8,19 @@ use App\Domain\Training\Enums\TrainingCompletionType;
 use App\Domain\Training\Enums\TrainingStatus;
 use App\Domain\Training\Enums\TrainingStepType;
 use App\Domain\Training\Enums\TrainingType;
+use App\Domain\Training\Events\TrainingCompleted;
 use App\Domain\Training\Factories\StepResolverFactory;
 use App\Domain\Training\Factories\TrainingStepFactory;
 use App\Domain\Training\Factories\TrainingStrategyFactory;
 use App\Domain\Training\Models\Training;
 use App\Domain\Training\Models\TrainingStep;
-use App\Domain\Training\Strategies\RandomTrainingStrategy;
 use App\Domain\Training\Strategies\SpecificStepTypeTrainingStrategy;
 use App\Models\User;
 use Database\Seeders\TopWordSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Tests\TestCase;
+use Illuminate\Support\Facades\Event;
 
 class TrainingTest extends TestCase
 {
@@ -260,5 +261,55 @@ class TrainingTest extends TestCase
                 'training_step_is_already_passed'
             ]
         ]);
+    }
+
+    public function test_api_training_expire_successfully()
+    {
+        $params = array_merge(
+            ['dictionary_id' => $this->dictionary->id],
+            [
+                'training_type_id' => TrainingType::TopWords,
+                'completion_type' => TrainingCompletionType::Time,
+                'completion_type_params' => ['time_limit' => 2]
+            ]
+        );
+
+        $response = $this->actingAs($this->user)
+            ->postJson('api/v1/trainings', $params);
+
+        $trainingId = $response->json('data.id');
+        $this->startTraining($trainingId);
+        $expireResponse = $this->actingAs($this->user)
+            ->postJson("/api/v1/trainings/{$trainingId}/expire");
+
+        $expireResponse->assertOk()
+            ->assertJsonFragment([
+                'message' => 'Training completed successfully',
+                'status' => TrainingStatus::Completed->value
+            ]);
+
+
+        $training = Training::find($trainingId);
+        $this->assertEquals(TrainingStatus::Completed, $training->status);
+        $this->assertNotNull($training->completed_at);
+    }
+
+    public function test_api_training_expire_fail_for_steps_completion_type()
+    {
+        $trainingId = $this->createTraining();
+        $this->startTraining($trainingId);
+
+        $expireResponse = $this->actingAs($this->user)
+            ->postJson("/api/v1/trainings/{$trainingId}/expire");
+
+        $expireResponse->assertStatus(Response::HTTP_CONFLICT)
+            ->assertJsonFragment([
+                'success' => false,
+                'message' => 'Training expiration is not supported for tris training type'
+            ]);
+
+        $training = Training::find($trainingId);
+        $this->assertEquals(TrainingStatus::InProgress, $training->status);
+        $this->assertNull($training->completed_at);
     }
 }
