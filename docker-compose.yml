@@ -18,7 +18,7 @@ services:
   app:
     build:
         context: .
-        dockerfile: _docker/app/Dockerfile
+        dockerfile: _docker/app/Dockerfile.dev
     volumes:
       - ./:/var/www/simple_dictionary_api
       - ./_docker/app/entrypoint.sh:/usr/local/bin/entrypoint.sh
