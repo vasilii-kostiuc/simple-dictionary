@@ -28,10 +28,7 @@ WORKDIR /var/www/simple_dictionary_api
 COPY . .
 
 # Install dependencies
-RUN composer install --no-dev --optimize-autoloader --no-scripts --no-autoloader
-
-# Generate autoloader
-RUN composer dump-autoload --optimize --no-dev
+RUN composer install --no-dev --optimize-autoloader
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/simple_dictionary_api/storage /var/www/simple_dictionary_api/bootstrap/cache
