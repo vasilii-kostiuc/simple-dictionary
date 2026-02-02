@@ -75,16 +75,16 @@ jobs:
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
             # Update docker-compose and restart
-            docker-compose -f docker-compose.prod.yml pull
-            docker-compose -f docker-compose.prod.yml up -d --no-build
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d --no-build
 
             # Run migrations
-            docker-compose -f docker-compose.prod.yml exec -T app php artisan migrate --force
+            docker compose -f docker-compose.prod.yml exec -T app php artisan migrate --force
 
             # Clear caches
-            docker-compose -f docker-compose.prod.yml exec -T app php artisan config:cache
-            docker-compose -f docker-compose.prod.yml exec -T app php artisan route:cache
-            docker-compose -f docker-compose.prod.yml exec -T app php artisan view:cache
+            docker compose -f docker-compose.prod.yml exec -T app php artisan config:cache
+            docker compose -f docker-compose.prod.yml exec -T app php artisan route:cache
+            docker compose -f docker-compose.prod.yml exec -T app php artisan view:cache
 
             # Cleanup old images
             docker image prune -af
