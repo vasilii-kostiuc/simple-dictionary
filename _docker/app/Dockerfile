@@ -27,8 +27,9 @@ WORKDIR /var/www/simple_dictionary_api
 # Copy application code first (needed for local packages)
 COPY . .
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Install dependencies (disable symlinks for Docker)
+RUN composer config repositories.0 '{"type": "path", "url": "./packages/vasilii-kostiuc/laravel-messaging-library", "options": {"symlink": false}}' \
+    && composer install --no-dev --optimize-autoloader
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/simple_dictionary_api/storage /var/www/simple_dictionary_api/bootstrap/cache
