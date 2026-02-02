@@ -6,8 +6,9 @@ services:
   nginx:
     image: nginx:latest
     volumes:
-      - ./storage/app/public:/var/www/simple_dictionary_api/storage/app/public:ro
       - ./_docker/nginx/conf.d/:/etc/nginx/conf.d/:ro
+    volumes_from:
+      - app:ro
     ports:
       - "8000:80"
     depends_on:
