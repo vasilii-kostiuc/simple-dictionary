@@ -1,0 +1,72 @@
+networks:
+  simple_dictionary_network:
+    driver: bridge
+
+services:
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./storage/app/public:/var/www/simple_dictionary_api/storage/app/public:ro
+      - ./_docker/nginx/conf.d/:/etc/nginx/conf.d/:ro
+    ports:
+      - "8000:80"
+    depends_on:
+      - app
+    container_name: simple_dictionary_nginx
+    networks:
+      - simple_dictionary_network
+    restart: unless-stopped
+
+  app:
+    image: ghcr.io/vasilii-kostiuc/simple-dictionari:latest
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - db
+      - redis
+    container_name: simple_dictionary_app
+    networks:
+      - simple_dictionary_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "php-fpm-healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  db:
+    image: mysql:8.1
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    container_name: simple_dictionary_db
+    networks:
+      - simple_dictionary_network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: simple_dictionary_redis
+    networks:
+      - simple_dictionary_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  db_data:
+    driver: local
