@@ -18,7 +18,7 @@ services:
     restart: unless-stopped
 
   app:
-    image: ghcr.io/vasilii-kostiuc/simple-dictionari:latest
+    image: ghcr.io/vasilii-kostiuc/simple-dictionary:latest
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
