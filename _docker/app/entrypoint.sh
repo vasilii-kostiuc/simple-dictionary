@@ -32,7 +32,7 @@ echo "MySQL готов и база $MYSQL_DATABASE доступна!"
 
 
 echo "Запускаю миграции..."
-php artisan migrate
+php artisan migrate --force
 
 echo "Запуск основного процесса..."
 exec "$@"
