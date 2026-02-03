@@ -7,8 +7,7 @@ services:
     image: nginx:latest
     volumes:
       - ./_docker/nginx/conf.d/:/etc/nginx/conf.d/:ro
-    volumes_from:
-      - app:ro
+      - app_code:/var/www/simple_dictionary_api:ro
     ports:
       - "8000:80"
     depends_on:
@@ -20,6 +19,10 @@ services:
 
   app:
     image: ghcr.io/vasilii-kostiuc/simple-dictionary:latest
+    volumes:
+      - app_code:/var/www/simple_dictionary_api
+      - storage_data:/var/www/simple_dictionary_api/storage
+      - cache_data:/var/www/simple_dictionary_api/bootstrap/cache
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
@@ -70,4 +73,10 @@ services:
 
 volumes:
   db_data:
+    driver: local
+  app_code:
+    driver: local
+  storage_data:
+    driver: local
+  cache_data:
     driver: local

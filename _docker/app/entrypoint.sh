@@ -2,7 +2,9 @@
 set -e
 
 echo "Проверка папок Laravel..."
-mkdir -p storage bootstrap/cache
+mkdir -p storage/framework/{sessions,views,cache}
+mkdir -p storage/{logs,app/public}
+mkdir -p bootstrap/cache
 chown -R www-data:www-data storage bootstrap/cache
 chmod -R 775 storage bootstrap/cache
 
