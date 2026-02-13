@@ -6,7 +6,7 @@ services:
   nginx:
     image: nginx:latest
     volumes:
-      - ./_docker/nginx/app.prod.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./_docker/nginx/conf.d/app.prod.conf:/etc/nginx/conf.d/default.conf:ro
       - frontend_dist:/var/www/frontend:ro
       - app_code:/var/www/simple_dictionary_api:ro
     ports:
