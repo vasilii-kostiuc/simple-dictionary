@@ -36,7 +36,6 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
     depends_on:
       - db
-      - redis
     container_name: simple_dictionary_app
     networks:
       - simple_dictionary_network
@@ -71,5 +70,4 @@ volumes:
     driver: local
   cache_data:
     driver: local
-  frontend_dist:
-    driver: local
+
