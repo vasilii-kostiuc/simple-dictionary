@@ -70,4 +70,6 @@ volumes:
     driver: local
   cache_data:
     driver: local
-
+  frontend_dist:
+    driver: local
+    name: frontend_dist
