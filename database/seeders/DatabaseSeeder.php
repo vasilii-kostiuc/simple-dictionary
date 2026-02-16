@@ -13,12 +13,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Тестовые пользователи только для локальной разработки
+        if (app()->environment('local')) {
+            // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+            User::factory()->create([
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+            ]);
+        }
+
+        // Дефолтные данные для всех окружений
         $this->call(LanguageSeeder::class);
         $this->call(TopWordSeeder::class);
     }
