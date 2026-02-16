@@ -29,6 +29,7 @@ services:
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
+      DB_CONNECTION: mysql
       DB_HOST: db
       DB_PORT: 3306
       DB_DATABASE: ${DB_DATABASE}
