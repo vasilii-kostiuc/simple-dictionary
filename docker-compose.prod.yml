@@ -25,6 +25,7 @@ services:
       - storage_data:/var/www/simple_dictionary_api/storage
       - cache_data:/var/www/simple_dictionary_api/bootstrap/cache
       - frontend_dist:/var/www/frontend:ro
+      - ./.env:/var/www/simple_dictionary_api/.env:ro
 
     environment:
       APP_ENV: production
@@ -35,8 +36,6 @@ services:
       DB_DATABASE: ${DB_DATABASE}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-      REDIS_HOST: wss_redis
-      REDIS_PORT: 6379
     depends_on:
       - db
     container_name: simple_dictionary_app
