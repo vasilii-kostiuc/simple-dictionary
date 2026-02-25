@@ -63,6 +63,7 @@ Route::prefix('v1')->group(function () {
         Route::get('trainings/{training}', [\App\Http\Controllers\Api\V1\Training\TrainingController::class, 'show'])->name('trainings.show');
         Route::post('trainings/{training}/start', [\App\Http\Controllers\Api\V1\Training\TrainingController::class, 'start'])->name('trainings.start');
         Route::post('trainings/{training}/expire', [\App\Http\Controllers\Api\V1\Training\TrainingController::class, 'expire'])->name('trainings.expire');
+        Route::post('trainings/{training}/terminate', [\App\Http\Controllers\Api\V1\Training\TrainingController::class, 'terminate'])->name('trainings.expire');
 
         Route::get('trainings/{training}/steps/next', [\App\Http\Controllers\Api\V1\Training\TrainingStepController::class, 'next'])->name('training-steps.next');
         Route::get('trainings/{training}/steps/current', [\App\Http\Controllers\Api\V1\Training\TrainingStepController::class, 'current'])->name('training-steps.current');
