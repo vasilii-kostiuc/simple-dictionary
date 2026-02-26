@@ -45,5 +45,4 @@ class TrainingService
         return $training;
     }
 
-
 }

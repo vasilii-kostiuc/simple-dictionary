@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Training\StoreTrainingRequest;
 use App\Http\Resources\ApiResponseResource;
 use App\Http\Resources\Training\TrainingResource;
+use App\Http\Resources\Training\TrainingSummaryResource;
 use Illuminate\Http\Response;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -43,7 +44,6 @@ class TrainingController extends Controller
 
     public function show(Training $training)
     {
-        sleep(2);
         return new ApiResponseResource(['data' => $training])->response()->setStatusCode(Response::HTTP_OK);
     }
 
@@ -70,12 +70,33 @@ class TrainingController extends Controller
     public function terminate(Training $training)
     {
         if ($training->status === TrainingStatus::Completed) {
-            return new ApiResponseResource(['message' => 'Training already compleated']);
+            return new ApiResponseResource(['message' => 'Training already compleated'])->response()->setStatusCode(Response::HTTP_CONFLICT);
         }
 
         $this->trainingService->complete($training, TrainingCompletionReason::Terminated);
 
-        return new ApiResponseResource(['success'=>false, 'message' => 'Training terminated successfully', 'data' => new TrainingResource($training)])->response()->setStatusCode(Response::HTTP_CONFLICT);
+        return new ApiResponseResource(['success'=>false, 'message' => 'Training terminated successfully', 'data' => new TrainingResource($training)]);
     }
 
+
+    public function summary(Training $training)
+    {
+        $trainingTime = $training->completed_at ? $training->started_at->diffInSeconds($training->completed_at) : null;
+        $stepsCount = $training->steps()->count();
+        $correctAnswersCount = $training->stepAttempts()->where('is_correct', true)->select('id')->distinct()->count();
+        $skippedStepsCount = $training->steps()->where('skipped', true)->count();
+        $completionReason = $training->completion_reason?->name;
+
+        return new ApiResponseResource([
+            'data' => new TrainingSummaryResource((object)[
+                'training_time_seconds' => $trainingTime,
+                'steps_count' => $stepsCount,
+                'correct_answers_count' => $correctAnswersCount,
+                'skipped_steps_count' => $skippedStepsCount,
+                'completion_reason' => $completionReason,
+                'started_at' => $training->started_at,
+                'completed_at' => $training->completed_at,
+            ])
+        ])->response()->setStatusCode(Response::HTTP_OK);
+    }
 }

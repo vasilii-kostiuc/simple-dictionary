@@ -10,6 +10,7 @@ use App\Domain\Training\Events\TrainingCompleted;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Training extends Model
 {
@@ -27,10 +28,17 @@ class Training extends Model
         return $this->hasMany(TrainingStep::class);
     }
 
+    public function stepAttempts(): HasManyThrough
+    {
+        return $this->hasManyThrough(TrainingStepAttempt::class, TrainingStep::class);
+    }
+
     public function lastStep(): ?TrainingStep
     {
         return $this->steps()->orderBy('step_number', 'desc')->first();
     }
+
+
 
     public function completeTraining(TrainingCompletionReason $reason, ?array $details = null): void
     {
