@@ -2,6 +2,7 @@
 
 namespace App\Domain\Training\Service;
 
+use App\Domain\Training\Enums\TrainingCompletionReason;
 use App\Domain\Training\Enums\TrainingStatus;
 use App\Domain\Training\Events\TrainingStartedEvent;
 use App\Domain\Training\Models\Training;
@@ -20,7 +21,7 @@ class TrainingService
 
     public function start(Training $training)
     {
-        if($training->status == TrainingStatus::InProgress) {
+        if ($training->status == TrainingStatus::InProgress) {
             return $training;
         }
 
@@ -30,6 +31,17 @@ class TrainingService
 
 
         event(new TrainingStartedEvent($training));
+        return $training;
+    }
+
+    public function complete(Training $training, ?TrainingCompletionReason $reason = null, ?array $details = []): Training
+    {
+        if ($reason === null) {
+            $reason = TrainingCompletionReason::defaultForCompletionType($training->completion_type);
+        }
+
+        $training->completeTraining($reason, $details);
+
         return $training;
     }
 

@@ -312,4 +312,39 @@ class TrainingTest extends TestCase
         $this->assertEquals(TrainingStatus::InProgress, $training->status);
         $this->assertNull($training->completed_at);
     }
+
+    public function test_api_training_terminate_successfully()
+    {
+        $trainingId = $this->createTraining();
+        $this->startTraining($trainingId);
+
+        $terminateResponse = $this->actingAs($this->user)
+            ->postJson("/api/v1/trainings/{$trainingId}/terminate");
+
+        $terminateResponse->assertOk()
+            ->assertJsonFragment([
+                'message' => 'Training terminated successfully',
+                'status' => TrainingStatus::Completed->value
+            ]);
+
+        $training = Training::find($trainingId);
+        $this->assertEquals(TrainingStatus::Completed, $training->status);
+        $this->assertNotNull($training->completed_at);
+    }
+
+    public function test_api_training_terminate_already_completed()
+    {
+        $trainingId = $this->createTraining();
+        $this->startTraining($trainingId);
+
+        // Завершаем тренировку первый раз
+        $this->actingAs($this->user)
+            ->postJson("/api/v1/trainings/{$trainingId}/terminate");
+
+        // Пытаемся завершить повторно
+        $secondTerminateResponse = $this->actingAs($this->user)
+            ->postJson("/api/v1/trainings/{$trainingId}/terminate");
+
+        $secondTerminateResponse->assertConflict();
+    }
 }
