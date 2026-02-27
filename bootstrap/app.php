@@ -12,7 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'auth.flexible' => \App\Http\Middleware\AuthenticateUserOrService::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

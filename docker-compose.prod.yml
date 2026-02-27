@@ -38,6 +38,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      WSS_SERVICE_SECRET: ${WSS_SERVICE_SECRET}
     depends_on:
       - db
     container_name: simple_dictionary_app
