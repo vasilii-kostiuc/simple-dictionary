@@ -43,7 +43,7 @@ Route::prefix('v1')->group(function () {
     Route::post('auth/register', \App\Http\Controllers\Api\V1\Auth\RegisterController::class)->name('auth.register');
     Route::post('auth/login', \App\Http\Controllers\Api\V1\Auth\LoginController::class)->name('auth.login');
 
-    Route::middleware(['auth:sanctum'])->group(function () {
+    Route::middleware(['auth.flexible'])->group(function () {
         Route::get('profile', [\App\Http\Controllers\Api\V1\Auth\ProfileController::class, 'show'])->name('profile.show');
         Route::post('profile', [\App\Http\Controllers\Api\V1\Auth\ProfileController::class, 'update'])->name('profile.update');
 
@@ -74,4 +74,6 @@ Route::prefix('v1')->group(function () {
         Route::post('trainings/{training}/steps/{step}/attempts', [\App\Http\Controllers\Api\V1\Training\TrainingStepAttemptController::class, 'store'])->name('trainings-steps.attempts');
         Route::get('trainings/{training}/steps/{step}/attempts', [\App\Http\Controllers\Api\V1\Training\TrainingStepAttemptController::class, 'index'])->name('trainings-steps.attempts');
     });
+
+
 });
