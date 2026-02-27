@@ -23,7 +23,7 @@
         "laravel/tinker": "^2.9",
         "predis/predis": "2.0",
         "spatie/laravel-query-builder": "^6.3",
-        "vasilii-kostiuc/laravel-messaging-library": "^1.1"
+        "vasilii-kostiuc/laravel-messaging-library": "^1.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
