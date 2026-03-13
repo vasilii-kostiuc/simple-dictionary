@@ -5,11 +5,11 @@ namespace Tests\Feature;
 use App\Domain\Dictionary\Models\Dictionary;
 use App\Domain\Language\Models\Language;
 use App\Domain\Step\Enums\StepType;
+use App\Domain\Step\StepFactory;
 use App\Domain\Training\Enums\TrainingCompletionType;
 use App\Domain\Training\Enums\TrainingStatus;
 use App\Domain\Training\Enums\TrainingType;
 use App\Domain\Training\Factories\StepResolverFactory;
-use App\Domain\Training\Factories\TrainingStepFactory;
 use App\Domain\Training\Factories\TrainingStrategyFactory;
 use App\Domain\Training\Models\Training;
 use App\Domain\Training\Models\TrainingStep;
@@ -51,7 +51,7 @@ class TrainingTest extends TestCase
                 ->andReturnUsing(function (Training $training) {
                     return new SpecificStepTypeTrainingStrategy(
                         $training,
-                        app(TrainingStepFactory::class),
+                        app(StepFactory::class),
                         [StepType::EstablishCompliance]
                     );
                 });

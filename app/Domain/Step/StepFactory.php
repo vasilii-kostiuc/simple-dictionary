@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Domain\Training\Factories;
+namespace App\Domain\Step;
 
 use App\Domain\Dictionary\Models\TopWord;
 use App\Domain\Step\Enums\StepType;
+use App\Domain\Step\Steps\ChooseCorrectAnswerStep;
+use App\Domain\Step\Steps\EstablishComplianceStep;
+use App\Domain\Step\Steps\Step;
+use App\Domain\Step\Steps\WriteAnswerStep;
 use App\Domain\Training\Models\Training;
-use App\Domain\Training\Steps\ChooseCorrectAnswerStep;
-use App\Domain\Training\Steps\EstablishComplianceStep;
-use App\Domain\Training\Steps\WordTrainingStep;
-use App\Domain\Training\Steps\WriteAnswerStep;
 use Illuminate\Support\Collection;
 
-class TrainingStepFactory
+class StepFactory
 {
     const MULTIPLE_CHOICE_OPTIONS_COUNT = 4;
 
@@ -19,7 +19,7 @@ class TrainingStepFactory
     {
     }
 
-    public function createStep(Training $training, StepType $stepType): WordTrainingStep
+    public function createStep(Training $training, StepType $stepType): Step
     {
         return match ($stepType) {
             StepType::ChooseCorrectAnswer => $this->createChooseCorrectAnswerStep($training),
@@ -28,17 +28,6 @@ class TrainingStepFactory
             default => $this->createChooseCorrectAnswerStep($training)
         };
     }
-
-    public function createStepFromData(array $trainingStepData, StepType $stepType): WordTrainingStep
-    {
-        return match ($stepType) {
-            StepType::ChooseCorrectAnswer => $this->createChooseCorrectAnswerStepFromData($trainingStepData),
-            StepType::WriteCorrectAnswer => $this->createWriteAnswerStepFromData($trainingStepData),
-            StepType::EstablishCompliance => $this->createEstablishComplianceStepFromData($trainingStepData),
-            default => throw new \InvalidArgumentException("Unsupported training step type: {$stepType->name}")
-        };
-    }
-
 
     private function createChooseCorrectAnswerStep(Training $training): ChooseCorrectAnswerStep
     {
@@ -146,20 +135,6 @@ class TrainingStepFactory
         $randomIds = $ids->random($count);
 
         return TopWord::query()->whereIn('id', $randomIds)->get();
-    }
-
-    private function createChooseCorrectAnswerStepFromData(array $trainingStepData)
-    {
-
-    }
-
-    private function createWriteAnswerStepFromData(array $trainingStepData)
-    {
-
-    }
-
-    private function createEstablishComplianceStepFromData(array $trainingStepData)
-    {
     }
 
 }

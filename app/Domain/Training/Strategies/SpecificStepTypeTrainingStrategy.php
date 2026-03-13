@@ -2,22 +2,22 @@
 
 namespace App\Domain\Training\Strategies;
 
-use App\Domain\Training\Factories\TrainingStepFactory;
+use App\Domain\Step\StepFactory;
+use App\Domain\Step\Steps\Step;
 use App\Domain\Training\Models\Training;
-use App\Domain\Training\Steps\WordTrainingStep;
 
 class SpecificStepTypeTrainingStrategy extends TrainingStrategyAbstract
 {
     private array $stepTypes;
 
-    public function __construct(Training $training, TrainingStepFactory $trainingStepFactory, array $stepTypes)
+    public function __construct(Training $training, StepFactory $trainingStepFactory, array $stepTypes)
     {
         $this->stepTypes = $stepTypes;
 
         parent::__construct($training, $trainingStepFactory);
     }
 
-    public function generateNextStep(): WordTrainingStep
+    public function generateNextStep(): Step
     {
         $stepType = $this->stepTypes[array_rand($this->stepTypes)];
         return $this->trainingStepFactory->createStep($this->training ,$stepType);

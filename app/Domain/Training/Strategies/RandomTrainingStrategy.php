@@ -3,11 +3,11 @@
 namespace App\Domain\Training\Strategies;
 
 use App\Domain\Step\Enums\StepType;
-use App\Domain\Training\Steps\WordTrainingStep;
+use App\Domain\Step\Steps\Step;
 
 class RandomTrainingStrategy extends TrainingStrategyAbstract
 {
-    public function generateNextStep(): WordTrainingStep
+    public function generateNextStep(): Step
     {
         $stepType = StepType::getRandomInstance();
 

@@ -3,15 +3,16 @@
 namespace App\Domain\Training\Factories;
 
 use App\Domain\Step\Enums\StepType;
+use App\Domain\Step\StepFactory;
 use App\Domain\Training\Models\Training;
 use App\Domain\Training\Strategies\SpecificStepTypeTrainingStrategy;
 use App\Domain\Training\Strategies\TrainingStrategyAbstract;
 
 class TrainingStrategyFactory
 {
-    private TrainingStepFactory $stepFactory;
+    private StepFactory $stepFactory;
 
-    public function __construct(TrainingStepFactory $stepFactory)
+    public function __construct(StepFactory $stepFactory)
     {
         $this->stepFactory = $stepFactory;
     }

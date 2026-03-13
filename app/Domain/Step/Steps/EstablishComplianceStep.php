@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Domain\Training\Steps;
+namespace App\Domain\Step\Steps;
 
 use App\Domain\Step\Enums\StepType;
 
-class EstablishComplianceStep extends WordTrainingStep
+class EstablishComplianceStep extends Step
 {
     private array $words;
     private array $answersOrder;
