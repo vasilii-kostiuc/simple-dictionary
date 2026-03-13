@@ -23,7 +23,10 @@ class TokenController extends Controller
         return new ApiResponseResource([
             'data' => [
                 'valid' => true,
-                'user_id' => $user->id,
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'avatar' => $user->avatar,
             ]
         ])->response()->setStatusCode(Response::HTTP_OK);
     }
@@ -66,8 +69,10 @@ class TokenController extends Controller
         return new ApiResponseResource([
             'data' => [
                 'valid' => true,
-                'user_id' => $user->id,
-                'token_abilities' => $accessToken->abilities,
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'avatar' => $user->avatar,
             ]
         ])->response()->setStatusCode(Response::HTTP_OK);
     }
