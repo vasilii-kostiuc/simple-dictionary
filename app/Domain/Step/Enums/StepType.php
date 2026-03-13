@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain\Training\Enums;
+namespace App\Domain\Step\Enums;
 
-enum TrainingStepType: int
+enum StepType: int
 {
     case ChooseCorrectAnswer = 1;
     case WriteCorrectAnswer = 2;

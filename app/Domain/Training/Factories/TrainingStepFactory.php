@@ -3,7 +3,7 @@
 namespace App\Domain\Training\Factories;
 
 use App\Domain\Dictionary\Models\TopWord;
-use App\Domain\Training\Enums\TrainingStepType;
+use App\Domain\Step\Enums\StepType;
 use App\Domain\Training\Models\Training;
 use App\Domain\Training\Steps\ChooseCorrectAnswerStep;
 use App\Domain\Training\Steps\EstablishComplianceStep;
@@ -19,22 +19,22 @@ class TrainingStepFactory
     {
     }
 
-    public function createStep(Training $training, TrainingStepType $stepType): WordTrainingStep
+    public function createStep(Training $training, StepType $stepType): WordTrainingStep
     {
         return match ($stepType) {
-            TrainingStepType::ChooseCorrectAnswer => $this->createChooseCorrectAnswerStep($training),
-            TrainingStepType::WriteCorrectAnswer => $this->createWriteAnswerStep($training),
-            TrainingStepType::EstablishCompliance => $this->createEstablishComplianceStep($training),
+            StepType::ChooseCorrectAnswer => $this->createChooseCorrectAnswerStep($training),
+            StepType::WriteCorrectAnswer => $this->createWriteAnswerStep($training),
+            StepType::EstablishCompliance => $this->createEstablishComplianceStep($training),
             default => $this->createChooseCorrectAnswerStep($training)
         };
     }
 
-    public function createStepFromData(array $trainingStepData, TrainingStepType $stepType): WordTrainingStep
+    public function createStepFromData(array $trainingStepData, StepType $stepType): WordTrainingStep
     {
         return match ($stepType) {
-            TrainingStepType::ChooseCorrectAnswer => $this->createChooseCorrectAnswerStepFromData($trainingStepData),
-            TrainingStepType::WriteCorrectAnswer => $this->createWriteAnswerStepFromData($trainingStepData),
-            TrainingStepType::EstablishCompliance => $this->createEstablishComplianceStepFromData($trainingStepData),
+            StepType::ChooseCorrectAnswer => $this->createChooseCorrectAnswerStepFromData($trainingStepData),
+            StepType::WriteCorrectAnswer => $this->createWriteAnswerStepFromData($trainingStepData),
+            StepType::EstablishCompliance => $this->createEstablishComplianceStepFromData($trainingStepData),
             default => throw new \InvalidArgumentException("Unsupported training step type: {$stepType->name}")
         };
     }

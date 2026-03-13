@@ -2,7 +2,7 @@
 
 namespace App\Domain\Training\Steps;
 
-use App\Domain\Training\Enums\TrainingStepType;
+use App\Domain\Step\Enums\StepType;
 
 class ChooseCorrectAnswerStep extends WordTrainingStep
 {
@@ -13,7 +13,7 @@ class ChooseCorrectAnswerStep extends WordTrainingStep
 
     public function __construct($wordId, $word, $answers, $isTopWord)
     {
-        parent::__construct(TrainingStepType::ChooseCorrectAnswer);
+        parent::__construct(StepType::ChooseCorrectAnswer);
 
         $this->answers = $answers;
         $this->isTopWord = $isTopWord;

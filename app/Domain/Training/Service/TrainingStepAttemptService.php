@@ -2,7 +2,7 @@
 
 namespace App\Domain\Training\Service;
 
-use App\Domain\Training\Enums\TrainingStepType;
+use App\Domain\Step\Enums\StepType;
 use App\Domain\Training\Events\StepAttemptEvent;
 use App\Domain\Training\Factories\StepAttemptVerifierFactory;
 use App\Domain\Training\Models\TrainingStep;
@@ -19,7 +19,7 @@ class TrainingStepAttemptService
 
     public function create(TrainingStep $trainingStep, array $attemptData): TrainingStepAttempt
     {
-        $stepVerifier = $this->stepAttemptVerifierFactory->create(TrainingStepType::from($trainingStep->step_type_id));
+        $stepVerifier = $this->stepAttemptVerifierFactory->create(StepType::from($trainingStep->step_type_id));
 
         $isCorrect = $stepVerifier->verify($trainingStep, $attemptData);
 

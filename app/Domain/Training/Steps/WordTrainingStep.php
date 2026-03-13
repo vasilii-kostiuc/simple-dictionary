@@ -2,20 +2,20 @@
 
 namespace App\Domain\Training\Steps;
 
-use App\Domain\Training\Enums\TrainingStepType;
+use App\Domain\Step\Enums\StepType;
 
-abstract class  WordTrainingStep
+abstract class WordTrainingStep
 {
-    private readonly TrainingStepType $trainingStepType;
+    private readonly StepType $trainingStepType;
 
     protected int $requiredAnswersCount = 1;
 
-    public function __construct(TrainingStepType $trainingStepType)
+    public function __construct(StepType $trainingStepType)
     {
         $this->trainingStepType = $trainingStepType;
     }
 
-    public function getTrainingStepType(): TrainingStepType
+    public function getTrainingStepType(): StepType
     {
         return $this->trainingStepType;
     }
@@ -26,6 +26,4 @@ abstract class  WordTrainingStep
     }
 
     public abstract function toArray(): array;
-
-
 }

@@ -2,7 +2,7 @@
 
 namespace App\Domain\Training\Factories;
 
-use App\Domain\Training\Enums\TrainingStepType;
+use App\Domain\Step\Enums\StepType;
 use App\Domain\Training\StepAttemptVerifiers\ChooseCorrectAnswerStepAttemptVerifier;
 use App\Domain\Training\StepAttemptVerifiers\EstablishComplianceStepAttemptVerifier;
 use App\Domain\Training\StepAttemptVerifiers\StepAttemptVerifier;
@@ -13,12 +13,12 @@ use App\Training\StepAttemptVerifiers\WriteCorrectAnswerStepVerifier;
 
 class StepAttemptVerifierFactory
 {
-    public function create(TrainingStepType $stepType): StepAttemptVerifier
+    public function create(StepType $stepType): StepAttemptVerifier
     {
         return match ($stepType) {
-            TrainingStepType::ChooseCorrectAnswer => new ChooseCorrectAnswerStepAttemptVerifier(),
-            TrainingStepType::WriteCorrectAnswer => new WriteCorrectAnswerStepAttemptVerifier(),
-            TrainingStepType::EstablishCompliance => new EstablishComplianceStepAttemptVerifier(),
+            StepType::ChooseCorrectAnswer => new ChooseCorrectAnswerStepAttemptVerifier(),
+            StepType::WriteCorrectAnswer => new WriteCorrectAnswerStepAttemptVerifier(),
+            StepType::EstablishCompliance => new EstablishComplianceStepAttemptVerifier(),
             default => throw new \Exception('Step Verifier not found'),
         };
     }

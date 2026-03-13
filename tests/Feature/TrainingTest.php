@@ -4,11 +4,10 @@ namespace Tests\Feature;
 
 use App\Domain\Dictionary\Models\Dictionary;
 use App\Domain\Language\Models\Language;
+use App\Domain\Step\Enums\StepType;
 use App\Domain\Training\Enums\TrainingCompletionType;
 use App\Domain\Training\Enums\TrainingStatus;
-use App\Domain\Training\Enums\TrainingStepType;
 use App\Domain\Training\Enums\TrainingType;
-use App\Domain\Training\Events\TrainingCompleted;
 use App\Domain\Training\Factories\StepResolverFactory;
 use App\Domain\Training\Factories\TrainingStepFactory;
 use App\Domain\Training\Factories\TrainingStrategyFactory;
@@ -20,7 +19,6 @@ use Database\Seeders\TopWordSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Tests\TestCase;
-use Illuminate\Support\Facades\Event;
 
 class TrainingTest extends TestCase
 {
@@ -54,7 +52,7 @@ class TrainingTest extends TestCase
                     return new SpecificStepTypeTrainingStrategy(
                         $training,
                         app(TrainingStepFactory::class),
-                        [TrainingStepType::EstablishCompliance]
+                        [StepType::EstablishCompliance]
                     );
                 });
         });
@@ -69,7 +67,7 @@ class TrainingTest extends TestCase
     public function submitStepAttempt($step, int $trainingId, mixed $stepId): \Illuminate\Testing\TestResponse
     {
         $attempt_data = new StepResolverFactory()
-            ->create(TrainingStepType::from($step->step_type_id))
+            ->create(StepType::from($step->step_type_id))
             ->resolve($step);
         $attemptResponse = $this->actingAs($this->user)
             ->postJson(

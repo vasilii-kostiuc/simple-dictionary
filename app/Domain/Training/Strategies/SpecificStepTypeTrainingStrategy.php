@@ -2,7 +2,6 @@
 
 namespace App\Domain\Training\Strategies;
 
-use App\Domain\Training\Enums\TrainingStepType;
 use App\Domain\Training\Factories\TrainingStepFactory;
 use App\Domain\Training\Models\Training;
 use App\Domain\Training\Steps\WordTrainingStep;

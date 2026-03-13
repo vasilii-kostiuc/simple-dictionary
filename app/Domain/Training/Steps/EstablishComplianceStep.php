@@ -2,7 +2,7 @@
 
 namespace App\Domain\Training\Steps;
 
-use App\Domain\Training\Enums\TrainingStepType;
+use App\Domain\Step\Enums\StepType;
 
 class EstablishComplianceStep extends WordTrainingStep
 {
@@ -11,7 +11,7 @@ class EstablishComplianceStep extends WordTrainingStep
 
     public function __construct(array $words, array $answersOrder)
     {
-        parent::__construct(TrainingStepType::EstablishCompliance);
+        parent::__construct(StepType::EstablishCompliance);
         $this->words = $words;
         $this->requiredAnswersCount = count($words);
         $this->answersOrder = $answersOrder;

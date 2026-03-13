@@ -30,7 +30,10 @@ class TrainingController extends Controller
     public function index()
     {
         $trainings = QueryBuilder::for(Training::class)
+            ->select('trainings.*')
             ->allowedFilters(['status'])
+            ->join('dictionaries', 'trainings.dictionary_id', '=', 'dictionaries.id')
+            ->where('dictionaries.user_id', auth()->user()->id)
             ->orderBy('started_at', 'DESC')->get();
         return new ApiResponseResource(['data' => TrainingResource::collection($trainings)])->response()->setStatusCode(Response::HTTP_OK);
     }
