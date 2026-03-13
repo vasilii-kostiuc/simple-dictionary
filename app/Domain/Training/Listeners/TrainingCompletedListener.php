@@ -27,16 +27,18 @@ class TrainingCompletedListener
     {
         info(__METHOD__);
 
-        $bus = $this->messageBrokerFactory->create();
+        $messageBroker = $this->messageBrokerFactory->create();
 
-        $data = [
+        $payload = [
             'type' => 'training_completed',
-            'training_id' => $event->training->id,
-            'completion_type' => $event->training->completion_type,
-            'started_at' => $event->training->started_at,
-            'completed_at' => $event->training->completed_at,
+            'data' => [
+                'training_id' => $event->training->id,
+                'completion_type' => $event->training->completion_type,
+                'started_at' => $event->training->started_at,
+                'completed_at' => $event->training->completed_at,
+            ]
         ];
 
-        $bus->publish('training', json_encode($data));
+        $messageBroker->publish('training', json_encode($payload));
     }
 }
