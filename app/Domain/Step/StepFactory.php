@@ -2,55 +2,43 @@
 
 namespace App\Domain\Step;
 
-use App\Domain\Dictionary\Models\TopWord;
 use App\Domain\Step\Enums\StepType;
 use App\Domain\Step\Steps\ChooseCorrectAnswerStep;
 use App\Domain\Step\Steps\EstablishComplianceStep;
 use App\Domain\Step\Steps\Step;
 use App\Domain\Step\Steps\WriteAnswerStep;
-use App\Domain\Training\Models\Training;
-use Illuminate\Support\Collection;
+use App\Domain\Step\WordProviders\WordsProviderInterface;
 
 class StepFactory
 {
     const MULTIPLE_CHOICE_OPTIONS_COUNT = 4;
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
-    public function createStep(Training $training, StepType $stepType): Step
+    public function createStep(StepType $stepType, WordsProviderInterface $wordsProvider): Step
     {
         return match ($stepType) {
-            StepType::ChooseCorrectAnswer => $this->createChooseCorrectAnswerStep($training),
-            StepType::WriteCorrectAnswer => $this->createWriteAnswerStep($training),
-            StepType::EstablishCompliance => $this->createEstablishComplianceStep($training),
-            default => $this->createChooseCorrectAnswerStep($training)
+            StepType::ChooseCorrectAnswer => $this->createChooseCorrectAnswerStep($wordsProvider),
+            StepType::WriteCorrectAnswer => $this->createWriteAnswerStep($wordsProvider),
+            StepType::EstablishCompliance => $this->createEstablishComplianceStep($wordsProvider),
+            default => $this->createChooseCorrectAnswerStep($wordsProvider)
         };
     }
 
-    private function createChooseCorrectAnswerStep(Training $training): ChooseCorrectAnswerStep
+    private function createChooseCorrectAnswerStep(WordsProviderInterface $wordsProvider): ChooseCorrectAnswerStep
     {
-        $fromLanguageId = $training->dictionary->language_from_id;
-        $toLanguageId = $training->dictionary->language_to_id;
+        $correctWord = $wordsProvider->getRandomWord();
 
-        $correctWord = $this->getRandomTopWord(
-            $fromLanguageId,
-            $toLanguageId
-        );
-
-        $incorrectWords = $this->getRandomTopWords(
-            $fromLanguageId,
-            $toLanguageId,
-            [$correctWord->id],
-            self::MULTIPLE_CHOICE_OPTIONS_COUNT - 1
+        $incorrectWords = $wordsProvider->getRandomWords(
+            self::MULTIPLE_CHOICE_OPTIONS_COUNT - 1,
+            [$correctWord->id]
         )->all();
 
         $allWords = array_merge([$correctWord], $incorrectWords);
         shuffle($allWords);
 
         $answers = array_map(
-            fn(TopWord $word) => [
+            fn($word) => [
                 'word_id' => $word->id,
                 'word' => $word->word,
                 'translation' => $word->translation,
@@ -66,30 +54,21 @@ class StepFactory
         );
     }
 
-    private function createWriteAnswerStep(Training $training): WriteAnswerStep
+    private function createWriteAnswerStep(WordsProviderInterface $wordsProvider): WriteAnswerStep
     {
-        $fromLanguageId = $training->dictionary->language_from_id;
-        $toLanguageId = $training->dictionary->language_to_id;
-
-        $word = $this->getRandomTopWord(
-            $fromLanguageId,
-            $toLanguageId
-        );
+        $word = $wordsProvider->getRandomWord();
 
         return new WriteAnswerStep(
             wordId: $word->id,
             word: $word->word,
-            acceptableAnswers: [$word->translation], // maybe later there would be synonims
+            acceptableAnswers: [$word->translation], // maybe later there would be synonyms
             isTopWord: true
         );
     }
 
-    private function createEstablishComplianceStep(Training $training)
+    private function createEstablishComplianceStep(WordsProviderInterface $wordsProvider): EstablishComplianceStep
     {
-        $fromLanguageId = $training->dictionary->language_from_id;
-        $toLanguageId = $training->dictionary->language_to_id;
-
-        $words = $this->getRandomTopWords($fromLanguageId, $toLanguageId, [],self::MULTIPLE_CHOICE_OPTIONS_COUNT)->map(fn(TopWord $word) => [
+        $words = $wordsProvider->getRandomWords(self::MULTIPLE_CHOICE_OPTIONS_COUNT)->map(fn($word) => [
             'word_id' => $word->id,
             'word' => $word->word,
             'translation' => $word->translation,
@@ -104,37 +83,4 @@ class StepFactory
             answersOrder: $answersOrder
         );
     }
-
-    private function getTopWordsQuery(int $langFrom, int $langTo, array $exceptIds = [])
-    {
-        $query = TopWord::query()
-            ->where('language_from_id', $langFrom)
-            ->where('language_to_id', $langTo)
-            ->select('id');
-
-        if (!empty($exceptIds)) {
-            $query->whereNotIn('id', $exceptIds);
-        }
-
-        return $query;
-    }
-
-    private function getRandomTopWord(int $langFrom, int $langTo, array $exceptTopWordsIds = []): TopWord
-    {
-        $ids = $this->getTopWordsQuery($langFrom, $langTo, $exceptTopWordsIds)->pluck('id');
-        $randomId = $ids->random();
-
-        return TopWord::query()->find($randomId);
-    }
-
-    private function getRandomTopWords(int $langFrom, int $langTo, array $exceptTopWordsIds = [], int $count = 1): Collection
-    {
-        $ids = $this->getTopWordsQuery($langFrom, $langTo, $exceptTopWordsIds)->get()->pluck('id');
-
-
-        $randomIds = $ids->random($count);
-
-        return TopWord::query()->whereIn('id', $randomIds)->get();
-    }
-
 }

@@ -6,6 +6,7 @@ use App\Domain\Dictionary\Models\Dictionary;
 use App\Domain\Language\Models\Language;
 use App\Domain\Step\Enums\StepType;
 use App\Domain\Step\StepFactory;
+use App\Domain\Step\WordProviders\TopWordsProvider;
 use App\Domain\Training\Enums\TrainingCompletionType;
 use App\Domain\Training\Enums\TrainingStatus;
 use App\Domain\Training\Enums\TrainingType;
@@ -52,6 +53,10 @@ class TrainingTest extends TestCase
                     return new SpecificStepTypeTrainingStrategy(
                         $training,
                         app(StepFactory::class),
+                        new TopWordsProvider(
+                            $training->dictionary->language_from_id,
+                            $training->dictionary->language_to_id,
+                        ),
                         [StepType::EstablishCompliance]
                     );
                 });
@@ -59,16 +64,16 @@ class TrainingTest extends TestCase
     }
 
     /**
-     * @param $step
+     * @param array $stepData
      * @param int $trainingId
      * @param mixed $stepId
      * @return \Illuminate\Testing\TestResponse
      */
-    public function submitStepAttempt($step, int $trainingId, mixed $stepId): \Illuminate\Testing\TestResponse
+    public function submitStepAttempt(array $stepData, int $trainingId, mixed $stepId): \Illuminate\Testing\TestResponse
     {
         $attempt_data = new StepResolverFactory()
-            ->create(StepType::from($step->step_type_id))
-            ->resolve($step);
+            ->create(StepType::from($stepData['step_type_id']))
+            ->resolve($stepData['step_data']);
         $attemptResponse = $this->actingAs($this->user)
             ->postJson(
                 "/api/v1/trainings/{$trainingId}/steps/{$stepId}/attempts",
@@ -188,8 +193,8 @@ class TrainingTest extends TestCase
             ->getJson("/api/v1/trainings/{$trainingId}/steps/next");
 
         $stepId = $nextStepResponse->json('data.id');
-        $step = TrainingStep::find($stepId);
-        $attemptResponse = $this->submitStepAttempt($step, $trainingId, $stepId);
+        $stepData = $nextStepResponse->json('data');
+        $attemptResponse = $this->submitStepAttempt($stepData, $trainingId, $stepId);
         $attemptResponse->assertOk();
     }
 
@@ -203,16 +208,16 @@ class TrainingTest extends TestCase
         $nextStepResponse = $this->actingAs($this->user)
             ->getJson("/api/v1/trainings/{$trainingId}/steps/next");
 
-        $stepId = $nextStepResponse->json('data.id');
-        $step = TrainingStep::find($stepId);
+        $nextStepResponse->assertOk();
 
-        $attemptResponse = $this->submitStepAttempt($step, $trainingId, $stepId);
+        $stepId = $nextStepResponse->json('data.id');
+        $stepData = $nextStepResponse->json('data');
+
+        $attemptResponse = $this->submitStepAttempt($stepData, $trainingId, $stepId);
 
         $this->actingAs($this->user)
             ->getJson("/api/v1/trainings/{$trainingId}/steps/{$stepId}/attempts")
             ->assertOk();
-
-
     }
 
     public function test_api_training_progress_for_steps_with_multiple_attempts()
@@ -227,10 +232,12 @@ class TrainingTest extends TestCase
         $nextStepResponse = $this->actingAs($this->user)
             ->getJson("/api/v1/trainings/{$trainingId}/steps/next");
 
-        $stepId = $nextStepResponse->json('data.id');
-        $step = TrainingStep::find($stepId);
+        $nextStepResponse->assertOk();
 
-        $this->submitStepAttempt($step, $trainingId, $stepId);
+        $stepId = $nextStepResponse->json('data.id');
+        $stepData = $nextStepResponse->json('data');
+
+        $this->submitStepAttempt($stepData, $trainingId, $stepId);
 
         $progressResponse = $this->actingAs($this->user)
             ->getJson(
@@ -239,9 +246,9 @@ class TrainingTest extends TestCase
         $isPassed = $progressResponse->json('data.is_passed');
         $this->assertFalse($isPassed);
 
-        $attemptResponse = $this->submitStepAttempt($step, $trainingId, $stepId);
-        $this->submitStepAttempt($step, $trainingId, $stepId);
-        $this->submitStepAttempt($step, $trainingId, $stepId);
+        $attemptResponse = $this->submitStepAttempt($stepData, $trainingId, $stepId);
+        $this->submitStepAttempt($stepData, $trainingId, $stepId);
+        $this->submitStepAttempt($stepData, $trainingId, $stepId);
 
         $progressResponse = $this->actingAs($this->user)
             ->getJson(
@@ -251,7 +258,7 @@ class TrainingTest extends TestCase
         //dd($progressResponse->json());
         $this->assertTrue($isPassed);
 
-        $attemptResult = $this->submitStepAttempt($step, $trainingId, $stepId);
+        $attemptResult = $this->submitStepAttempt($stepData, $trainingId, $stepId);
 
         $attemptResult->assertStatus(Response::HTTP_CONFLICT);
         $attemptResult->assertJsonStructure([

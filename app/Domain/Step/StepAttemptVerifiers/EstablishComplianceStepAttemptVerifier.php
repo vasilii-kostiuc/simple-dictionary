@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Domain\Training\StepAttemptVerifiers;
-
-use App\Domain\Training\Models\TrainingStep;
+namespace App\Domain\Step\StepAttemptVerifiers;
 
 class EstablishComplianceStepAttemptVerifier implements StepAttemptVerifier
 {
-    public function verify(TrainingStep $trainingStep, array $attemptData): bool
+    public function verify(array $step_data, array $attemptData): bool
     {
 
         $word_id = $attemptData['word_id'];

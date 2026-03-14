@@ -6,7 +6,6 @@ use App\Domain\Training\Enums\TrainingStatus;
 use App\Domain\Training\Factories\TrainingStrategyFactory;
 use App\Domain\Training\Models\Training;
 use App\Domain\Training\Models\TrainingStep;
-use App\Domain\Training\Service\StepCheckService;
 use App\Domain\Training\Service\TrainingStepProgressService;
 use App\Domain\Training\Service\TrainingStepService;
 use App\Http\Controllers\Controller;
@@ -26,11 +25,9 @@ class TrainingStepController extends Controller
 
     public function __construct(
         TrainingStrategyFactory     $trainingStrategyFactory,
-        StepCheckService            $stepCheckService,
         TrainingStepService         $trainingStepService,
         TrainingStepProgressService $trainingStepProgressService,
-    )
-    {
+    ) {
         $this->trainingStrategyFactory = $trainingStrategyFactory;
         $this->trainingStepService = $trainingStepService;
         $this->trainingStepProgressService = $trainingStepProgressService;
@@ -49,7 +46,8 @@ class TrainingStepController extends Controller
                     'success' => false,
                     'errors' => [self::ERROR_TRAINING_FINISHED => 'Training is finished'],
                     'message' => 'Training is finished',
-                ])->response()->setStatusCode(Response::HTTP_CONFLICT);
+                ]
+            )->response()->setStatusCode(Response::HTTP_CONFLICT);
         }
 
         $lastStep = $training->lastStep();
@@ -59,7 +57,8 @@ class TrainingStepController extends Controller
                     'success' => false,
                     'errors' => [self::ERROR_STEP_NOT_COMPLETED => 'Previous step is not completed'],
                     'message' => 'New step can be created only after compliting prev step',
-                ])->response()->setStatusCode(Response::HTTP_CONFLICT);;
+                ]
+            )->response()->setStatusCode(Response::HTTP_CONFLICT);;
         }
 
         $generatedStep = $this->trainingStrategyFactory->create($training)->generateNextStep();
@@ -77,7 +76,8 @@ class TrainingStepController extends Controller
                     'succes' => false,
                     'errors' => [self::ERROR_TRAINING_FINISHED => 'Training is finished'],
                     'message' => 'Training is finished',
-                ])->response()->setStatusCode(Response::HTTP_CONFLICT);
+                ]
+            )->response()->setStatusCode(Response::HTTP_CONFLICT);
         }
         $currentStep = $training->lastStep();
 
@@ -105,5 +105,4 @@ class TrainingStepController extends Controller
 
         return ApiResponseResource::make(['data' => new TrainingStepProgressResource($progress)]);
     }
-
 }

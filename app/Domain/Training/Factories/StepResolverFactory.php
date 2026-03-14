@@ -3,9 +3,9 @@
 namespace App\Domain\Training\Factories;
 
 use App\Domain\Step\Enums\StepType;
-use App\Domain\Training\StepResolvers\ChooseCorrectAnswerResolver;
-use App\Domain\Training\StepResolvers\EstablishComplianceResolver;
-use App\Domain\Training\StepResolvers\WriteAnswerResolver;
+use App\Domain\Step\StepResolvers\ChooseCorrectAnswerResolver;
+use App\Domain\Step\StepResolvers\EstablishComplianceResolver;
+use App\Domain\Step\StepResolvers\WriteAnswerResolver;
 
 class StepResolverFactory
 {
