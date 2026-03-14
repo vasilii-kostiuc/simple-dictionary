@@ -2,18 +2,18 @@
 
 namespace App\Domain\Training\Factories;
 
-use App\Domain\Training\Enums\TrainingStepType;
-use App\Domain\Training\StepResolvers\ChooseCorrectAnswerResolver;
-use App\Domain\Training\StepResolvers\EstablishComplianceResolver;
-use App\Domain\Training\StepResolvers\WriteAnswerResolver;
+use App\Domain\Step\Enums\StepType;
+use App\Domain\Step\StepResolvers\ChooseCorrectAnswerResolver;
+use App\Domain\Step\StepResolvers\EstablishComplianceResolver;
+use App\Domain\Step\StepResolvers\WriteAnswerResolver;
 
 class StepResolverFactory
 {
-    public function create(TrainingStepType $stepType){
+    public function create(StepType $stepType){
         return match($stepType){
-            TrainingStepType::ChooseCorrectAnswer => new ChooseCorrectAnswerResolver(),
-            TrainingStepType::WriteCorrectAnswer => new WriteAnswerResolver(),
-            TrainingStepType::EstablishCompliance => new EstablishComplianceResolver(),
+            StepType::ChooseCorrectAnswer => new ChooseCorrectAnswerResolver(),
+            StepType::WriteCorrectAnswer => new WriteAnswerResolver(),
+            StepType::EstablishCompliance => new EstablishComplianceResolver(),
             default => new EstablishComplianceResolver(),
         };
     }

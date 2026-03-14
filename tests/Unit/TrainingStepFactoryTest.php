@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use App\Domain\Dictionary\Models\Dictionary;
-use App\Domain\Training\Factories\TrainingStepFactory;
+use App\Domain\Step\StepFactory;
 use App\Domain\Training\Models\Training;
 use Database\Seeders\TopWordSeeder;
 use Tests\TestCase;
@@ -12,14 +12,14 @@ class TrainingStepFactoryTest extends TestCase
 {
     use \Illuminate\Foundation\Testing\RefreshDatabase;
 
-    private TrainingStepFactory $factory;
+    private StepFactory $factory;
     private Training $training;
     private Dictionary $dictionary;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->factory = new TrainingStepFactory();
+        $this->factory = new StepFactory();
 
         $this->dictionary = Dictionary::factory()->make(['id' => 1, 'language_from_id' => 1, 'language_to_id' => 2]);
 

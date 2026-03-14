@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Domain\Training\Steps;
+namespace App\Domain\Step\Steps;
 
-use App\Domain\Training\Enums\TrainingStepType;
+use App\Domain\Step\Enums\StepType;
 
-class WriteAnswerStep extends WordTrainingStep
+class WriteAnswerStep extends Step
 {
     private array $acceptableAnswers;
     private int $isTopWord;
@@ -13,7 +13,7 @@ class WriteAnswerStep extends WordTrainingStep
 
     public function __construct($wordId, $word,$acceptableAnswers, $isTopWord)
     {
-        parent::__construct(TrainingStepType::WriteCorrectAnswer);
+        parent::__construct(StepType::WriteCorrectAnswer);
 
         $this->wordId = $wordId;
         $this->word = $word;

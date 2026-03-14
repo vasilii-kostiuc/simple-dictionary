@@ -2,15 +2,15 @@
 
 namespace App\Domain\Training\Strategies;
 
-use App\Domain\Training\Enums\TrainingStepType;
-use App\Domain\Training\Steps\WordTrainingStep;
+use App\Domain\Step\Enums\StepType;
+use App\Domain\Step\Steps\Step;
 
 class RandomTrainingStrategy extends TrainingStrategyAbstract
 {
-    public function generateNextStep(): WordTrainingStep
+    public function generateNextStep(): Step
     {
-        $stepType = TrainingStepType::getRandomInstance();
+        $stepType = StepType::getRandomInstance();
 
-        return $this->trainingStepFactory->createStep($this->training ,$stepType);
+        return $this->trainingStepFactory->createStep($stepType, $this->wordsProvider);
     }
 }
