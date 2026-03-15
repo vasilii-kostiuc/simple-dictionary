@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Training\Factories;
+namespace App\Domain\Step;
 
 use App\Domain\Step\Enums\StepType;
 use App\Domain\Step\StepResolvers\ChooseCorrectAnswerResolver;
