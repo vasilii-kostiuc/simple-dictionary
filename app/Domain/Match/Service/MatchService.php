@@ -13,7 +13,9 @@ class MatchService
     public function create(array $data, array $participants): MatchModel
     {
         $match = MatchModel::create([
-            'dictionary_id' => $data['dictionary_id'],
+            'language_from_id' => $data['language_from_id'],
+            'language_to_id' => $data['language_to_id'],
+            'dictionary_id' => $data['dictionary_id'] ?? null,
             'match_type' => $data['match_type'],
             'match_type_params' => $data['match_type_params'],
             'status' => MatchStatus::New,

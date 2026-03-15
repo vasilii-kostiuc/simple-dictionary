@@ -15,6 +15,8 @@ class MatchModel extends Model
     protected $table = 'matches';
 
     protected $fillable = [
+        'language_from_id',
+        'language_to_id',
         'dictionary_id',
         'match_type',
         'match_type_params',

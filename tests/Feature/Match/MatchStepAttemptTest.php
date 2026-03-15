@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Match;
 
-use App\Domain\Dictionary\Models\Dictionary;
 use App\Domain\Language\Models\Language;
 use App\Domain\Match\Enums\MatchType;
 use App\Domain\Step\Enums\StepType;
@@ -18,7 +17,8 @@ class MatchStepAttemptTest extends TestCase
 
     protected User $user1;
     protected User $user2;
-    protected Dictionary $dictionary;
+    protected Language $languageTo;
+    protected Language $languageFrom;
     protected StepResolverFactory $stepResolverFactory;
 
     protected function setUp(): void
@@ -28,14 +28,9 @@ class MatchStepAttemptTest extends TestCase
         $this->user1 = User::factory()->create();
         $this->user2 = User::factory()->create();
 
-        $sourceLang = Language::factory()->create();
-        $targetLang = Language::factory()->create();
-
-        $this->dictionary = Dictionary::factory()->create([
-            'user_id' => $this->user1->id,
-            'language_from_id' => $targetLang->id,
-            'language_to_id' => $sourceLang->id,
-        ]);
+        // TopWordSeeder uses language_from_id=2, language_to_id=1
+        $this->languageTo = Language::factory()->create();   // id=1
+        $this->languageFrom = Language::factory()->create(); // id=2
 
         $this->stepResolverFactory = new StepResolverFactory();
     }
@@ -43,7 +38,8 @@ class MatchStepAttemptTest extends TestCase
     private function createMatch(): array
     {
         $response = $this->actingAs($this->user1)->postJson('/api/v1/matches', [
-            'dictionary_id' => $this->dictionary->id,
+            'language_from_id' => $this->languageFrom->id,
+            'language_to_id' => $this->languageTo->id,
             'match_type' => MatchType::Time->value,
             'match_type_params' => ['duration' => 300],
             'participants' => [
@@ -174,7 +170,8 @@ class MatchStepAttemptTest extends TestCase
         $guestId = '550e8400-e29b-41d4-a716-446655440000';
 
         $createResponse = $this->actingAs($this->user1)->postJson('/api/v1/matches', [
-            'dictionary_id' => $this->dictionary->id,
+            'language_from_id' => $this->languageFrom->id,
+            'language_to_id' => $this->languageTo->id,
             'match_type' => MatchType::Time->value,
             'match_type_params' => ['duration' => 300],
             'participants' => [

@@ -11,6 +11,8 @@ class MatchResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'language_from_id' => $this->language_from_id,
+            'language_to_id' => $this->language_to_id,
             'dictionary_id' => $this->dictionary_id,
             'match_type' => $this->match_type,
             'match_type_params' => $this->match_type_params,

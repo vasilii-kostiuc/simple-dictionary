@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Match;
 
-use App\Domain\Dictionary\Models\Dictionary;
 use App\Domain\Language\Models\Language;
 use App\Domain\Match\Enums\{MatchStatus, MatchType};
 use App\Models\User;
@@ -16,7 +15,8 @@ class MatchCreationTest extends TestCase
 
     protected User $user1;
     protected User $user2;
-    protected Dictionary $dictionary;
+    protected Language $languageTo;
+    protected Language $languageFrom;
 
     protected function setUp(): void
     {
@@ -25,14 +25,9 @@ class MatchCreationTest extends TestCase
         $this->user1 = User::factory()->create();
         $this->user2 = User::factory()->create();
 
-        $sourceLang = Language::factory()->create();
-        $targetLang = Language::factory()->create();
-
-        $this->dictionary = Dictionary::factory()->create([
-            'user_id' => $this->user1->id,
-            'language_from_id' => $targetLang->id,
-            'language_to_id' => $sourceLang->id,
-        ]);
+        // TopWordSeeder uses language_from_id=2, language_to_id=1
+        $this->languageTo = Language::factory()->create();   // id=1
+        $this->languageFrom = Language::factory()->create(); // id=2
     }
 
     public function test_can_create_match_with_authenticated_users(): void
@@ -40,7 +35,8 @@ class MatchCreationTest extends TestCase
         $this->seed(TopWordSeeder::class);
 
         $response = $this->actingAs($this->user1)->postJson('/api/v1/matches', [
-            'dictionary_id' => $this->dictionary->id,
+            'language_from_id' => $this->languageFrom->id,
+            'language_to_id' => $this->languageTo->id,
             'match_type' => MatchType::Time->value,
             'match_type_params' => ['duration' => 300],
             'participants' => [
@@ -53,7 +49,8 @@ class MatchCreationTest extends TestCase
             ->assertJsonStructure([
                 'data' => [
                     'id',
-                    'dictionary_id',
+                    'language_from_id',
+                    'language_to_id',
                     'match_type',
                     'status',
                     'participants',
@@ -64,7 +61,8 @@ class MatchCreationTest extends TestCase
 
         $this->assertDatabaseHas('matches', [
             'id' => $response->json('data.id'),
-            'dictionary_id' => $this->dictionary->id,
+            'language_from_id' => $this->languageFrom->id,
+            'language_to_id' => $this->languageTo->id,
             'status' => MatchStatus::InProgress->value,
         ]);
 
@@ -86,7 +84,8 @@ class MatchCreationTest extends TestCase
         $guestId = '550e8400-e29b-41d4-a716-446655440000';
 
         $response = $this->actingAs($this->user1)->postJson('/api/v1/matches', [
-            'dictionary_id' => $this->dictionary->id,
+            'language_from_id' => $this->languageFrom->id,
+            'language_to_id' => $this->languageTo->id,
             'match_type' => MatchType::Time->value,
             'match_type_params' => ['duration' => 180],
             'participants' => [
@@ -112,7 +111,8 @@ class MatchCreationTest extends TestCase
         $guestId = '550e8400-e29b-41d4-a716-446655440001';
 
         $response = $this->actingAs($this->user1)->postJson('/api/v1/matches', [
-            'dictionary_id' => $this->dictionary->id,
+            'language_from_id' => $this->languageFrom->id,
+            'language_to_id' => $this->languageTo->id,
             'match_type' => MatchType::Steps->value,
             'match_type_params' => ['steps' => 10],
             'participants' => [
@@ -139,7 +139,8 @@ class MatchCreationTest extends TestCase
         $this->seed(TopWordSeeder::class);
 
         $response = $this->actingAs($this->user1)->postJson('/api/v1/matches', [
-            'dictionary_id' => $this->dictionary->id,
+            'language_from_id' => $this->languageFrom->id,
+            'language_to_id' => $this->languageTo->id,
             'match_type' => MatchType::Time->value,
             'match_type_params' => ['duration' => 300],
             'participants' => [
@@ -169,13 +170,14 @@ class MatchCreationTest extends TestCase
         $response = $this->actingAs($this->user1)->postJson('/api/v1/matches', []);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['dictionary_id', 'match_type', 'match_type_params', 'participants']);
+            ->assertJsonValidationErrors(['language_from_id', 'language_to_id', 'match_type', 'match_type_params', 'participants']);
     }
 
     public function test_validates_minimum_participants(): void
     {
         $response = $this->actingAs($this->user1)->postJson('/api/v1/matches', [
-            'dictionary_id' => $this->dictionary->id,
+            'language_from_id' => $this->languageFrom->id,
+            'language_to_id' => $this->languageTo->id,
             'match_type' => MatchType::Time->value,
             'match_type_params' => ['duration' => 300],
             'participants' => [
@@ -193,7 +195,8 @@ class MatchCreationTest extends TestCase
 
         // Создаём матч
         $createResponse = $this->actingAs($this->user1)->postJson('/api/v1/matches', [
-            'dictionary_id' => $this->dictionary->id,
+            'language_from_id' => $this->languageFrom->id,
+            'language_to_id' => $this->languageTo->id,
             'match_type' => MatchType::Time->value,
             'match_type_params' => ['duration' => 300],
             'participants' => [
@@ -218,7 +221,8 @@ class MatchCreationTest extends TestCase
 
         // Создаём матч с гостем
         $createResponse = $this->actingAs($this->user1)->postJson('/api/v1/matches', [
-            'dictionary_id' => $this->dictionary->id,
+            'language_from_id' => $this->languageFrom->id,
+            'language_to_id' => $this->languageTo->id,
             'match_type' => MatchType::Time->value,
             'match_type_params' => ['duration' => 300],
             'participants' => [

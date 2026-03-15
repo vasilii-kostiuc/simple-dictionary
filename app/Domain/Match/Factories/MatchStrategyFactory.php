@@ -27,11 +27,9 @@ class MatchStrategyFactory
 
     private function createWordsProvider(MatchModel $match): WordsProviderInterface
     {
-        $dictionary = $match->dictionary;
-
         return new TopWordsProvider(
-            $dictionary->language_from_id,
-            $dictionary->language_to_id
+            $match->language_from_id,
+            $match->language_to_id
         );
     }
 }

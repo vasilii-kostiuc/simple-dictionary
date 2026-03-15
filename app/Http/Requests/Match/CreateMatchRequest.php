@@ -11,7 +11,9 @@ class CreateMatchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'dictionary_id' => ['required', 'integer', Rule::exists('dictionaries', 'id')],
+            'language_from_id' => ['required', 'integer', Rule::exists('languages', 'id')],
+            'language_to_id' => ['required', 'integer', Rule::exists('languages', 'id')],
+            'dictionary_id' => ['nullable', 'integer', Rule::exists('dictionaries', 'id')],
             'match_type' => ['required', Rule::enum(MatchType::class)],
             'match_type_params' => ['required', 'array'],
             'match_type_params.duration' => ['required_if:match_type,time', 'integer', 'min:60', 'max:3600'],
