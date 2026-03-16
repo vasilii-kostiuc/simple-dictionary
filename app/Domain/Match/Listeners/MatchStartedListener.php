@@ -5,9 +5,10 @@ namespace App\Domain\Training\Listeners;
 use App\Domain\Training\Events\TrainingCompleted;
 use App\Domain\Training\Events\TrainingStartedEvent;
 use App\Domain\Training\Factories\CompletionConditionFactory;
+use App\Http\Resources\Match\MatchResource;
 use VasiliiKostiuc\LaravelMessagingLibrary\Messaging\MessageBrokerFactory;
 
-class TrainingStartedListener
+class MatchStartedListener
 {
     private MessageBrokerFactory $messageBrokerFactory;
 
@@ -29,15 +30,10 @@ class TrainingStartedListener
         $messageBroker = $this->messageBrokerFactory->create();
 
         $payload = [
-            'type' => 'training_started',
-            'data' => [
-                'training_id' => $event->training->id,
-                'completion_type' => $event->training->completion_type,
-                'completion_type_params' => $event->training->completion_type_params,
-                'started_at' => $event->training->started_at,
-            ]
+            'type' => 'match_started',
+            'data' => MatchResource::make($event->match)->toArray(null)
         ];
 
-        $messageBroker->publish('api.training', json_encode($payload));
+        $messageBroker->publish('api.match', json_encode($payload));
     }
 }
