@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Domain\Training\Listeners;
+namespace App\Domain\Match\Listeners;
 
-use App\Domain\Training\Events\TrainingCompleted;
-use App\Domain\Training\Events\TrainingStartedEvent;
-use App\Domain\Training\Factories\CompletionConditionFactory;
+use App\Domain\Match\Events\MatchStartedEvent;
 use App\Http\Resources\Match\MatchResource;
 use VasiliiKostiuc\LaravelMessagingLibrary\Messaging\MessageBrokerFactory;
 
@@ -23,7 +21,7 @@ class MatchStartedListener
     /**
      * Handle the event.
      */
-    public function handle(TrainingStartedEvent $event): void
+    public function handle(MatchStartedEvent $event): void
     {
         info(__METHOD__);
 
