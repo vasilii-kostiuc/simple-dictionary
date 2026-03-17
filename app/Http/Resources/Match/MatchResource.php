@@ -22,7 +22,7 @@ class MatchResource extends JsonResource
             'completion_reason' => $this->completion_reason,
             'participants' => MatchUserResource::collection($this->whenLoaded('matchUsers')),
             'time_left' => $this->when(
-                $this->started_at && !$this->completed_at,
+                $this->started_at && ! $this->completed_at,
                 function () {
                     $elapsed = now()->diffInSeconds($this->started_at);
                     $duration = $this->match_type_params['duration'] ?? 0;

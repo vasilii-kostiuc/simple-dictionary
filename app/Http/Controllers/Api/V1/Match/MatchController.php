@@ -50,6 +50,7 @@ class MatchController extends Controller
 
     public function store(CreateMatchRequest $request)
     {
+        info(__METHOD__ , $request->validated());
         $match = $this->matchService->create(
             $request->validated(),
             $request->input('participants')

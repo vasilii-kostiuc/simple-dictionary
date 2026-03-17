@@ -30,7 +30,7 @@ class MatchCreatedListener
         $payload = [
             'type' => 'match_created',
             'data' => [
-                MatchResource::make($event->match)->toArray(null)
+                MatchResource::make($event->match)
             ]
         ];
 
