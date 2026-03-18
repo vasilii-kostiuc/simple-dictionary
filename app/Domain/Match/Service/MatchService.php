@@ -10,6 +10,12 @@ use App\Models\User;
 
 class MatchService
 {
+    public function __construct(
+        private readonly MatchStepService $matchStepService
+    )
+    {
+    }
+
     public function create(array $data, array $participants): MatchModel
     {
         $match = MatchModel::create([
@@ -41,6 +47,7 @@ class MatchService
             }
         }
 
+        $match->refresh();
         event(new MatchCreatedEvent($match));
 
         return $match;
@@ -57,6 +64,15 @@ class MatchService
         $match->save();
 
         event(new MatchStartedEvent($match));
+
+        // Генерируем первый шаг для каждого участника
+        foreach ($match->matchUsers as $matchUser) {
+            $this->matchStepService->generateNextStepForParticipant(
+                $match,
+                $matchUser->user_id,
+                $matchUser->guest_id
+            );
+        }
 
         return $match;
     }

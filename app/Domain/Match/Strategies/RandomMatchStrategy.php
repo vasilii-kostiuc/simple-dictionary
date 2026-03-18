@@ -12,7 +12,7 @@ class RandomMatchStrategy extends MatchStrategyAbstract
         $stepTypes = [
             StepType::ChooseCorrectAnswer,
             StepType::WriteCorrectAnswer,
-            StepType::EstablishCompliance,
+//            StepType::EstablishCompliance,
         ];
 
         $randomStepType = $stepTypes[array_rand($stepTypes)];

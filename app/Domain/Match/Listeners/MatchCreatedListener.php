@@ -29,9 +29,7 @@ class MatchCreatedListener
 
         $payload = [
             'type' => 'match_created',
-            'data' => [
-                MatchResource::make($event->match)
-            ]
+            'data' => MatchResource::make($event->match)
         ];
 
         $messageBroker->publish('api.match', json_encode($payload));

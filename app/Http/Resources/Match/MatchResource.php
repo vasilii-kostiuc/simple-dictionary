@@ -20,7 +20,7 @@ class MatchResource extends JsonResource
             'started_at' => $this->started_at,
             'completed_at' => $this->completed_at,
             'completion_reason' => $this->completion_reason,
-            'participants' => MatchUserResource::collection($this->whenLoaded('matchUsers')),
+            'participants' => MatchUserResource::collection($this->matchUsers),
             'time_left' => $this->when(
                 $this->started_at && ! $this->completed_at,
                 function () {

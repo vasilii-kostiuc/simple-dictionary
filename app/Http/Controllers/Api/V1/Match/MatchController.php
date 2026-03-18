@@ -58,15 +58,6 @@ class MatchController extends Controller
 
         $match = $this->matchService->start($match);
 
-        // Генерируем первый шаг для каждого участника
-        foreach ($match->matchUsers as $matchUser) {
-            $this->matchStepService->generateNextStepForParticipant(
-                $match,
-                $matchUser->user_id,
-                $matchUser->guest_id
-            );
-        }
-
         $match->load('matchUsers', 'steps');
 
         return new ApiResponseResource([
