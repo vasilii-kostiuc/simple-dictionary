@@ -43,7 +43,7 @@ class MatchStep extends Model
 
     public function getParticipantIdentifier(): string
     {
-        return (string)($this->user_id ?? $this->guest_id);
+        return (string) ($this->user_id ?? $this->guest_id);
     }
 
     public function isForGuest(): bool
@@ -55,7 +55,7 @@ class MatchStep extends Model
     {
         $lastAttemptNum = $this->attempts()->max('attempt_number');
 
-        if (!$lastAttemptNum) {
+        if (! $lastAttemptNum) {
             return false;
         }
 
@@ -70,6 +70,11 @@ class MatchStep extends Model
     public function correctAnswers()
     {
         return $this->attempts()->where('is_correct', true)->get();
+    }
+
+    public function hasAttempts(): bool
+    {
+        return $this->attempts()->exists();
     }
 
     public function isPassedOrSkipped(): bool

@@ -182,31 +182,17 @@ class MatchStepAttemptTest extends TestCase
 
         $matchId = $createResponse->json('data.id');
 
-        // Сбрасываем авторизацию user1 перед guest запросом
-        auth()->forgetGuards();
+        // Получаем шаг гостя напрямую из БД (API /current возвращает шаг авторизованного user1)
+        $guestStep = \App\Domain\Match\Models\MatchStep::where('match_id', $matchId)
+            ->where('guest_id', $guestId)
+            ->first();
 
-        $currentStepResponse = $this->getJson("/api/v1/matches/{$matchId}/steps/current?guest_id={$guestId}");
+        $this->assertNotNull($guestStep, 'Guest step should be generated on match start');
 
-        \Log::info('Guest current step response', [
-            'status' => $currentStepResponse->status(),
-            'data' => $currentStepResponse->json(),
-        ]);
-
-        $currentStepResponse->assertOk();
-
-        $stepId = $currentStepResponse->json('data.id');
-        $stepData = $currentStepResponse->json('data');
-
-        \Log::info('Guest step', [
-            'step_id' => $stepId,
-            'step_user_id' => $stepData['user_id'] ?? 'null',
-            'step_guest_id' => $stepData['guest_id'] ?? 'null',
-        ]);
-
-        $response = $this->postJson(
-            "/api/v1/matches/{$matchId}/steps/{$stepId}/attempts",
+        $response = $this->actingAs($this->user1)->postJson(
+            "/api/v1/matches/{$matchId}/steps/{$guestStep->id}/attempts",
             [
-                'attempt_data' => $this->getValidAttemptData($stepData),
+                'attempt_data' => $this->getValidAttemptData($guestStep->toArray()),
                 'attempt_number' => 1,
                 'participant_type' => 'guest',
                 'participant_id' => $guestId,
@@ -216,7 +202,7 @@ class MatchStepAttemptTest extends TestCase
         $response->assertOk();
 
         $this->assertDatabaseHas('match_step_attempts', [
-            'match_step_id' => $stepId,
+            'match_step_id' => $guestStep->id,
         ]);
     }
 
@@ -232,24 +218,22 @@ class MatchStepAttemptTest extends TestCase
         $stepId = $currentStepResponse->json('data.id');
         $stepData = $currentStepResponse->json('data');
 
-        // Отправляем несколько попыток
-        for ($i = 1; $i <= 3; $i++) {
-            $this->actingAs($this->user1)->postJson(
-                "/api/v1/matches/{$match['id']}/steps/{$stepId}/attempts",
-                [
-                    'attempt_data' => $this->getValidAttemptData($stepData),
-                    'attempt_number' => $i,
-                    'participant_type' => 'user',
-                    'participant_id' => $this->user1->id,
-                ]
-            );
-        }
+        // В матче один правильный ответ закрывает шаг — последующие попытки блокируются
+        $this->actingAs($this->user1)->postJson(
+            "/api/v1/matches/{$match['id']}/steps/{$stepId}/attempts",
+            [
+                'attempt_data' => $this->getValidAttemptData($stepData),
+                'attempt_number' => 1,
+                'participant_type' => 'user',
+                'participant_id' => $this->user1->id,
+            ]
+        );
 
         $response = $this->actingAs($this->user1)
             ->getJson("/api/v1/matches/{$match['id']}/steps/{$stepId}/attempts");
 
         $response->assertOk()
-            ->assertJsonCount(3, 'data');
+            ->assertJsonCount(1, 'data');
     }
 
     public function test_can_filter_attempts_by_correctness(): void

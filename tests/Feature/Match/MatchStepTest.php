@@ -4,9 +4,12 @@ namespace Tests\Feature\Match;
 
 use App\Domain\Language\Models\Language;
 use App\Domain\Match\Enums\{MatchStatus, MatchType};
+use App\Domain\Step\Enums\StepType;
+use App\Domain\Step\StepResolverFactory;
 use App\Models\User;
 use Database\Seeders\TopWordSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class MatchStepTest extends TestCase
@@ -17,6 +20,7 @@ class MatchStepTest extends TestCase
     protected User $user2;
     protected Language $languageTo;
     protected Language $languageFrom;
+    protected StepResolverFactory $stepResolverFactory;
 
     protected function setUp(): void
     {
@@ -28,6 +32,8 @@ class MatchStepTest extends TestCase
         // TopWordSeeder uses language_from_id=2, language_to_id=1
         $this->languageTo = Language::factory()->create();   // id=1
         $this->languageFrom = Language::factory()->create(); // id=2
+
+        $this->stepResolverFactory = new StepResolverFactory();
     }
 
     private function createMatch(): array
@@ -44,6 +50,14 @@ class MatchStepTest extends TestCase
         ]);
 
         return $response->json('data');
+    }
+
+    private function getValidAttemptData(array $stepData): array
+    {
+        $stepType = StepType::from($stepData['step_type_id']);
+        $resolver = $this->stepResolverFactory->create($stepType);
+
+        return $resolver->resolve($stepData['step_data']);
     }
 
     public function test_can_get_current_step_for_participant(): void
@@ -72,6 +86,10 @@ class MatchStepTest extends TestCase
     {
         $this->seed(TopWordSeeder::class);
 
+        // Фейкуем события чтобы слушатель не генерировал шаг автоматически
+        // (имитируем сценарий синхронного клиента без WSS)
+        Event::fake();
+
         $match = $this->createMatch();
 
         // Получаем текущий шаг
@@ -80,18 +98,18 @@ class MatchStepTest extends TestCase
 
         $currentStep = $currentStepResponse->json('data');
 
-        // Отмечаем шаг как пройденный (отправляем правильный ответ)
+        // Отправляем ответ — попытка создаётся, но слушатель не генерирует шаг автоматически
         $this->actingAs($this->user1)->postJson(
             "/api/v1/matches/{$match['id']}/steps/{$currentStep['id']}/attempts",
             [
-                'answer' => 'test_answer',
+                'attempt_data' => $this->getValidAttemptData($currentStep),
                 'attempt_number' => 1,
                 'participant_type' => 'user',
                 'participant_id' => $this->user1->id,
             ]
         );
 
-        // Генерируем следующий шаг
+        // Синхронный клиент явно запрашивает следующий шаг
         $response = $this->actingAs($this->user1)
             ->getJson("/api/v1/matches/{$match['id']}/steps/next");
 
@@ -103,6 +121,20 @@ class MatchStepTest extends TestCase
             'user_id' => $this->user1->id,
             'step_number' => 2,
         ]);
+    }
+
+    public function test_cannot_generate_next_step_if_previous_not_attempted(): void
+    {
+        $this->seed(TopWordSeeder::class);
+
+        $match = $this->createMatch();
+
+        // Пытаемся перейти к следующему шагу без единой попытки на текущем
+        $response = $this->actingAs($this->user1)
+            ->getJson("/api/v1/matches/{$match['id']}/steps/next");
+
+        $response->assertStatus(409)
+            ->assertJsonPath('errors.previous_step_not_completed', 'Previous step has not been attempted');
     }
 
     public function test_cannot_generate_next_step_if_completed_match(): void
@@ -135,7 +167,7 @@ class MatchStepTest extends TestCase
         $stepId = $currentStepResponse->json('data.id');
 
         $response = $this->actingAs($this->user1)
-            ->postJson("/api/v1/matches/{$match['id']}/steps/{$stepId}/skip");
+            ->patchJson("/api/v1/matches/{$match['id']}/steps/{$stepId}/skip");
 
         $response->assertOk()
             ->assertJsonPath('data.skipped', true);
@@ -144,6 +176,43 @@ class MatchStepTest extends TestCase
             'id' => $stepId,
             'skipped' => true,
         ]);
+
+        // После скипа слушатель должен автоматически сгенерировать следующий шаг
+        $this->assertDatabaseHas('match_steps', [
+            'match_id' => $match['id'],
+            'user_id' => $this->user1->id,
+            'step_number' => 2,
+        ]);
+    }
+
+    public function test_current_returns_next_step_after_passing_current(): void
+    {
+        $this->seed(TopWordSeeder::class);
+
+        $match = $this->createMatch();
+
+        $step1Response = $this->actingAs($this->user1)
+            ->getJson("/api/v1/matches/{$match['id']}/steps/current");
+
+        $step1 = $step1Response->json('data');
+
+        // Отправляем правильный ответ — шаг 1 пройден, слушатель генерирует шаг 2
+        $this->actingAs($this->user1)->postJson(
+            "/api/v1/matches/{$match['id']}/steps/{$step1['id']}/attempts",
+            [
+                'attempt_data' => $this->getValidAttemptData($step1),
+                'attempt_number' => 1,
+                'participant_type' => 'user',
+                'participant_id' => $this->user1->id,
+            ]
+        );
+
+        // current теперь должен вернуть шаг 2 (шаг 1 пройден)
+        $currentResponse = $this->actingAs($this->user1)
+            ->getJson("/api/v1/matches/{$match['id']}/steps/current");
+
+        $currentResponse->assertOk()
+            ->assertJsonPath('data.step_number', 2);
     }
 
     public function test_guest_can_get_current_step(): void
@@ -180,6 +249,8 @@ class MatchStepTest extends TestCase
         $user1Step = $this->actingAs($this->user1)
             ->getJson("/api/v1/matches/{$match['id']}/steps/current")
             ->json('data');
+
+        auth()->forgetGuards();
 
         $user2Step = $this->actingAs($this->user2)
             ->getJson("/api/v1/matches/{$match['id']}/steps/current")

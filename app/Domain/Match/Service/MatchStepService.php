@@ -2,6 +2,7 @@
 
 namespace App\Domain\Match\Service;
 
+use App\Domain\Match\Events\MatchStepSkippedEvent;
 use App\Domain\Match\Factories\MatchStrategyFactory;
 use App\Domain\Match\Models\MatchModel;
 use App\Domain\Match\Models\MatchStep;
@@ -11,7 +12,8 @@ class MatchStepService
 {
     public function __construct(
         private MatchStrategyFactory $strategyFactory
-    ) {}
+    ) {
+    }
 
     public function generateNextStepForParticipant(MatchModel $match, ?int $userId, ?string $guestId): MatchStep
     {
@@ -56,6 +58,8 @@ class MatchStepService
         $step->skipped = true;
         $step->skipped_at = now();
         $step->save();
+
+        event(new MatchStepSkippedEvent($step->match, $step));
 
         return $step;
     }
