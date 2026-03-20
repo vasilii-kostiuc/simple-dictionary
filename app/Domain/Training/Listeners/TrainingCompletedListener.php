@@ -39,6 +39,6 @@ class TrainingCompletedListener
             ]
         ];
 
-        $messageBroker->publish('training', json_encode($payload));
+        $messageBroker->publish('api.training', json_encode($payload));
     }
 }

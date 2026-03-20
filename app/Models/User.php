@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Domain\Dictionary\Models\Dictionary;
+use App\Domain\Match\Models\MatchUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -62,5 +63,10 @@ class User extends Authenticatable
     public function dictionaries(): HasMany
     {
         return $this->hasMany(Dictionary::class, 'user_id', 'id');
+    }
+
+    public function matchUsers(): HasMany
+    {
+        return $this->hasMany(MatchUser::class, 'user_id', 'id');
     }
 }

@@ -73,7 +73,24 @@ Route::prefix('v1')->group(function () {
         Route::patch('trainings/{training}/steps/{step}/skip', [\App\Http\Controllers\Api\V1\Training\TrainingStepController::class, 'skip'])->name('trainings-steps.skip');
         Route::post('trainings/{training}/steps/{step}/attempts', [\App\Http\Controllers\Api\V1\Training\TrainingStepAttemptController::class, 'store'])->name('trainings-steps.attempts');
         Route::get('trainings/{training}/steps/{step}/attempts', [\App\Http\Controllers\Api\V1\Training\TrainingStepAttemptController::class, 'index'])->name('trainings-steps.attempts');
+
+        // Match routes
+        Route::post('matches', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'store'])->name('matches.store');
+        Route::get('matches', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'index'])->name('matches.index');
+        Route::get('matches/active', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'getActiveMatch'])->name('matches.active');
+        Route::get('matches/{match}', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'show'])->name('matches.show');
+        Route::post('matches/{match}/start', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'start'])->name('matches.start');
+        Route::post('matches/{match}/complete', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'complete'])->name('matches.complete');
+        Route::get('matches/{match}/summary', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'summary'])->name('matches.summary');
+
+        // Match Steps
+        Route::get('matches/{match}/steps/next', [\App\Http\Controllers\Api\V1\Match\MatchStepController::class, 'next'])->name('match-steps.next');
+        Route::get('matches/{match}/steps/current', [\App\Http\Controllers\Api\V1\Match\MatchStepController::class, 'current'])->name('match-steps.current');
+        Route::get('matches/{match}/steps/{step}', [\App\Http\Controllers\Api\V1\Match\MatchStepController::class, 'show'])->name('match-steps.show')->scopeBindings();
+        Route::patch('matches/{match}/steps/{step}/skip', [\App\Http\Controllers\Api\V1\Match\MatchStepController::class, 'skip'])->name('match-steps.skip')->scopeBindings();
+
+        // Match Step Attempts
+        Route::post('matches/{match}/steps/{step}/attempts', [\App\Http\Controllers\Api\V1\Match\MatchStepAttemptController::class, 'store'])->name('match-steps.attempts.store')->scopeBindings();
+        Route::get('matches/{match}/steps/{step}/attempts', [\App\Http\Controllers\Api\V1\Match\MatchStepAttemptController::class, 'index'])->name('match-steps.attempts.index')->scopeBindings();
     });
-
-
 });
