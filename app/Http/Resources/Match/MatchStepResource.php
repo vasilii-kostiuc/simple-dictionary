@@ -12,6 +12,8 @@ class MatchStepResource extends JsonResource
         return [
             'id' => $this->id,
             'match_id' => $this->match_id,
+            'user_id' => $this->user_id,
+            'guest_id' => $this->guest_id,
             'step_number' => $this->step_number,
             'step_type_id' => $this->step_type_id,
             'step_data' => $this->step_data,
