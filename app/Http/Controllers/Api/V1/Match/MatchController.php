@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\V1\Match;
 
 use App\Domain\Match\Enums\{MatchStatus, MatchCompletionReason};
 use App\Domain\Match\Models\MatchModel;
-use App\Domain\Match\Service\{MatchService, MatchStepService};
+use App\Domain\Match\Service\{MatchService, MatchStepService, MatchSummaryBuilder};
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Match\CreateMatchRequest;
 use App\Http\Resources\ApiResponseResource;
@@ -19,7 +19,7 @@ class MatchController extends Controller
 
     public function __construct(
         private MatchService $matchService,
-        private MatchStepService $matchStepService
+        private MatchSummaryBuilder $matchSummaryBuilder
     ) {}
 
     public function index(Request $request)
@@ -50,7 +50,7 @@ class MatchController extends Controller
 
     public function store(CreateMatchRequest $request)
     {
-        info(__METHOD__ , $request->validated());
+        info(__METHOD__, $request->validated());
         $match = $this->matchService->create(
             $request->validated(),
             $request->input('participants')
@@ -146,49 +146,8 @@ class MatchController extends Controller
 
     public function summary(MatchModel $match)
     {
-        $matchTime = $match->completed_at
-            ? $match->started_at->diffInSeconds($match->completed_at)
-            : null;
-
-        $participants = $match->matchUsers->map(function ($matchUser) use ($match) {
-            $stepsCount = $match->steps()
-                ->where(function ($q) use ($matchUser) {
-                    if ($matchUser->user_id) {
-                        $q->where('user_id', $matchUser->user_id);
-                    } else {
-                        $q->where('guest_id', $matchUser->guest_id);
-                    }
-                })
-                ->count();
-
-            return [
-                'participant_name' => $matchUser->participant_name,
-                'participant_avatar' => $matchUser->participant_avatar,
-                'score' => $matchUser->score,
-                'answered_count' => $matchUser->answered_count,
-                'correct_answers_count' => $matchUser->correct_answers_count,
-                'steps_count' => $stepsCount,
-                'place' => $matchUser->place,
-                'is_winner' => $matchUser->is_winner,
-                'is_guest' => $matchUser->isGuest(),
-            ];
-        });
-
-        $winner = $match->matchUsers->where('is_winner', true)->first();
-
         return new ApiResponseResource([
-            'data' => new MatchSummaryResource((object)[
-                'match_id' => $match->id,
-                'match_time_seconds' => $matchTime,
-                'participants' => $participants,
-                'winner' => $winner ? [
-                    'participant_name' => $winner->participant_name,
-                    'score' => $winner->score,
-                ] : null,
-                'completion_reason' => $match->completion_reason?->value,
-                'started_at' => $match->started_at,
-                'completed_at' => $match->completed_at,
-            ])
+            'data' => new MatchSummaryResource($this->matchSummaryBuilder->build($match))
         ])->response()->setStatusCode(Response::HTTP_OK);
     }
 }
