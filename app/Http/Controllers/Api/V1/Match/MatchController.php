@@ -20,7 +20,8 @@ class MatchController extends Controller
     public function __construct(
         private MatchService $matchService,
         private MatchSummaryBuilder $matchSummaryBuilder
-    ) {}
+    ) {
+    }
 
     public function index(Request $request)
     {

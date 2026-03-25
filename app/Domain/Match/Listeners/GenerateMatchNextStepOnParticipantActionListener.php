@@ -10,7 +10,10 @@ use App\Domain\Match\Service\MatchStepService;
 
 class GenerateMatchNextStepOnParticipantActionListener
 {
-    public function __construct(private MatchStepService $matchStepService) {}
+    public function __construct(
+        private MatchStepService $matchStepService
+    ) {
+    }
 
     public function handle(MatchUserAnsweredEvent|MatchStepSkippedEvent $event): void
     {
@@ -20,10 +23,8 @@ class GenerateMatchNextStepOnParticipantActionListener
             return;
         }
 
-        [$userId, $guestId] = match (true) {
-            $event instanceof MatchUserAnsweredEvent => [$event->matchUser->user_id, $event->matchUser->guest_id],
-            $event instanceof MatchStepSkippedEvent  => [$event->step->user_id, $event->step->guest_id],
-        };
+        $userId = $event instanceof MatchUserAnsweredEvent ? $event->matchUser->user_id : $event->step->user_id;
+        $guestId = $event instanceof MatchUserAnsweredEvent ? $event->matchUser->guest_id : $event->step->guest_id;
 
         $nextStep = $this->matchStepService->generateNextStepForParticipant($match, $userId, $guestId);
 

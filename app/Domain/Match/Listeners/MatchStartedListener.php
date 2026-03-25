@@ -8,15 +8,11 @@ use VasiliiKostiuc\LaravelMessagingLibrary\Messaging\MessageBrokerFactory;
 
 class MatchStartedListener
 {
-    private MessageBrokerFactory $messageBrokerFactory;
-
-    /**
-     * Create the event listener.
-     */
-    public function __construct(MessageBrokerFactory $messageBrokerFactory)
-    {
-        $this->messageBrokerFactory = $messageBrokerFactory;
+    public function __construct(
+        private MessageBrokerFactory $messageBrokerFactory
+    ) {
     }
+
 
     /**
      * Handle the event.
