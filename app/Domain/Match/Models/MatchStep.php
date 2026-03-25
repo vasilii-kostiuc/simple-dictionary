@@ -5,6 +5,7 @@ namespace App\Domain\Match\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
+use App\Domain\Traits\HasAttempts;
 
 class MatchStep extends Model
 {
