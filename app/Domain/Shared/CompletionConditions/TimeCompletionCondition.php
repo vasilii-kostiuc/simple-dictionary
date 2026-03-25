@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Training\CompletionConditions;
+namespace App\Domain\Shared\CompletionConditions;
 
 use Carbon\Carbon;
 use Carbon\Traits\Timestamp;
