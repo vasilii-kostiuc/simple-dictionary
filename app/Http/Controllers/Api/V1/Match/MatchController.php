@@ -20,8 +20,7 @@ class MatchController extends Controller
     public function __construct(
         private MatchService $matchService,
         private MatchSummaryBuilder $matchSummaryBuilder
-    ) {
-    }
+    ) {}
 
     public function index(Request $request)
     {
@@ -104,7 +103,7 @@ class MatchController extends Controller
         }
 
         $reason = $request->input('reason')
-            ? MatchCompletionReason::from($request->input('reason'))
+            ? MatchCompletionReason::tryFrom($request->input('reason'))
             : null;
 
         $this->matchService->complete($match, $reason);
