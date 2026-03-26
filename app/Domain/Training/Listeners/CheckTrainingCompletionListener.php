@@ -8,7 +8,7 @@ use App\Domain\Training\Events\StepSkippedEvent;
 use App\Domain\Training\Factories\CompletionConditionFactory;
 use App\Domain\Training\Service\TrainingService;
 
-class TrainingStepSkipAttemptListener
+class CheckTrainingCompletionListener
 {
     private CompletionConditionFactory $completionConditionFactory;
     private TrainingService $trainingService;

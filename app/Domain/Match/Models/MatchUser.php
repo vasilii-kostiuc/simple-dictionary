@@ -2,10 +2,10 @@
 
 namespace App\Domain\Match\Models;
 
+use App\Domain\Match\Enums\MatchUserStatus;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Str;
 
 class MatchUser extends Model
 {
@@ -20,12 +20,14 @@ class MatchUser extends Model
         'correct_answers_count',
         'place',
         'is_winner',
+        'status',
         'joined_at',
         'left_at'
     ];
 
     protected $casts = [
         'is_winner' => 'boolean',
+        'status' => MatchUserStatus::class,
         'joined_at' => 'datetime',
         'left_at' => 'datetime',
     ];
@@ -52,7 +54,37 @@ class MatchUser extends Model
 
     public function getIdentifier(): string
     {
-        return (string)($this->user_id ?? $this->guest_id);
+        return (string) ($this->user_id ?? $this->guest_id);
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === MatchUserStatus::Active;
+    }
+
+    public function finish(): void
+    {
+        $this->status = MatchUserStatus::Finished;
+        $this->save();
+    }
+
+    public function leave(): void
+    {
+        $this->status = MatchUserStatus::Left;
+        $this->left_at = now();
+        $this->save();
+    }
+
+    public function disconnect(): void
+    {
+        $this->status = MatchUserStatus::Disconnected;
+        $this->save();
+    }
+
+    public function forfeit(): void
+    {
+        $this->status = MatchUserStatus::Forfeited;
+        $this->save();
     }
 
     public static function fromUser(User $user, int $matchId): self
@@ -63,6 +95,7 @@ class MatchUser extends Model
             'guest_id' => null,
             'participant_name' => $user->name,
             'participant_avatar' => $user->avatar ?? null,
+            'status' => MatchUserStatus::Active,
             'joined_at' => now(),
         ]);
     }
@@ -75,6 +108,7 @@ class MatchUser extends Model
             'guest_id' => $guestId,
             'participant_name' => $name ?? self::generateGuestName(),
             'participant_avatar' => self::generateGuestAvatar($guestId),
+            'status' => MatchUserStatus::Active,
             'joined_at' => now(),
         ]);
     }
@@ -84,14 +118,14 @@ class MatchUser extends Model
         $adjectives = ['Quick', 'Smart', 'Clever', 'Brave', 'Swift', 'Wise', 'Bold', 'Fast'];
         $animals = ['Fox', 'Wolf', 'Eagle', 'Hawk', 'Lion', 'Tiger', 'Bear', 'Falcon'];
 
-        return $adjectives[array_rand($adjectives)] . ' ' .
-            $animals[array_rand($animals)] . ' ' .
+        return $adjectives[array_rand($adjectives)].' '.
+            $animals[array_rand($animals)].' '.
             rand(100, 999);
     }
 
     private static function generateGuestAvatar(string $guestId): string
     {
-        return 'https://api.dicebear.com/7.x/avataaars/svg?seed=' . $guestId;
+        return 'https://api.dicebear.com/7.x/avataaars/svg?seed='.$guestId;
     }
 
     public function incrementScore(bool $isCorrect): void
@@ -105,4 +139,5 @@ class MatchUser extends Model
 
         $this->save();
     }
+
 }

@@ -18,9 +18,7 @@ class CompletionConditionFactory
                 $match->started_at->toDateTimeString()
             ),
             MatchType::Steps => new AllParticipantsCompletedCondition(
-                $match->match_type_params['steps_count'],
-                $match->matchUsers,
-                $match->steps
+                $match->matchUsers
             ),
         };
     }
