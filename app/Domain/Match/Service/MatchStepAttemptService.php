@@ -3,7 +3,9 @@
 namespace App\Domain\Match\Service;
 
 use App\Domain\Match\Events\MatchUserAnsweredEvent;
-use App\Domain\Match\Models\{MatchStep, MatchStepAttempt, MatchUser};
+use App\Domain\Match\Models\MatchStep;
+use App\Domain\Match\Models\MatchStepAttempt;
+use App\Domain\Match\Models\MatchUser;
 use App\Domain\Step\Enums\StepType;
 use App\Domain\Step\StepAttemptVerifierFactory;
 
@@ -11,7 +13,8 @@ class MatchStepAttemptService
 {
     public function __construct(
         private StepAttemptVerifierFactory $verifierFactory
-    ) {}
+    ) {
+    }
 
     public function submitAnswer(MatchStep $step, array $attemptData, int $attemptNumber): MatchStepAttempt
     {
