@@ -12,7 +12,7 @@ class MatchSummaryResource extends JsonResource
         return [
             'match_id' => $this->match_id,
             'match_time_seconds' => $this->match_time_seconds,
-            'participants' => $this->participants,
+            'participants' => MatchUserResource::collection($this->participants),
             'winner' => $this->winner,
             'completion_reason' => $this->completion_reason,
             'started_at' => $this->started_at,

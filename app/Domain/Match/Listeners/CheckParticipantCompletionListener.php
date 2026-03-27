@@ -2,12 +2,11 @@
 
 namespace App\Domain\Match\Listeners;
 
+use App\Domain\Match\Enums\MatchType;
 use App\Domain\Match\Events\MatchStepSkippedEvent;
 use App\Domain\Match\Events\MatchUserAnsweredEvent;
-use App\Domain\Match\Enums\MatchType;
 use App\Domain\Match\Models\MatchUser;
 use App\Domain\Shared\CompletionConditions\StepsCompletionCondition;
-use Illuminate\Support\Collection;
 
 class CheckParticipantCompletionListener
 {
@@ -36,9 +35,9 @@ class CheckParticipantCompletionListener
             : $step->guest_id === $guestId
         );
 
-        $requiredStepsCount = $match->match_type_params['steps_count'];
+        $requiredStepsCount = $match->match_type_params['steps'];
 
-        $condition = new StepsCompletionCondition($requiredStepsCount, $participantSteps);
+        $condition = new StepsCompletionCondition($requiredStepsCount, $participantSteps, true);
 
         if ($condition->isCompleted()) {
             $matchUser->finish();

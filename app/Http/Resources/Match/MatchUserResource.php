@@ -21,6 +21,8 @@ class MatchUserResource extends JsonResource
             'place' => $this->place,
             'is_winner' => $this->is_winner,
             'is_guest' => $this->isGuest(),
+            'steps_count' => $this->stepsCount(),
+            'skipped_steps_count' => $this->skippedStepsCount(),
         ];
     }
 }

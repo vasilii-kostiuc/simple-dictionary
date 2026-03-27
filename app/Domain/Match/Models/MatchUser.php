@@ -22,7 +22,7 @@ class MatchUser extends Model
         'is_winner',
         'status',
         'joined_at',
-        'left_at'
+        'left_at',
     ];
 
     protected $casts = [
@@ -140,4 +140,30 @@ class MatchUser extends Model
         $this->save();
     }
 
+    public function stepsCount(): int
+    {
+        return $this->match->steps()
+            ->where(function ($q) {
+                if ($this->user_id) {
+                    $q->where('user_id', $this->user_id);
+                } else {
+                    $q->where('guest_id', $this->guest_id);
+                }
+            })
+            ->count();
+    }
+
+    public function skippedStepsCount(): int
+    {
+        return $this->match->steps()
+            ->where(function ($q) {
+                if ($this->user_id) {
+                    $q->where('user_id', $this->user_id);
+                } else {
+                    $q->where('guest_id', $this->guest_id);
+                }
+            })
+            ->where('skipped', true)
+            ->count();
+    }
 }

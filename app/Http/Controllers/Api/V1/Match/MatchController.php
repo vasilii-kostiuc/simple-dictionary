@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers\Api\V1\Match;
 
-use App\Domain\Match\Enums\{MatchStatus, MatchCompletionReason};
+use App\Domain\Training\Enums\TrainingCompletionReason;
+use App\Domain\Training\Enums\TrainingCompletionType;
+use App\Domain\Training\Models\Training;
+use App\Http\Resources\Training\TrainingResource;
+use App\Domain\Match\Enums\{MatchStatus, MatchCompletionReason, MatchType};
 use App\Domain\Match\Models\MatchModel;
 use App\Domain\Match\Service\{MatchService, MatchStepService, MatchSummaryBuilder};
 use App\Http\Controllers\Controller;
@@ -112,6 +116,17 @@ class MatchController extends Controller
             'message' => 'Match completed successfully',
             'data' => new MatchResource($match->load('matchUsers'))
         ]);
+    }
+
+    public function expire(MatchModel $match)
+    {
+        if ($match->match_type === MatchType::Time) {
+            $this->matchService->complete($match, MatchCompletionReason::TimeExpired);
+            $match->refresh();
+            return new ApiResponseResource(['message' => 'Match completed successfully', 'data' => new MatchResource($match)]);
+        }
+
+        return new ApiResponseResource(['success' => false, 'message' => 'Training expiration is not supported for tris training type'])->response()->setStatusCode(Response::HTTP_CONFLICT);
     }
 
     public function getActiveMatch(Request $request)

@@ -12,8 +12,7 @@ class GenerateMatchNextStepOnParticipantActionListener
 {
     public function __construct(
         private MatchStepService $matchStepService
-    ) {
-    }
+    ) {}
 
     public function handle(MatchUserAnsweredEvent|MatchStepSkippedEvent $event): void
     {

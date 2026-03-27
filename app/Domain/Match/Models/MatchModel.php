@@ -3,11 +3,15 @@
 namespace App\Domain\Match\Models;
 
 use App\Domain\Dictionary\Models\Dictionary;
-use App\Domain\Match\Enums\{MatchStatus, MatchType, MatchCompletionReason};
+use App\Domain\Match\Enums\MatchCompletionReason;
+use App\Domain\Match\Enums\MatchStatus;
+use App\Domain\Match\Enums\MatchType;
 use App\Domain\Match\Events\MatchCompletedEvent;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\{BelongsTo, BelongsToMany, HasMany};
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 class MatchModel extends Model
@@ -24,7 +28,7 @@ class MatchModel extends Model
         'started_at',
         'completed_at',
         'completion_reason',
-        'completion_details'
+        'completion_details',
     ];
 
     protected $casts = [

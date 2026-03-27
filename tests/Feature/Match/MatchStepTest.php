@@ -3,7 +3,7 @@
 namespace Tests\Feature\Match;
 
 use App\Domain\Language\Models\Language;
-use App\Domain\Match\Enums\{MatchStatus, MatchType};
+use App\Domain\Match\Enums\MatchType;
 use App\Domain\Step\Enums\StepType;
 use App\Domain\Step\StepResolverFactory;
 use App\Models\User;
@@ -17,9 +17,13 @@ class MatchStepTest extends TestCase
     use RefreshDatabase;
 
     protected User $user1;
+
     protected User $user2;
+
     protected Language $languageTo;
+
     protected Language $languageFrom;
+
     protected StepResolverFactory $stepResolverFactory;
 
     protected function setUp(): void
@@ -33,7 +37,7 @@ class MatchStepTest extends TestCase
         $this->languageTo = Language::factory()->create();   // id=1
         $this->languageFrom = Language::factory()->create(); // id=2
 
-        $this->stepResolverFactory = new StepResolverFactory();
+        $this->stepResolverFactory = new StepResolverFactory;
     }
 
     private function createMatch(): array
@@ -77,7 +81,7 @@ class MatchStepTest extends TestCase
                     'step_number',
                     'step_type_id',
                     'step_data',
-                ]
+                ],
             ])
             ->assertJsonPath('data.step_number', 1);
     }
@@ -260,6 +264,81 @@ class MatchStepTest extends TestCase
         $this->assertNotEquals($user1Step['id'], $user2Step['id']);
         $this->assertEquals(1, $user1Step['step_number']);
         $this->assertEquals(1, $user2Step['step_number']);
+    }
+
+    public function test_cannot_skip_step_belonging_to_another_user(): void
+    {
+        $this->seed(TopWordSeeder::class);
+
+        $match = $this->createMatch();
+
+        // Получаем шаг user1
+        $stepId = $this->actingAs($this->user1)
+            ->getJson("/api/v1/matches/{$match['id']}/steps/current")
+            ->json('data.id');
+
+        // user2 пытается скипнуть шаг user1
+        $response = $this->actingAs($this->user2)
+            ->patchJson("/api/v1/matches/{$match['id']}/steps/{$stepId}/skip");
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseHas('match_steps', [
+            'id' => $stepId,
+            'skipped' => false,
+        ]);
+    }
+
+    public function test_skip_is_idempotent(): void
+    {
+        $this->seed(TopWordSeeder::class);
+
+        $match = $this->createMatch();
+
+        $stepId = $this->actingAs($this->user1)
+            ->getJson("/api/v1/matches/{$match['id']}/steps/current")
+            ->json('data.id');
+
+        $this->actingAs($this->user1)
+            ->patchJson("/api/v1/matches/{$match['id']}/steps/{$stepId}/skip")
+            ->assertOk();
+
+        // Повторный скип должен вернуть 200 без ошибок
+        $this->actingAs($this->user1)
+            ->patchJson("/api/v1/matches/{$match['id']}/steps/{$stepId}/skip")
+            ->assertOk()
+            ->assertJsonPath('data.skipped', true);
+    }
+
+    public function test_guest_can_skip_step(): void
+    {
+        $this->seed(TopWordSeeder::class);
+
+        $guestId = '550e8400-e29b-41d4-a716-446655440001';
+
+        $matchId = $this->actingAs($this->user1)->postJson('/api/v1/matches', [
+            'language_from_id' => $this->languageFrom->id,
+            'language_to_id' => $this->languageTo->id,
+            'match_type' => MatchType::Time->value,
+            'match_type_params' => ['duration' => 300],
+            'participants' => [
+                ['type' => 'user', 'id' => $this->user1->id],
+                ['type' => 'guest', 'id' => $guestId],
+            ],
+        ])->json('data.id');
+
+        $stepId = $this->getJson("/api/v1/matches/{$matchId}/steps/current?guest_id={$guestId}")
+            ->json('data.id');
+
+        $response = $this->patchJson("/api/v1/matches/{$matchId}/steps/{$stepId}/skip?guest_id={$guestId}");
+
+        $response->assertOk()
+            ->assertJsonPath('data.skipped', true);
+
+        $this->assertDatabaseHas('match_steps', [
+            'id' => $stepId,
+            'skipped' => true,
+        ]);
     }
 
     public function test_can_show_specific_step(): void

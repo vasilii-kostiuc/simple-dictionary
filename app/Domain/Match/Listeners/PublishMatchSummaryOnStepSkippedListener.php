@@ -18,11 +18,13 @@ class PublishMatchSummaryOnStepSkippedListener
     {
         $broker = $this->messageBrokerFactory->create();
 
+        info('Publishing match summary due to step skipped', ['match_id' => $event->match->id, 'step_id' => $event->step->id]);
         $payload = [
             'type' => 'match_summary',
             'data' => MatchSummaryResource::make($this->matchSummaryBuilder->build($event->match)),
         ];
 
+        info('Match summary payload prepared', ['payload' => $payload]);
         $broker->publish('api.match', json_encode($payload));
     }
 }

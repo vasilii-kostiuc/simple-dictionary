@@ -9,36 +9,13 @@ class MatchSummaryBuilder
     public function build(MatchModel $match): object
     {
         $match->loadMissing('matchUsers');
+        $match->matchUsers->each(fn ($mu) => $mu->setRelation('match', $match));
 
         $matchTime = $match->completed_at
             ? $match->started_at->diffInSeconds($match->completed_at)
             : null;
 
-        $participants = $match->matchUsers->map(function ($matchUser) use ($match) {
-            $stepsCount = $match->steps()
-                ->where(function ($q) use ($matchUser) {
-                    if ($matchUser->user_id) {
-                        $q->where('user_id', $matchUser->user_id);
-                    } else {
-                        $q->where('guest_id', $matchUser->guest_id);
-                    }
-                })
-                ->count();
-
-            return [
-                'user_id' => $matchUser->user_id,
-                'guest_id' => $matchUser->guest_id,
-                'is_guest' => $matchUser->isGuest(),
-                'participant_name' => $matchUser->participant_name,
-                'participant_avatar' => $matchUser->participant_avatar,
-                'score' => $matchUser->score,
-                'answered_count' => $matchUser->answered_count,
-                'correct_answers_count' => $matchUser->correct_answers_count,
-                'steps_count' => $stepsCount,
-                'place' => $matchUser->place,
-                'is_winner' => $matchUser->is_winner,
-            ];
-        });
+        $participants = $match->matchUsers;
 
         $winner = $match->matchUsers->where('is_winner', true)->first();
 
