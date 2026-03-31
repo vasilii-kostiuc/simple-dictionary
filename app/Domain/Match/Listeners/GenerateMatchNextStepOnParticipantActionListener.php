@@ -12,7 +12,8 @@ class GenerateMatchNextStepOnParticipantActionListener
 {
     public function __construct(
         private MatchStepService $matchStepService
-    ) {}
+    ) {
+    }
 
     public function handle(MatchUserAnsweredEvent|MatchStepSkippedEvent $event): void
     {
@@ -24,6 +25,14 @@ class GenerateMatchNextStepOnParticipantActionListener
 
         $userId = $event instanceof MatchUserAnsweredEvent ? $event->matchUser->user_id : $event->step->user_id;
         $guestId = $event instanceof MatchUserAnsweredEvent ? $event->matchUser->guest_id : $event->step->guest_id;
+
+        $matchUser = $match->matchUsers->first(function ($mu) use ($userId, $guestId) {
+            return $userId ? $mu->user_id === $userId : $mu->guest_id === $guestId;
+        });
+
+        if ($matchUser !== null && $matchUser->status->isTerminal()) {
+            return;
+        }
 
         $nextStep = $this->matchStepService->generateNextStepForParticipant($match, $userId, $guestId);
 

@@ -8,6 +8,7 @@ use App\Domain\Match\Models\MatchStepAttempt;
 use App\Domain\Match\Models\MatchUser;
 use App\Domain\Step\Enums\StepType;
 use App\Domain\Step\StepAttemptVerifierFactory;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class MatchStepAttemptService
 {
@@ -41,6 +42,10 @@ class MatchStepAttemptService
             ->first();
 
         if ($matchUser) {
+            if ($matchUser->status->isTerminal()) {
+                throw new HttpException(409, 'Participant is already in a terminal status.');
+            }
+
             $matchUser->incrementScore($isCorrect);
 
             event(new MatchUserAnsweredEvent(

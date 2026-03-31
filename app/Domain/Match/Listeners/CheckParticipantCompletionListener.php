@@ -14,7 +14,7 @@ class CheckParticipantCompletionListener
     {
         $match = $event->match->refresh();
 
-        if ($match->match_type !== MatchType::Steps) {
+        if (! in_array($match->match_type, [MatchType::Steps, MatchType::Race], true)) {
             return;
         }
 

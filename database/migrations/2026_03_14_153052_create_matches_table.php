@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('language_from_id')->constrained('languages');
             $table->foreignId('language_to_id')->constrained('languages');
             $table->foreignId('dictionary_id')->nullable()->constrained()->nullOnDelete();
-            $table->enum('match_type', ['time', 'steps']);
+            $table->string('match_type');
             $table->json('match_type_params');
             $table->enum('status', ['new', 'in_progress', 'completed', 'cancelled'])->default('new');
             $table->timestamp('started_at')->nullable();

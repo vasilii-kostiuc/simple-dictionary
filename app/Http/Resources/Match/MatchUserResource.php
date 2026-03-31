@@ -23,6 +23,7 @@ class MatchUserResource extends JsonResource
             'is_guest' => $this->isGuest(),
             'steps_count' => $this->stepsCount(),
             'skipped_steps_count' => $this->skippedStepsCount(),
+            'status' => $this->status,
         ];
     }
 }

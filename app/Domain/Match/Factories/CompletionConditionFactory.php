@@ -3,6 +3,7 @@
 namespace App\Domain\Match\Factories;
 
 use App\Domain\Match\CompletionConditions\AllParticipantsCompletedCondition;
+use App\Domain\Match\CompletionConditions\OneOfParticipantsCompletedCondition;
 use App\Domain\Match\Enums\MatchType;
 use App\Domain\Match\Models\MatchModel;
 use App\Domain\Shared\CompletionConditions\CompletionConditionInterface;
@@ -18,6 +19,9 @@ class CompletionConditionFactory
                 $match->started_at->toDateTimeString()
             ),
             MatchType::Steps => new AllParticipantsCompletedCondition(
+                $match->matchUsers
+            ),
+            MatchType::Race => new OneOfParticipantsCompletedCondition(
                 $match->matchUsers
             ),
         };

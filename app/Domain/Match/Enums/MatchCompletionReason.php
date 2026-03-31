@@ -14,7 +14,7 @@ enum MatchCompletionReason: string
     {
         return match ($matchType) {
             MatchType::Time => self::TimeExpired,
-            MatchType::Steps => self::StepsCompleted,
+            MatchType::Steps, MatchType::Race => self::StepsCompleted,
         };
     }
 
@@ -22,7 +22,7 @@ enum MatchCompletionReason: string
     {
         return match ($matchType) {
             MatchType::Time => [self::TimeExpired, self::AllPlayersLeft, self::Forfeited, self::Cancelled],
-            MatchType::Steps => [self::StepsCompleted, self::AllPlayersLeft, self::Forfeited, self::Cancelled],
+            MatchType::Steps, MatchType::Race => [self::StepsCompleted, self::AllPlayersLeft, self::Forfeited, self::Cancelled],
         };
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Domain\Match\Models;
 
 use App\Domain\Match\Enums\MatchUserStatus;
+use App\Domain\Match\Events\MatchUserStatusChangedEvent;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -66,6 +67,7 @@ class MatchUser extends Model
     {
         $this->status = MatchUserStatus::Finished;
         $this->save();
+        event(new MatchUserStatusChangedEvent($this->match, $this));
     }
 
     public function leave(): void
@@ -73,18 +75,21 @@ class MatchUser extends Model
         $this->status = MatchUserStatus::Left;
         $this->left_at = now();
         $this->save();
+        event(new MatchUserStatusChangedEvent($this->match, $this));
     }
 
     public function disconnect(): void
     {
         $this->status = MatchUserStatus::Disconnected;
         $this->save();
+        event(new MatchUserStatusChangedEvent($this->match, $this));
     }
 
     public function forfeit(): void
     {
         $this->status = MatchUserStatus::Forfeited;
         $this->save();
+        event(new MatchUserStatusChangedEvent($this->match, $this));
     }
 
     public static function fromUser(User $user, int $matchId): self

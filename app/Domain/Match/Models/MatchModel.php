@@ -99,6 +99,7 @@ class MatchModel extends Model
         $this->determineWinner();
 
         $this->save();
+        $this->refresh();
 
         event(new MatchCompletedEvent($this));
     }
