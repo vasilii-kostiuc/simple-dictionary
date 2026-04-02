@@ -20,7 +20,6 @@ use VasiliiKostiuc\LaravelMessagingLibrary\Messaging\MessageBrokerFactory;
 //     });
 // });
 
-
 Route::prefix('v1')->group(function () {
     Route::post('send-to-wss', function (\Illuminate\Http\Request $request) {
         try {
@@ -32,11 +31,13 @@ Route::prefix('v1')->group(function () {
             // Используем нативный Redis Laravel вместо ReactPHP
             $broker->publish($channel, json_encode($data));
 
-            //Loop::get()->stop();
+            // Loop::get()->stop();
             info("Published to channel: {$channel}", $data);
+
             return new ApiResponseResource(['success' => true]);
         } catch (\Exception $e) {
-            info("Error publishing: " . $e->getMessage());
+            info('Error publishing: '.$e->getMessage());
+
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     });
