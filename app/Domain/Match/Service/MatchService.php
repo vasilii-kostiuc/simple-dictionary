@@ -2,8 +2,10 @@
 
 namespace App\Domain\Match\Service;
 
-use App\Domain\Match\Enums\{MatchStatus, MatchCompletionReason};
-use App\Domain\Match\Events\{MatchCreatedEvent, MatchStartedEvent};
+use App\Domain\Match\Enums\MatchCompletionReason;
+use App\Domain\Match\Enums\MatchStatus;
+use App\Domain\Match\Events\MatchCreatedEvent;
+use App\Domain\Match\Events\MatchStartedEvent;
 use App\Domain\Match\Models\MatchModel;
 use App\Domain\Match\Models\MatchUser;
 use App\Models\User;
@@ -12,9 +14,7 @@ class MatchService
 {
     public function __construct(
         private readonly MatchStepService $matchStepService
-    )
-    {
-    }
+    ) {}
 
     public function create(array $data, array $participants): MatchModel
     {
