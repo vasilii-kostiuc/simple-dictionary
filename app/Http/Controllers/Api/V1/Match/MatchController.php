@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1\Match;
 
-use App\Domain\Training\Enums\TrainingCompletionReason;
-use App\Domain\Training\Enums\TrainingCompletionType;
-use App\Domain\Training\Models\Training;
-use App\Http\Resources\Training\TrainingResource;
 use App\Domain\Match\Enums\{MatchStatus, MatchCompletionReason, MatchType};
 use App\Domain\Match\Models\MatchModel;
-use App\Domain\Match\Service\{MatchService, MatchStepService, MatchSummaryBuilder};
+use App\Domain\Match\Service\{MatchService, MatchSummaryBuilder};
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Match\CreateMatchRequest;
 use App\Http\Resources\ApiResponseResource;
