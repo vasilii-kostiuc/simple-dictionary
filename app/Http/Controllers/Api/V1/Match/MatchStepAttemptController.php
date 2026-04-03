@@ -17,7 +17,8 @@ class MatchStepAttemptController extends Controller
 {
     public function __construct(
         private MatchStepAttemptService $matchStepAttemptService
-    ) {}
+    ) {
+    }
 
     public function index(Request $request, MatchModel $match, MatchStep $step): JsonResponse
     {

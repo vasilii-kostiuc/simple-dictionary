@@ -24,7 +24,8 @@ class MatchController extends Controller
     public function __construct(
         private MatchService $matchService,
         private MatchSummaryBuilder $matchSummaryBuilder
-    ) {}
+    ) {
+    }
 
     public function index(Request $request)
     {
@@ -134,7 +135,7 @@ class MatchController extends Controller
         $userId = $request->user()?->id;
         $guestId = $request->input('guest_id');
 
-        if (!$userId && !$guestId) {
+        if (! $userId && ! $guestId) {
             return new ApiResponseResource([
                 'data' => null,
                 'message' => 'No active match found'

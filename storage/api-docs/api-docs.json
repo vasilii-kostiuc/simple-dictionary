@@ -85,6 +85,87 @@
                 }
             }
         },
+        "/api/v1/auth/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User registration",
+                "description": "Register new user and generate access token",
+                "operationId": "register",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "name"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful registration",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string",
+                                            "example": "1|laravel_sanctum_token..."
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The email has already been taken."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/auth/logout": {
             "post": {
                 "tags": [
@@ -111,6 +192,105 @@
                         }
                     }
                 }
+            }
+        },
+        "/api/v1/auth/token/validate": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Validate access token",
+                "description": "Validates the current Bearer token or a provided user_token. Returns user data if valid.",
+                "operationId": "validateToken",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_token": {
+                                        "description": "Optional token to validate. If omitted, validates the Bearer token from Authorization header.",
+                                        "type": "string",
+                                        "example": "1|laravel_sanctum_token...",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token is valid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "valid": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "format": "email",
+                                                    "example": "john@example.com"
+                                                },
+                                                "avatar": {
+                                                    "type": "string",
+                                                    "example": null,
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token is invalid or expired",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "valid": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Token expired"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/v1/profile": {
@@ -213,38 +393,66 @@
                 ]
             }
         },
-        "/api/v1/auth/register": {
+        "/api/v1/dictionaries": {
+            "get": {
+                "tags": [
+                    "Dictionaries"
+                ],
+                "summary": "List user dictionaries",
+                "description": "Returns all dictionaries belonging to the authenticated user",
+                "operationId": "listDictionaries",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Dictionary"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
             "post": {
                 "tags": [
-                    "Authentication"
+                    "Dictionaries"
                 ],
-                "summary": "User registration",
-                "description": "Register new user and generate access token",
-                "operationId": "register",
+                "summary": "Create dictionary",
+                "description": "Creates a new dictionary for the authenticated user",
+                "operationId": "storeDictionary",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "email",
-                                    "password",
-                                    "name"
+                                    "language_from_id",
+                                    "language_to_id"
                                 ],
                                 "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email",
-                                        "example": "user@example.com"
+                                    "language_from_id": {
+                                        "description": "Source language ID",
+                                        "type": "integer",
+                                        "example": 1
                                     },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "password123"
-                                    },
-                                    "name": {
-                                        "type": "string",
-                                        "example": "John Doe"
+                                    "language_to_id": {
+                                        "description": "Target language ID",
+                                        "type": "integer",
+                                        "example": 2
                                     }
                                 },
                                 "type": "object"
@@ -253,18 +461,14 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "Successful registration",
+                    "201": {
+                        "description": "Dictionary created",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "access_token": {
-                                            "type": "string",
-                                            "example": "1|laravel_sanctum_token..."
-                                        },
-                                        "user": {
-                                            "$ref": "#/components/schemas/User"
+                                        "data": {
+                                            "$ref": "#/components/schemas/Dictionary"
                                         }
                                     },
                                     "type": "object"
@@ -273,17 +477,44 @@
                         }
                     },
                     "422": {
-                        "description": "Validation error",
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/dictionaries/{dictionary}": {
+            "get": {
+                "tags": [
+                    "Dictionaries"
+                ],
+                "summary": "Show dictionary",
+                "description": "Returns details of a specific dictionary",
+                "operationId": "showDictionary",
+                "parameters": [
+                    {
+                        "name": "dictionary",
+                        "in": "path",
+                        "description": "Dictionary ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "The email has already been taken."
-                                        },
-                                        "errors": {
-                                            "type": "object"
+                                        "data": {
+                                            "$ref": "#/components/schemas/Dictionary"
                                         }
                                     },
                                     "type": "object"
@@ -291,7 +522,41 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Dictionaries"
+                ],
+                "summary": "Delete dictionary",
+                "description": "Deletes a dictionary",
+                "operationId": "destroyDictionary",
+                "parameters": [
+                    {
+                        "name": "dictionary",
+                        "in": "path",
+                        "description": "Dictionary ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Dictionary deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/v1/languages": {
@@ -371,6 +636,1602 @@
                     }
                 ]
             }
+        },
+        "/api/v1/matches": {
+            "get": {
+                "tags": [
+                    "Matches"
+                ],
+                "summary": "List matches",
+                "description": "Returns all matches for the authenticated user or guest. Can be filtered by status.",
+                "operationId": "listMatches",
+                "parameters": [
+                    {
+                        "name": "filter[status]",
+                        "in": "query",
+                        "description": "Filter by status (new/in_progress/completed/cancelled)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "guest_id",
+                        "in": "query",
+                        "description": "Guest identifier (if not authenticated)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Match"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Matches"
+                ],
+                "summary": "Create and start a match",
+                "description": "Creates a new match with the given participants and immediately starts it",
+                "operationId": "storeMatch",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "language_from_id",
+                                    "language_to_id",
+                                    "match_type",
+                                    "match_type_params",
+                                    "participants"
+                                ],
+                                "properties": {
+                                    "language_from_id": {
+                                        "description": "Source language ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "language_to_id": {
+                                        "description": "Target language ID",
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "dictionary_id": {
+                                        "description": "Optional dictionary ID",
+                                        "type": "integer",
+                                        "example": null,
+                                        "nullable": true
+                                    },
+                                    "match_type": {
+                                        "description": "Match completion type",
+                                        "type": "string",
+                                        "enum": [
+                                            "time",
+                                            "steps",
+                                            "race"
+                                        ],
+                                        "example": "time"
+                                    },
+                                    "match_type_params": {
+                                        "description": "Match type parameters. For time: {\"duration\": 120}. For steps: {\"steps\": 10}.",
+                                        "type": "object",
+                                        "example": "{\"duration\": 120}"
+                                    },
+                                    "participants": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "type": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "user",
+                                                        "guest"
+                                                    ],
+                                                    "example": "user"
+                                                },
+                                                "id": {
+                                                    "description": "User ID or guest ID",
+                                                    "type": "string",
+                                                    "example": "42"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe",
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "maxItems": 10,
+                                        "minItems": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Match created and started",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Match"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Match created successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/matches/{match}": {
+            "get": {
+                "tags": [
+                    "Matches"
+                ],
+                "summary": "Show match",
+                "description": "Returns details of a specific match",
+                "operationId": "showMatch",
+                "parameters": [
+                    {
+                        "name": "match",
+                        "in": "path",
+                        "description": "Match ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Match"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/matches/active": {
+            "get": {
+                "tags": [
+                    "Matches"
+                ],
+                "summary": "Get active match",
+                "description": "Returns the currently active (in_progress) match for the authenticated user or guest",
+                "operationId": "getActiveMatch",
+                "parameters": [
+                    {
+                        "name": "guest_id",
+                        "in": "query",
+                        "description": "Guest identifier (if not authenticated)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Active match or null",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "oneOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/Match"
+                                                }
+                                            ],
+                                            "nullable": true,
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/matches/{match}/start": {
+            "post": {
+                "tags": [
+                    "Matches"
+                ],
+                "summary": "Start match",
+                "description": "Starts a match that is in New status",
+                "operationId": "startMatch",
+                "parameters": [
+                    {
+                        "name": "match",
+                        "in": "path",
+                        "description": "Match ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Match started",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Match started successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Match"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Match already started"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/matches/{match}/complete": {
+            "post": {
+                "tags": [
+                    "Matches"
+                ],
+                "summary": "Complete match",
+                "description": "Manually completes an ongoing match",
+                "operationId": "completeMatch",
+                "parameters": [
+                    {
+                        "name": "match",
+                        "in": "path",
+                        "description": "Match ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "reason": {
+                                        "type": "string",
+                                        "enum": [
+                                            "time_expired",
+                                            "steps_completed",
+                                            "all_players_left",
+                                            "forfeited",
+                                            "cancelled"
+                                        ],
+                                        "example": "forfeited",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Match completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Match completed successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Match"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Match already completed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/matches/{match}/summary": {
+            "get": {
+                "tags": [
+                    "Matches"
+                ],
+                "summary": "Get match summary",
+                "description": "Returns a summary of the completed match including winner and scores",
+                "operationId": "matchSummary",
+                "parameters": [
+                    {
+                        "name": "match",
+                        "in": "path",
+                        "description": "Match ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/MatchSummary"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/matches/{match}/steps/{step}": {
+            "get": {
+                "tags": [
+                    "Match Steps"
+                ],
+                "summary": "Show match step",
+                "description": "Returns details of a specific match step",
+                "operationId": "showMatchStep",
+                "parameters": [
+                    {
+                        "name": "match",
+                        "in": "path",
+                        "description": "Match ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "step",
+                        "in": "path",
+                        "description": "Step ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/MatchStep"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/matches/{match}/steps/next": {
+            "get": {
+                "tags": [
+                    "Match Steps"
+                ],
+                "summary": "Get next match step",
+                "description": "Generates and returns the next step for the participant in a match",
+                "operationId": "nextMatchStep",
+                "parameters": [
+                    {
+                        "name": "match",
+                        "in": "path",
+                        "description": "Match ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "guest_id",
+                        "in": "query",
+                        "description": "Guest identifier (if not authenticated)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Next step generated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/MatchStep"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Next step generated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Participant identification required"
+                    },
+                    "409": {
+                        "description": "Match finished or previous step not completed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/matches/{match}/steps/current": {
+            "get": {
+                "tags": [
+                    "Match Steps"
+                ],
+                "summary": "Get current match step",
+                "description": "Returns the current unanswered step for the participant in a match",
+                "operationId": "currentMatchStep",
+                "parameters": [
+                    {
+                        "name": "match",
+                        "in": "path",
+                        "description": "Match ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "guest_id",
+                        "in": "query",
+                        "description": "Guest identifier (if not authenticated)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Current step returned",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/MatchStep"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Participant identification required"
+                    },
+                    "404": {
+                        "description": "No current step found"
+                    },
+                    "409": {
+                        "description": "Match finished"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/matches/{match}/steps/{step}/skip": {
+            "patch": {
+                "tags": [
+                    "Match Steps"
+                ],
+                "summary": "Skip match step",
+                "description": "Marks a match step as skipped for the participant",
+                "operationId": "skipMatchStep",
+                "parameters": [
+                    {
+                        "name": "match",
+                        "in": "path",
+                        "description": "Match ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "step",
+                        "in": "path",
+                        "description": "Step ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "guest_id",
+                        "in": "query",
+                        "description": "Guest identifier (if not authenticated)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Step skipped",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Step skipped successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/MatchStep"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Step does not belong to this participant"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/matches/{match}/steps/{step}/attempts": {
+            "get": {
+                "tags": [
+                    "Match Steps"
+                ],
+                "summary": "List match step attempts",
+                "description": "Returns all attempts for a specific match step. Can be filtered by correctness.",
+                "operationId": "listMatchStepAttempts",
+                "parameters": [
+                    {
+                        "name": "match",
+                        "in": "path",
+                        "description": "Match ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "step",
+                        "in": "path",
+                        "description": "Step ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "is_correct",
+                        "in": "query",
+                        "description": "Filter by correctness (true/false)",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/MatchStepAttempt"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Match Steps"
+                ],
+                "summary": "Submit match step answer",
+                "description": "Submit an answer attempt for a match step. The step must belong to the participant.",
+                "operationId": "storeMatchStepAttempt",
+                "parameters": [
+                    {
+                        "name": "match",
+                        "in": "path",
+                        "description": "Match ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "step",
+                        "in": "path",
+                        "description": "Step ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "attempt_data",
+                                    "attempt_number",
+                                    "participant_type"
+                                ],
+                                "properties": {
+                                    "attempt_data": {
+                                        "description": "Answer data (varies by step type)",
+                                        "type": "object",
+                                        "example": "{\"answer\": \"Привет\"}"
+                                    },
+                                    "attempt_number": {
+                                        "description": "Attempt number (1-based)",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "participant_type": {
+                                        "description": "Type of participant",
+                                        "type": "string",
+                                        "enum": [
+                                            "user",
+                                            "guest"
+                                        ],
+                                        "example": "user"
+                                    },
+                                    "participant_id": {
+                                        "description": "Guest ID if participant_type is guest",
+                                        "type": "string",
+                                        "example": null,
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Attempt submitted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "attempt": {
+                                                    "$ref": "#/components/schemas/MatchStepAttempt"
+                                                },
+                                                "step": {
+                                                    "$ref": "#/components/schemas/MatchStep"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Correct answer!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Step does not belong to this participant"
+                    },
+                    "409": {
+                        "description": "Step already passed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/trainings": {
+            "get": {
+                "tags": [
+                    "Trainings"
+                ],
+                "summary": "List trainings",
+                "description": "Returns all trainings belonging to the authenticated user. Can be filtered by status.",
+                "operationId": "listTrainings",
+                "parameters": [
+                    {
+                        "name": "filter[status]",
+                        "in": "query",
+                        "description": "Filter by status (1=New, 2=InProgress, 3=Completed)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Training"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Trainings"
+                ],
+                "summary": "Create training",
+                "description": "Creates a new training session",
+                "operationId": "storeTraining",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "training_type_id",
+                                    "dictionary_id",
+                                    "completion_type"
+                                ],
+                                "properties": {
+                                    "training_type_id": {
+                                        "description": "1=TopWords, 2=MyWords, 3=AllWords",
+                                        "type": "integer",
+                                        "enum": [
+                                            1,
+                                            2,
+                                            3
+                                        ],
+                                        "example": 1
+                                    },
+                                    "dictionary_id": {
+                                        "description": "Dictionary ID to train on",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "completion_type": {
+                                        "description": "How the training completes",
+                                        "type": "string",
+                                        "enum": [
+                                            "time",
+                                            "steps",
+                                            "unlimited"
+                                        ],
+                                        "example": "steps"
+                                    },
+                                    "completion_type_params": {
+                                        "description": "Params for completion type (e.g. {\"steps\": 10} or {\"duration\": 120})",
+                                        "type": "object",
+                                        "example": "{\"steps\": 10}",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Training created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Training"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/trainings/{training}": {
+            "get": {
+                "tags": [
+                    "Trainings"
+                ],
+                "summary": "Show training",
+                "description": "Returns details of a specific training",
+                "operationId": "showTraining",
+                "parameters": [
+                    {
+                        "name": "training",
+                        "in": "path",
+                        "description": "Training ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Training"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/trainings/{training}/start": {
+            "post": {
+                "tags": [
+                    "Trainings"
+                ],
+                "summary": "Start training",
+                "description": "Starts a training that is in New status",
+                "operationId": "startTraining",
+                "parameters": [
+                    {
+                        "name": "training",
+                        "in": "path",
+                        "description": "Training ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Training started or error message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Training started successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Training"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/trainings/{training}/expire": {
+            "post": {
+                "tags": [
+                    "Trainings"
+                ],
+                "summary": "Expire training",
+                "description": "Completes a time-based training by expiration",
+                "operationId": "expireTraining",
+                "parameters": [
+                    {
+                        "name": "training",
+                        "in": "path",
+                        "description": "Training ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Training completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Training completed successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Training"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Expiration not supported for this training type"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/trainings/{training}/terminate": {
+            "post": {
+                "tags": [
+                    "Trainings"
+                ],
+                "summary": "Terminate training",
+                "description": "Forcefully terminates an ongoing training",
+                "operationId": "terminateTraining",
+                "parameters": [
+                    {
+                        "name": "training",
+                        "in": "path",
+                        "description": "Training ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Training terminated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Training terminated successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Training"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Training already completed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/trainings/{training}/summary": {
+            "get": {
+                "tags": [
+                    "Trainings"
+                ],
+                "summary": "Get training summary",
+                "description": "Returns a summary of the completed training session",
+                "operationId": "trainingsSummary",
+                "parameters": [
+                    {
+                        "name": "training",
+                        "in": "path",
+                        "description": "Training ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TrainingSummary"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/trainings/{training}/steps/{step}": {
+            "get": {
+                "tags": [
+                    "Training Steps"
+                ],
+                "summary": "Show training step",
+                "description": "Returns details of a specific training step",
+                "operationId": "showTrainingStep",
+                "parameters": [
+                    {
+                        "name": "training",
+                        "in": "path",
+                        "description": "Training ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "step",
+                        "in": "path",
+                        "description": "Step ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TrainingStep"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/trainings/{training}/steps/next": {
+            "get": {
+                "tags": [
+                    "Training Steps"
+                ],
+                "summary": "Get next training step",
+                "description": "Generates and returns the next step for the training. The previous step must be completed or skipped.",
+                "operationId": "nextTrainingStep",
+                "parameters": [
+                    {
+                        "name": "training",
+                        "in": "path",
+                        "description": "Training ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Next step generated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TrainingStep"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Next step generated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Training finished or previous step not completed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/trainings/{training}/steps/current": {
+            "get": {
+                "tags": [
+                    "Training Steps"
+                ],
+                "summary": "Get current training step",
+                "description": "Returns the current (most recent) step for the training",
+                "operationId": "currentTrainingStep",
+                "parameters": [
+                    {
+                        "name": "training",
+                        "in": "path",
+                        "description": "Training ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Current step returned",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TrainingStep"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Training finished or no current step found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/trainings/{training}/steps/{step}/skip": {
+            "patch": {
+                "tags": [
+                    "Training Steps"
+                ],
+                "summary": "Skip training step",
+                "description": "Marks the current step as skipped",
+                "operationId": "skipTrainingStep",
+                "parameters": [
+                    {
+                        "name": "training",
+                        "in": "path",
+                        "description": "Training ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "step",
+                        "in": "path",
+                        "description": "Step ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Step skipped",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Step skipped successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/TrainingStep"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/trainings/{training}/steps/{step}/progress": {
+            "get": {
+                "tags": [
+                    "Training Steps"
+                ],
+                "summary": "Get step progress",
+                "description": "Returns the answering progress for a specific training step",
+                "operationId": "trainingStepProgress",
+                "parameters": [
+                    {
+                        "name": "training",
+                        "in": "path",
+                        "description": "Training ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "step",
+                        "in": "path",
+                        "description": "Step ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TrainingStepProgress"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/trainings/{training}/steps/{step}/attempts": {
+            "get": {
+                "tags": [
+                    "Training Steps"
+                ],
+                "summary": "List step attempts",
+                "description": "Returns all attempts for a specific training step. Can be filtered by correctness.",
+                "operationId": "listTrainingStepAttempts",
+                "parameters": [
+                    {
+                        "name": "training",
+                        "in": "path",
+                        "description": "Training ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "step",
+                        "in": "path",
+                        "description": "Step ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "is_correct",
+                        "in": "query",
+                        "description": "Filter by correctness (true/false)",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TrainingStepAttempt"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Training Steps"
+                ],
+                "summary": "Submit step answer",
+                "description": "Submit an answer attempt for a training step",
+                "operationId": "storeTrainingStepAttempt",
+                "parameters": [
+                    {
+                        "name": "training",
+                        "in": "path",
+                        "description": "Training ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "step",
+                        "in": "path",
+                        "description": "Step ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "attempt_data": {
+                                        "description": "Answer data (varies by step type)",
+                                        "type": "object",
+                                        "example": "{\"answer\": \"Привет\"}"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Attempt submitted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TrainingStepAttempt"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Step already passed"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -441,6 +2302,30 @@
                 },
                 "type": "object"
             },
+            "Dictionary": {
+                "description": "Dictionary resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "language_from_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "language_from": {
+                        "$ref": "#/components/schemas/Language"
+                    },
+                    "language_to_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "language_to": {
+                        "$ref": "#/components/schemas/Language"
+                    }
+                },
+                "type": "object"
+            },
             "Language": {
                 "properties": {
                     "id": {
@@ -458,6 +2343,483 @@
                     "icon": {
                         "type": "string",
                         "example": "http://example.com/storage/flags/en.svg"
+                    }
+                },
+                "type": "object"
+            },
+            "Match": {
+                "description": "Match resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "language_from_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "language_to_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "dictionary_id": {
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "match_type": {
+                        "type": "string",
+                        "enum": [
+                            "time",
+                            "steps",
+                            "race"
+                        ],
+                        "example": "time"
+                    },
+                    "match_type_params": {
+                        "type": "object",
+                        "example": "{\"duration\": 120}"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "new",
+                            "in_progress",
+                            "completed",
+                            "cancelled"
+                        ],
+                        "example": "in_progress"
+                    },
+                    "started_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-01-01T12:00:00Z",
+                        "nullable": true
+                    },
+                    "completed_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "completion_reason": {
+                        "type": "string",
+                        "enum": [
+                            "time_expired",
+                            "steps_completed",
+                            "all_players_left",
+                            "forfeited",
+                            "cancelled"
+                        ],
+                        "example": null,
+                        "nullable": true
+                    },
+                    "participants": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MatchUser"
+                        }
+                    },
+                    "time_left": {
+                        "description": "Seconds remaining (only during active time match)",
+                        "type": "integer",
+                        "example": 60,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "MatchStepAttempt": {
+                "description": "Match step attempt resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "match_step_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "attempt_number": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "sub_index": {
+                        "type": "integer",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "attempt_data": {
+                        "description": "Submitted answer data",
+                        "type": "object",
+                        "example": "{\"answer\": \"Привет\"}"
+                    },
+                    "is_correct": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-01-01T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "MatchStep": {
+                "description": "Match step resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "match_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 42,
+                        "nullable": true
+                    },
+                    "guest_id": {
+                        "type": "string",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "step_number": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "step_type_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "step_data": {
+                        "description": "Step question data",
+                        "type": "object",
+                        "example": "{\"question\": \"Hello\", \"options\": [\"Привет\", \"Пока\"]}"
+                    },
+                    "required_answers_count": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "skipped": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "is_passed": {
+                        "type": "boolean",
+                        "example": false
+                    }
+                },
+                "type": "object"
+            },
+            "MatchSummary": {
+                "description": "Match summary resource",
+                "properties": {
+                    "match_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "match_time_seconds": {
+                        "type": "integer",
+                        "example": 120,
+                        "nullable": true
+                    },
+                    "participants": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MatchUser"
+                        }
+                    },
+                    "winner": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/MatchUser"
+                            }
+                        ],
+                        "nullable": true,
+                        "type": "object"
+                    },
+                    "completion_reason": {
+                        "type": "string",
+                        "example": "time_expired",
+                        "nullable": true
+                    },
+                    "started_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-01-01T12:00:00Z",
+                        "nullable": true
+                    },
+                    "completed_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-01-01T12:02:00Z",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "MatchUser": {
+                "description": "Match participant resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 42,
+                        "nullable": true
+                    },
+                    "guest_id": {
+                        "type": "string",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "participant_name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "participant_avatar": {
+                        "type": "string",
+                        "example": "https://example.com/avatar.jpg",
+                        "nullable": true
+                    },
+                    "score": {
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "answered_count": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "correct_answers_count": {
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "place": {
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "is_winner": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "is_guest": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "steps_count": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "skipped_steps_count": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "active",
+                            "finished",
+                            "spectating",
+                            "left",
+                            "disconnected",
+                            "forfeited"
+                        ],
+                        "example": "active"
+                    }
+                },
+                "type": "object"
+            },
+            "Training": {
+                "description": "Training resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "dictionary_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "training_type_id": {
+                        "description": "1=TopWords, 2=MyWords, 3=AllWords",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status": {
+                        "description": "1=New, 2=InProgress, 3=Completed",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "completion_type": {
+                        "type": "string",
+                        "enum": [
+                            "time",
+                            "steps",
+                            "unlimited"
+                        ],
+                        "example": "steps"
+                    },
+                    "completion_type_params": {
+                        "type": "object",
+                        "example": "{\"steps\": 10}",
+                        "nullable": true
+                    },
+                    "started_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-01-01T12:00:00Z",
+                        "nullable": true
+                    },
+                    "completed_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": null,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "TrainingStepAttempt": {
+                "description": "Training step attempt resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "training_step_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "is_correct": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "attempt_data": {
+                        "description": "Submitted answer data",
+                        "type": "object",
+                        "example": "{\"answer\": \"Привет\"}"
+                    },
+                    "attempt_number": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "sub_index": {
+                        "type": "integer",
+                        "example": null,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "TrainingStepProgress": {
+                "description": "Training step progress resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "required_answers_count": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "answered": {
+                        "description": "Number of correct answers given",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "is_passed": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "skipped": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "skipped_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": null,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "TrainingStep": {
+                "description": "Training step resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "step_number": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "training_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "step_type_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "step_data": {
+                        "description": "Step question data (varies by step type)",
+                        "type": "object",
+                        "example": "{\"question\": \"Hello\", \"options\": [\"Привет\", \"Пока\", \"Да\"]}"
+                    }
+                },
+                "type": "object"
+            },
+            "TrainingSummary": {
+                "description": "Training summary resource",
+                "properties": {
+                    "training_time_seconds": {
+                        "type": "integer",
+                        "example": 120,
+                        "nullable": true
+                    },
+                    "steps_count": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "correct_answers_count": {
+                        "type": "integer",
+                        "example": 8
+                    },
+                    "skipped_steps_count": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "completion_reason": {
+                        "type": "string",
+                        "enum": [
+                            "Expired",
+                            "Leaved",
+                            "AllStepsCompleted",
+                            "Terminated"
+                        ],
+                        "example": "AllStepsCompleted",
+                        "nullable": true
+                    },
+                    "started_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-01-01T12:00:00Z",
+                        "nullable": true
+                    },
+                    "completed_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-01-01T12:02:00Z",
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -482,8 +2844,28 @@
             "description": "Profile"
         },
         {
+            "name": "Dictionaries",
+            "description": "Dictionaries"
+        },
+        {
             "name": "Languages",
             "description": "Languages"
+        },
+        {
+            "name": "Matches",
+            "description": "Matches"
+        },
+        {
+            "name": "Match Steps",
+            "description": "Match Steps"
+        },
+        {
+            "name": "Trainings",
+            "description": "Trainings"
+        },
+        {
+            "name": "Training Steps",
+            "description": "Training Steps"
         }
     ]
 }

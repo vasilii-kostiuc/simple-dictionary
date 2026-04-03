@@ -78,7 +78,7 @@ class TrainingController extends Controller
 
         $this->trainingService->complete($training, TrainingCompletionReason::Terminated);
 
-        return new ApiResponseResource(['success'=>false, 'message' => 'Training terminated successfully', 'data' => new TrainingResource($training)]);
+        return new ApiResponseResource(['success' => false, 'message' => 'Training terminated successfully', 'data' => new TrainingResource($training)]);
     }
 
 
@@ -91,7 +91,7 @@ class TrainingController extends Controller
         $completionReason = $training->completion_reason?->name;
 
         return new ApiResponseResource([
-            'data' => new TrainingSummaryResource((object)[
+            'data' => new TrainingSummaryResource((object) [
                 'training_time_seconds' => $trainingTime,
                 'steps_count' => $stepsCount,
                 'correct_answers_count' => $correctAnswersCount,

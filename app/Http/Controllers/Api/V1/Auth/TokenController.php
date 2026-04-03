@@ -37,7 +37,7 @@ class TokenController extends Controller
 
         $accessToken = PersonalAccessToken::findToken($token);
 
-        if (!$accessToken) {
+        if (! $accessToken) {
             return (new ApiResponseResource([
                 'data' => [
                     'valid' => false,
@@ -57,7 +57,7 @@ class TokenController extends Controller
 
         $user = $accessToken->tokenable;
 
-        if (!$user) {
+        if (! $user) {
             return (new ApiResponseResource([
                 'data' => [
                     'valid' => false,
