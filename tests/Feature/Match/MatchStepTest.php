@@ -277,6 +277,9 @@ class MatchStepTest extends TestCase
             ->getJson("/api/v1/matches/{$match['id']}/steps/current")
             ->json('data.id');
 
+        // Сбрасываем кэш Sanctum guard перед сменой пользователя
+        $this->app['auth']->forgetGuards();
+
         // user2 пытается скипнуть шаг user1
         $response = $this->actingAs($this->user2)
             ->patchJson("/api/v1/matches/{$match['id']}/steps/{$stepId}/skip");
@@ -326,6 +329,9 @@ class MatchStepTest extends TestCase
                 ['type' => 'guest', 'id' => $guestId],
             ],
         ])->json('data.id');
+
+        // Сбрасываем кэш Sanctum guard — иначе user1 перекроет guest-идентификацию
+        $this->app['auth']->forgetGuards();
 
         $stepId = $this->getJson("/api/v1/matches/{$matchId}/steps/current?guest_id={$guestId}")
             ->json('data.id');

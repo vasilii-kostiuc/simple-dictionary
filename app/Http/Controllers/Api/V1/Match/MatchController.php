@@ -32,6 +32,12 @@ class MatchController extends Controller
         $userId = $request->user()?->id;
         $guestId = $request->input('guest_id');
 
+        if (! $userId && ! $guestId) {
+            return new ApiResponseResource([
+                'data' => []
+            ])->response()->setStatusCode(Response::HTTP_OK);
+        }
+
         $matches = QueryBuilder::for(MatchModel::class)
             ->select('matches.*')
             ->allowedFilters(['status'])
@@ -39,7 +45,7 @@ class MatchController extends Controller
                 $q->whereHas('matchUsers', function ($q) use ($userId, $guestId) {
                     if ($userId) {
                         $q->where('user_id', $userId);
-                    } elseif ($guestId) {
+                    } else {
                         $q->where('guest_id', $guestId);
                     }
                 });

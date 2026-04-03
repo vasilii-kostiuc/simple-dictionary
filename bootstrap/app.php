@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'auth.flexible' => \App\Http\Middleware\AuthenticateUserOrService::class,
+            'auth.optional' => \App\Http\Middleware\AuthenticateOptional::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

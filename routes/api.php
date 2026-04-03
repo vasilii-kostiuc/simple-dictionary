@@ -75,13 +75,17 @@ Route::prefix('v1')->group(function () {
         Route::post('trainings/{training}/steps/{step}/attempts', [\App\Http\Controllers\Api\V1\Training\TrainingStepAttemptController::class, 'store'])->name('trainings-steps.attempts');
         Route::get('trainings/{training}/steps/{step}/attempts', [\App\Http\Controllers\Api\V1\Training\TrainingStepAttemptController::class, 'index'])->name('trainings-steps.attempts');
 
-        // Match routes
+        // Match routes (auth required: create and manage match lifecycle)
         Route::post('matches', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'store'])->name('matches.store');
+        Route::post('matches/{match}/start', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'start'])->name('matches.start');
+        Route::post('matches/{match}/complete', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'complete'])->name('matches.complete');
+    });
+
+    // Match routes accessible to guests and authenticated users
+    Route::middleware(['auth.optional'])->group(function () {
         Route::get('matches', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'index'])->name('matches.index');
         Route::get('matches/active', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'getActiveMatch'])->name('matches.active');
         Route::get('matches/{match}', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'show'])->name('matches.show');
-        Route::post('matches/{match}/start', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'start'])->name('matches.start');
-        Route::post('matches/{match}/complete', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'complete'])->name('matches.complete');
         Route::get('matches/{match}/summary', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'summary'])->name('matches.summary');
 
         // Match Steps

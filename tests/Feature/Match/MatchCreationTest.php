@@ -232,9 +232,116 @@ class MatchCreationTest extends TestCase
         ]);
 
         // Получаем активный матч по guest_id
-        $response = $this->getJson('/api/v1/matches/active?guest_id=' . $guestId);
+        $response = $this->getJson('/api/v1/matches/active?guest_id='.$guestId);
 
         $response->assertOk()
             ->assertJsonPath('data.id', $createResponse->json('data.id'));
+    }
+
+    public function test_index_returns_empty_when_no_identity_provided(): void
+    {
+        $this->seed(TopWordSeeder::class);
+
+        // Создаём матч чтобы убедиться что данные есть в БД
+        $this->actingAs($this->user1)->postJson('/api/v1/matches', [
+            'language_from_id' => $this->languageFrom->id,
+            'language_to_id' => $this->languageTo->id,
+            'match_type' => MatchType::Time->value,
+            'match_type_params' => ['duration' => 300],
+            'participants' => [
+                ['type' => 'user', 'id' => $this->user1->id],
+                ['type' => 'user', 'id' => $this->user2->id],
+            ],
+        ]);
+
+        // Сбрасываем кэш Sanctum guard (кэширует пользователя на инстанции)
+        $this->app['auth']->forgetGuards();
+
+        // Запрос без авторизации и без guest_id → должен вернуть пустой массив
+        $response = $this->getJson('/api/v1/matches');
+
+        $response->assertOk()
+            ->assertJsonPath('data', []);
+    }
+
+    public function test_index_returns_only_user_matches(): void
+    {
+        $this->seed(TopWordSeeder::class);
+
+        $user3 = User::factory()->create();
+
+        // Матч user1 + user2
+        $this->actingAs($this->user1)->postJson('/api/v1/matches', [
+            'language_from_id' => $this->languageFrom->id,
+            'language_to_id' => $this->languageTo->id,
+            'match_type' => MatchType::Time->value,
+            'match_type_params' => ['duration' => 300],
+            'participants' => [
+                ['type' => 'user', 'id' => $this->user1->id],
+                ['type' => 'user', 'id' => $this->user2->id],
+            ],
+        ]);
+
+        // Матч user1 + user3
+        $this->actingAs($this->user1)->postJson('/api/v1/matches', [
+            'language_from_id' => $this->languageFrom->id,
+            'language_to_id' => $this->languageTo->id,
+            'match_type' => MatchType::Time->value,
+            'match_type_params' => ['duration' => 300],
+            'participants' => [
+                ['type' => 'user', 'id' => $this->user1->id],
+                ['type' => 'user', 'id' => $user3->id],
+            ],
+        ]);
+
+        // Сбрасываем кэш Sanctum guard перед сменой пользователя
+        $this->app['auth']->forgetGuards();
+
+        // user2 видит только свой 1 матч
+        $response = $this->actingAs($this->user2)->getJson('/api/v1/matches');
+
+        $response->assertOk();
+        $this->assertCount(1, $response->json('data'));
+    }
+
+    public function test_index_returns_only_guest_matches(): void
+    {
+        $this->seed(TopWordSeeder::class);
+
+        $guestId = '550e8400-e29b-41d4-a716-446655440000';
+        $otherGuestId = '550e8400-e29b-41d4-a716-446655440001';
+
+        // Матч user1 + guestId
+        $this->actingAs($this->user1)->postJson('/api/v1/matches', [
+            'language_from_id' => $this->languageFrom->id,
+            'language_to_id' => $this->languageTo->id,
+            'match_type' => MatchType::Time->value,
+            'match_type_params' => ['duration' => 300],
+            'participants' => [
+                ['type' => 'user', 'id' => $this->user1->id],
+                ['type' => 'guest', 'id' => $guestId],
+            ],
+        ]);
+
+        // Матч user1 + otherGuestId
+        $this->actingAs($this->user1)->postJson('/api/v1/matches', [
+            'language_from_id' => $this->languageFrom->id,
+            'language_to_id' => $this->languageTo->id,
+            'match_type' => MatchType::Time->value,
+            'match_type_params' => ['duration' => 300],
+            'participants' => [
+                ['type' => 'user', 'id' => $this->user1->id],
+                ['type' => 'guest', 'id' => $otherGuestId],
+            ],
+        ]);
+
+        // Сбрасываем кэш Sanctum guard — иначе user1 перекроет guest_id фильтр
+        $this->app['auth']->forgetGuards();
+
+        // Запрос без авторизации с guest_id → только его матч
+        $response = $this->getJson('/api/v1/matches?guest_id='.$guestId);
+
+        $response->assertOk();
+        $this->assertCount(1, $response->json('data'));
     }
 }
