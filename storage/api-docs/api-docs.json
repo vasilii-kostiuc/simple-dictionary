@@ -760,8 +760,15 @@
                                                     "example": "42"
                                                 },
                                                 "name": {
+                                                    "description": "Display name. For guests: generated automatically if omitted.",
                                                     "type": "string",
-                                                    "example": "John Doe",
+                                                    "example": "Quick Fox 342",
+                                                    "nullable": true
+                                                },
+                                                "avatar": {
+                                                    "description": "Avatar URL. For guests: generated via DiceBear if omitted.",
+                                                    "type": "string",
+                                                    "example": "https://api.dicebear.com/7.x/avataaars/svg?seed=abc",
                                                     "nullable": true
                                                 }
                                             },

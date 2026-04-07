@@ -22,6 +22,7 @@ class CreateMatchRequest extends FormRequest
             'participants.*.type' => ['required', 'in:user,guest'],
             'participants.*.id' => ['required'],
             'participants.*.name' => ['nullable', 'string', 'max:100'],
+            'participants.*.avatar' => ['nullable', 'string', 'max:500'],
         ];
     }
 

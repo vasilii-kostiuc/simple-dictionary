@@ -69,7 +69,8 @@ final class MatchApi
                             properties: [
                                 new OA\Property(property: 'type', type: 'string', enum: ['user', 'guest'], example: 'user'),
                                 new OA\Property(property: 'id', type: 'string', description: 'User ID or guest ID', example: '42'),
-                                new OA\Property(property: 'name', type: 'string', nullable: true, example: 'John Doe'),
+                                new OA\Property(property: 'name', type: 'string', nullable: true, description: 'Display name. For guests: generated automatically if omitted.', example: 'Quick Fox 342'),
+                                new OA\Property(property: 'avatar', type: 'string', nullable: true, description: 'Avatar URL. For guests: generated via DiceBear if omitted.', example: 'https://api.dicebear.com/7.x/avataaars/svg?seed=abc'),
                             ]
                         )
                     ),

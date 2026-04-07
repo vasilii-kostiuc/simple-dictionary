@@ -20,7 +20,7 @@ class MatchService
             'dictionary_id' => $data['dictionary_id'] ?? null,
             'match_type' => $data['match_type'],
             'match_type_params' => $data['match_type_params'],
-            'status' => MatchStatus::New,
+            'status' => MatchStatus::New ,
         ]);
 
         foreach ($participants as $participant) {
@@ -36,7 +36,8 @@ class MatchService
             MatchUser::fromGuest(
                 $participant['id'],
                 $match->id,
-                $participant['name'] ?? null
+                $participant['name'] ?? null,
+                $participant['avatar'] ?? null
             );
         }
 

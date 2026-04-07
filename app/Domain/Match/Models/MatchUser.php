@@ -105,14 +105,14 @@ class MatchUser extends Model
         ]);
     }
 
-    public static function fromGuest(string $guestId, int $matchId, ?string $name = null): self
+    public static function fromGuest(string $guestId, int $matchId, ?string $name = null, ?string $avatar = null): self
     {
         return self::create([
             'match_id' => $matchId,
             'user_id' => null,
             'guest_id' => $guestId,
             'participant_name' => $name ?? self::generateGuestName(),
-            'participant_avatar' => self::generateGuestAvatar($guestId),
+            'participant_avatar' => $avatar ?? self::generateGuestAvatar($guestId),
             'status' => MatchUserStatus::Active,
             'joined_at' => now(),
         ]);
