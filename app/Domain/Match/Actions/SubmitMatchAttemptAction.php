@@ -2,7 +2,7 @@
 
 namespace App\Domain\Match\Actions;
 
-use App\Domain\Match\Enums\MatchType;
+use App\Domain\Match\DTO\ParticipantIdentifier;
 use App\Domain\Match\Events\MatchUserAnsweredEvent;
 use App\Domain\Match\Factories\CompletionConditionFactory;
 use App\Domain\Match\Models\MatchModel;
@@ -10,7 +10,6 @@ use App\Domain\Match\Models\MatchStep;
 use App\Domain\Match\Models\MatchStepAttempt;
 use App\Domain\Match\Models\MatchUser;
 use App\Domain\Match\Services\MatchStepAttemptService;
-use App\Domain\Shared\CompletionConditions\StepsCompletionCondition;
 
 class SubmitMatchAttemptAction
 {
@@ -25,64 +24,42 @@ class SubmitMatchAttemptAction
     public function handle(MatchStep $step, array $attemptData, int $attemptNumber): MatchStepAttempt
     {
         $attempt = $this->matchStepAttemptService->submitAnswer($step, $attemptData, $attemptNumber);
-        $match = $step->match->refresh();
-        $match->loadMissing('matchUsers', 'steps');
+        $match = $step->match->refresh()->loadMissing('matchUsers', 'steps');
         $matchUser = $this->matchStepAttemptService->resolveParticipant($step);
+        $participant = ParticipantIdentifier::fromMatchStep($step);
 
-        if ($matchUser !== null) {
-            event(new MatchUserAnsweredEvent(
-                $match,
-                $step->getParticipantIdentifier(),
-                $attempt->is_correct,
-                $matchUser
-            ));
-        }
+        $this->dispatchAnsweredEvent($match, $step, $attempt, $matchUser);
 
-        $matchUser = $this->finishParticipantIfNeeded($match, $step->user_id, $step->guest_id);
+        $matchUser = $this->matchStepAttemptService->finishParticipantIfNeeded($match, $participant);
 
-        if ($this->completionConditionFactory->create($match)->isCompleted()) {
-            $this->completeMatchAction->handle($match);
-
-            return $attempt;
-        }
-
-        if ($matchUser === null || ! $matchUser->status->isTerminal()) {
-            $this->generateNextMatchStepAction->handle($match, $step->user_id, $step->guest_id, true);
-        }
+        $this->completeOrAdvance($match, $matchUser, $participant);
 
         return $attempt;
     }
 
-    private function finishParticipantIfNeeded(MatchModel $match, ?int $userId, ?string $guestId): ?MatchUser
+    private function dispatchAnsweredEvent(MatchModel $match, MatchStep $step, MatchStepAttempt $attempt, ?MatchUser $matchUser): void
     {
-        if (! in_array($match->match_type, [MatchType::Steps, MatchType::Race], true)) {
-            return $this->findParticipant($match, $userId, $guestId);
+        if ($matchUser === null) {
+            return;
         }
 
-        $matchUser = $this->findParticipant($match, $userId, $guestId);
-
-        if ($matchUser === null || $matchUser->status->isTerminal()) {
-            return $matchUser;
-        }
-
-        $participantSteps = $match->steps->filter(fn ($participantStep) => $userId
-            ? $participantStep->user_id === $userId
-            : $participantStep->guest_id === $guestId);
-
-        $requiredStepsCount = (int) ($match->match_type_params['steps'] ?? 0);
-        $condition = new StepsCompletionCondition($requiredStepsCount, $participantSteps, true);
-
-        if ($condition->isCompleted()) {
-            $matchUser->finish();
-        }
-
-        return $matchUser->refresh();
+        event(new MatchUserAnsweredEvent(
+            $match,
+            $step->getParticipantIdentifier(),
+            $attempt->is_correct,
+            $matchUser
+        ));
     }
 
-    private function findParticipant(MatchModel $match, ?int $userId, ?string $guestId): ?MatchUser
+    private function completeOrAdvance(MatchModel $match, ?MatchUser $matchUser, ParticipantIdentifier $participant): void
     {
-        return $match->matchUsers->first(fn (MatchUser $participant) => $userId
-            ? $participant->user_id === $userId
-            : $participant->guest_id === $guestId);
+        if ($this->completionConditionFactory->create($match)->isCompleted()) {
+            $this->completeMatchAction->handle($match);
+            return;
+        }
+
+        if ($matchUser === null || ! $matchUser->status->isTerminal()) {
+            $this->generateNextMatchStepAction->handle($match, $participant, true);
+        }
     }
 }

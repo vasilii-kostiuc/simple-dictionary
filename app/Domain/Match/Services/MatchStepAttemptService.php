@@ -2,9 +2,13 @@
 
 namespace App\Domain\Match\Services;
 
+use App\Domain\Match\DTO\ParticipantIdentifier;
+use App\Domain\Match\Enums\MatchType;
+use App\Domain\Match\Models\MatchModel;
 use App\Domain\Match\Models\MatchStep;
 use App\Domain\Match\Models\MatchStepAttempt;
 use App\Domain\Match\Models\MatchUser;
+use App\Domain\Shared\CompletionConditions\StepsCompletionCondition;
 use App\Domain\Step\Enums\StepType;
 use App\Domain\Step\StepAttemptVerifierFactory;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -53,5 +57,38 @@ class MatchStepAttemptService
                 }
             })
             ->first();
+    }
+
+    public function finishParticipantIfNeeded(MatchModel $match, ParticipantIdentifier $participant): ?MatchUser
+    {
+        $matchUser = $this->findParticipant($match, $participant);
+
+        if (! in_array($match->match_type, [MatchType::Steps, MatchType::Race], true)) {
+            return $matchUser;
+        }
+
+        if ($matchUser === null || $matchUser->status->isTerminal()) {
+            return $matchUser;
+        }
+
+        $participantSteps = $match->steps->filter(fn ($step) => $participant->userId
+            ? $step->user_id === $participant->userId
+            : $step->guest_id === $participant->guestId);
+
+        $requiredStepsCount = (int) ($match->match_type_params['steps'] ?? 0);
+        $condition = new StepsCompletionCondition($requiredStepsCount, $participantSteps, true);
+
+        if ($condition->isCompleted()) {
+            $matchUser->finish();
+        }
+
+        return $matchUser->refresh();
+    }
+
+    public function findParticipant(MatchModel $match, ParticipantIdentifier $participant): ?MatchUser
+    {
+        return $match->matchUsers->first(fn (MatchUser $matchUser) => $participant->userId
+            ? $matchUser->user_id === $participant->userId
+            : $matchUser->guest_id === $participant->guestId);
     }
 }

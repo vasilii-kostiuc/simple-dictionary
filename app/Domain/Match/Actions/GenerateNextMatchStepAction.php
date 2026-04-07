@@ -2,6 +2,7 @@
 
 namespace App\Domain\Match\Actions;
 
+use App\Domain\Match\DTO\ParticipantIdentifier;
 use App\Domain\Match\Enums\MatchStatus;
 use App\Domain\Match\Events\MatchNextStepGeneratedEvent;
 use App\Domain\Match\Models\MatchModel;
@@ -16,7 +17,7 @@ class GenerateNextMatchStepAction
     ) {
     }
 
-    public function handle(MatchModel $match, ?int $userId, ?string $guestId, bool $dispatchEvent = false): ?MatchStep
+    public function handle(MatchModel $match, ParticipantIdentifier $participant, bool $dispatchEvent = false): ?MatchStep
     {
         $match = $match->refresh();
 
@@ -26,15 +27,15 @@ class GenerateNextMatchStepAction
 
         $match->loadMissing('matchUsers');
 
-        $matchUser = $match->matchUsers->first(fn (MatchUser $participant) => $userId
-            ? $participant->user_id === $userId
-            : $participant->guest_id === $guestId);
+        $matchUser = $match->matchUsers->first(fn (MatchUser $mu) => $participant->userId
+            ? $mu->user_id === $participant->userId
+            : $mu->guest_id === $participant->guestId);
 
         if ($matchUser !== null && $matchUser->status->isTerminal()) {
             return null;
         }
 
-        $nextStep = $this->matchStepService->generateNextStepForParticipant($match, $userId, $guestId);
+        $nextStep = $this->matchStepService->generateNextStepForParticipant($match, $participant);
 
         if ($dispatchEvent) {
             event(new MatchNextStepGeneratedEvent($match, $nextStep));

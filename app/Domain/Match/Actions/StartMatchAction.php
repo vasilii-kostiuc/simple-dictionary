@@ -2,6 +2,7 @@
 
 namespace App\Domain\Match\Actions;
 
+use App\Domain\Match\DTO\ParticipantIdentifier;
 use App\Domain\Match\Models\MatchModel;
 use App\Domain\Match\Services\MatchService;
 
@@ -19,15 +20,16 @@ class StartMatchAction
         $match->loadMissing('matchUsers');
 
         foreach ($match->matchUsers as $matchUser) {
-            $hasExistingStep = $match->steps()
-                ->where(function ($query) use ($matchUser) {
-                    if ($matchUser->user_id !== null) {
-                        $query->where('user_id', $matchUser->user_id);
+            $participant = ParticipantIdentifier::fromMatchUser($matchUser);
 
+            $hasExistingStep = $match->steps()
+                ->where(function ($query) use ($participant) {
+                    if ($participant->userId !== null) {
+                        $query->where('user_id', $participant->userId);
                         return;
                     }
 
-                    $query->where('guest_id', $matchUser->guest_id);
+                    $query->where('guest_id', $participant->guestId);
                 })
                 ->exists();
 
@@ -35,12 +37,7 @@ class StartMatchAction
                 continue;
             }
 
-            $this->generateNextMatchStepAction->handle(
-                $match,
-                $matchUser->user_id,
-                $matchUser->guest_id,
-                false
-            );
+            $this->generateNextMatchStepAction->handle($match, $participant, false);
         }
 
         return $match->refresh();
