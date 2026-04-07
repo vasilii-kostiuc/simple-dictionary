@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1\Match;
 
+use App\Domain\Match\Actions\SubmitMatchAttemptAction;
 use App\Domain\Match\Models\MatchModel;
 use App\Domain\Match\Models\MatchStep;
-use App\Domain\Match\Services\MatchStepAttemptService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Match\SubmitMatchAnswerRequest;
 use App\Http\Resources\ApiResponseResource;
@@ -16,7 +16,7 @@ use Illuminate\Http\Response;
 class MatchStepAttemptController extends Controller
 {
     public function __construct(
-        private MatchStepAttemptService $matchStepAttemptService
+        private readonly SubmitMatchAttemptAction $submitMatchAttemptAction
     ) {
     }
 
@@ -63,7 +63,7 @@ class MatchStepAttemptController extends Controller
             ])->response()->setStatusCode(Response::HTTP_CONFLICT);
         }
 
-        $attempt = $this->matchStepAttemptService->submitAnswer(
+        $attempt = $this->submitMatchAttemptAction->handle(
             $step,
             $request->input('attempt_data'),
             $request->input('attempt_number')

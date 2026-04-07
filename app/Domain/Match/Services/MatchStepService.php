@@ -2,7 +2,6 @@
 
 namespace App\Domain\Match\Services;
 
-use App\Domain\Match\Events\MatchStepSkippedEvent;
 use App\Domain\Match\Factories\MatchStrategyFactory;
 use App\Domain\Match\Models\MatchModel;
 use App\Domain\Match\Models\MatchStep;
@@ -45,8 +44,6 @@ class MatchStepService
         $step->skipped = true;
         $step->skipped_at = now();
         $step->save();
-
-        event(new MatchStepSkippedEvent($step->match, $step));
 
         return $step;
     }

@@ -2,7 +2,6 @@
 
 namespace App\Domain\Match\Services;
 
-use App\Domain\Match\Events\MatchUserAnsweredEvent;
 use App\Domain\Match\Models\MatchStep;
 use App\Domain\Match\Models\MatchStepAttempt;
 use App\Domain\Match\Models\MatchUser;
@@ -38,19 +37,12 @@ class MatchStepAttemptService
             }
 
             $matchUser->incrementScore($isCorrect);
-
-            event(new MatchUserAnsweredEvent(
-                $step->match,
-                $step->getParticipantIdentifier(),
-                $isCorrect,
-                $matchUser
-            ));
         }
 
         return $attempt;
     }
 
-    private function resolveParticipant(MatchStep $step): ?MatchUser
+    public function resolveParticipant(MatchStep $step): ?MatchUser
     {
         return MatchUser::where('match_id', $step->match_id)
             ->where(function ($q) use ($step) {

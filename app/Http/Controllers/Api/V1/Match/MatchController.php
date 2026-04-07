@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api\V1\Match;
 
+use App\Domain\Match\Actions\CompleteMatchAction;
+use App\Domain\Match\Actions\CreateMatchAction;
+use App\Domain\Match\Actions\StartMatchAction;
 use App\Domain\Match\Enums\{MatchStatus, MatchCompletionReason, MatchType};
 use App\Domain\Match\Models\MatchModel;
-use App\Domain\Match\Services\{MatchService, MatchSummaryBuilder};
+use App\Domain\Match\Services\MatchSummaryBuilder;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Match\CreateMatchRequest;
 use App\Http\Resources\ApiResponseResource;
@@ -18,8 +21,10 @@ class MatchController extends Controller
     private const MATCH_CAN_BE_STARTED_ONLY_IN_NEW_STATE = 'match_can_be_started_only_in_new_state';
 
     public function __construct(
-        private MatchService $matchService,
-        private MatchSummaryBuilder $matchSummaryBuilder
+        private readonly CreateMatchAction $createMatchAction,
+        private readonly StartMatchAction $startMatchAction,
+        private readonly CompleteMatchAction $completeMatchAction,
+        private readonly MatchSummaryBuilder $matchSummaryBuilder
     ) {
     }
 
@@ -58,12 +63,10 @@ class MatchController extends Controller
     public function store(CreateMatchRequest $request)
     {
         info(__METHOD__, $request->validated());
-        $match = $this->matchService->create(
+        $match = $this->createMatchAction->handle(
             $request->validated(),
             $request->input('participants')
         );
-
-        $match = $this->matchService->start($match);
 
         $match->load('matchUsers', 'steps');
 
@@ -93,7 +96,7 @@ class MatchController extends Controller
             ])->response()->setStatusCode(Response::HTTP_CONFLICT);
         }
 
-        $this->matchService->start($match);
+        $match = $this->startMatchAction->handle($match);
 
         return new ApiResponseResource([
             'message' => 'Match started successfully',
@@ -113,7 +116,7 @@ class MatchController extends Controller
             ? MatchCompletionReason::tryFrom($request->input('reason'))
             : null;
 
-        $this->matchService->complete($match, $reason);
+        $match = $this->completeMatchAction->handle($match, $reason);
 
         return new ApiResponseResource([
             'message' => 'Match completed successfully',
@@ -124,7 +127,7 @@ class MatchController extends Controller
     public function expire(MatchModel $match)
     {
         if ($match->match_type === MatchType::Time) {
-            $this->matchService->complete($match, MatchCompletionReason::TimeExpired);
+            $this->completeMatchAction->handle($match, MatchCompletionReason::TimeExpired);
             $match->refresh();
             return new ApiResponseResource(['message' => 'Match completed successfully', 'data' => new MatchResource($match)]);
         }

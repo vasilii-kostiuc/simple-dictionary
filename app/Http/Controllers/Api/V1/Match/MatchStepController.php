@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api\V1\Match;
 
+use App\Domain\Match\Actions\GenerateNextMatchStepAction;
+use App\Domain\Match\Actions\SkipMatchStepAction;
 use App\Domain\Match\Enums\MatchStatus;
 use App\Domain\Match\Models\MatchModel;
 use App\Domain\Match\Models\MatchStep;
-use App\Domain\Match\Services\MatchStepService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiResponseResource;
 use App\Http\Resources\Match\MatchStepResource;
@@ -20,7 +21,8 @@ class MatchStepController extends Controller
     private const ERROR_PARTICIPANT_REQUIRED = 'participant_required';
 
     public function __construct(
-        private MatchStepService $matchStepService
+        private readonly GenerateNextMatchStepAction $generateNextMatchStepAction,
+        private readonly SkipMatchStepAction $skipMatchStepAction
     ) {
     }
 
@@ -65,6 +67,25 @@ class MatchStepController extends Controller
             ->first();
 
         if ($lastStep && ! $lastStep->isPassedOrSkipped() && ! $lastStep->hasAttempts()) {
+            $previousStep = $match->steps()
+                ->where(function ($q) use ($userId, $guestId) {
+                    if ($userId) {
+                        $q->where('user_id', $userId);
+                    } elseif ($guestId) {
+                        $q->where('guest_id', $guestId);
+                    }
+                })
+                ->where('step_number', '<', $lastStep->step_number)
+                ->orderBy('step_number', 'desc')
+                ->first();
+
+            if ($previousStep && ($previousStep->isPassedOrSkipped() || $previousStep->hasAttempts())) {
+                return ApiResponseResource::make([
+                    'data' => new MatchStepResource($lastStep),
+                    'message' => 'Next step already exists'
+                ]);
+            }
+
             return new ApiResponseResource([
                 'success' => false,
                 'errors' => [self::ERROR_STEP_NOT_COMPLETED => 'Previous step has not been attempted'],
@@ -72,11 +93,19 @@ class MatchStepController extends Controller
             ])->response()->setStatusCode(Response::HTTP_CONFLICT);
         }
 
-        $nextStep = $this->matchStepService->generateNextStepForParticipant(
+        $nextStep = $this->generateNextMatchStepAction->handle(
             $match,
             $userId,
             $guestId
         );
+
+        if ($nextStep === null) {
+            return new ApiResponseResource([
+                'success' => false,
+                'errors' => [self::ERROR_CURRENT_STEP_NOT_FOUND => 'Next step cannot be generated'],
+                'message' => 'Next step cannot be generated for this participant',
+            ])->response()->setStatusCode(Response::HTTP_CONFLICT);
+        }
 
         return ApiResponseResource::make([
             'data' => new MatchStepResource($nextStep),
@@ -146,7 +175,7 @@ class MatchStepController extends Controller
             ])->response()->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
-        $this->matchStepService->skip($step);
+        $step = $this->skipMatchStepAction->handle($step);
 
         return ApiResponseResource::make([
             'data' => new MatchStepResource($step),
