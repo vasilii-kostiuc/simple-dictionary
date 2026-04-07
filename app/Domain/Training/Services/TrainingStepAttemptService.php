@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Training\Service;
+namespace App\Domain\Training\Services;
 
 use App\Domain\Step\Enums\StepType;
 use App\Domain\Step\StepAttemptVerifierFactory;
@@ -10,11 +10,9 @@ use App\Domain\Training\Models\TrainingStepAttempt;
 
 class TrainingStepAttemptService
 {
-    private StepAttemptVerifierFactory $stepAttemptVerifierFactory;
-
-    public function __construct(StepAttemptVerifierFactory $stepAttemptVerifierFactory)
-    {
-        $this->stepAttemptVerifierFactory = $stepAttemptVerifierFactory;
+    public function __construct(
+        private readonly StepAttemptVerifierFactory $stepAttemptVerifierFactory
+    ) {
     }
 
     public function create(TrainingStep $trainingStep, array $attemptData): TrainingStepAttempt

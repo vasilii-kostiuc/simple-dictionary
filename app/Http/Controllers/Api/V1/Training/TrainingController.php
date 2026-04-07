@@ -7,7 +7,7 @@ use App\Domain\Training\Enums\TrainingCompletionType;
 use App\Domain\Training\Enums\TrainingStatus;
 use App\Domain\Training\Enums\TrainingType;
 use App\Domain\Training\Models\Training;
-use App\Domain\Training\Service\TrainingService;
+use App\Domain\Training\Services\TrainingService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Training\StoreTrainingRequest;
 use App\Http\Resources\ApiResponseResource;

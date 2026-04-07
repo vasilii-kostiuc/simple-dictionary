@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\V1\Match;
 
 use App\Domain\Match\Models\MatchModel;
 use App\Domain\Match\Models\MatchStep;
-use App\Domain\Match\Service\MatchStepAttemptService;
+use App\Domain\Match\Services\MatchStepAttemptService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Match\SubmitMatchAnswerRequest;
 use App\Http\Resources\ApiResponseResource;
@@ -79,7 +79,5 @@ class MatchStepAttemptController extends Controller
             ],
             'message' => $attempt->is_correct ? 'Correct answer!' : 'Incorrect answer'
         ])->response();
-
-
     }
 }

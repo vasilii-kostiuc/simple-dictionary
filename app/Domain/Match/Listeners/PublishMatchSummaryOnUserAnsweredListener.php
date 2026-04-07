@@ -3,7 +3,7 @@
 namespace App\Domain\Match\Listeners;
 
 use App\Domain\Match\Events\MatchUserAnsweredEvent;
-use App\Domain\Match\Service\MatchSummaryBuilder;
+use App\Domain\Match\Services\MatchSummaryBuilder;
 use App\Http\Resources\Match\MatchSummaryResource;
 use VasiliiKostiuc\LaravelMessagingLibrary\Messaging\MessageBrokerFactory;
 

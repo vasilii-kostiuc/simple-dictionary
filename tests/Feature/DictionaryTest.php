@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Domain\Dictionary\Models\Dictionary;
 use App\Domain\Language\Models\Language;
-use App\Models\User;
+use App\Domain\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

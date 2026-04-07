@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Domain\Dictionary\Models\Dictionary;
+use App\Domain\User\Services\UserService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Http\Resources\Auth\ProfileResource;
-use App\Http\Resources\Auth\UserResource;
-use App\Service\UserService;
-
 
 class RegisterController extends Controller
 {

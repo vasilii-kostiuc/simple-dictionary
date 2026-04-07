@@ -6,12 +6,12 @@ use App\Domain\Match\Enums\MatchStatus;
 use App\Domain\Match\Events\MatchNextStepGeneratedEvent;
 use App\Domain\Match\Events\MatchStepSkippedEvent;
 use App\Domain\Match\Events\MatchUserAnsweredEvent;
-use App\Domain\Match\Service\MatchStepService;
+use App\Domain\Match\Services\MatchStepService;
 
 class GenerateMatchNextStepOnParticipantActionListener
 {
     public function __construct(
-        private MatchStepService $matchStepService
+        private readonly MatchStepService $matchStepService
     ) {
     }
 

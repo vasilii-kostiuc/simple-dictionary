@@ -6,7 +6,7 @@ use App\Domain\Training\Enums\TrainingCompletionReason;
 use App\Domain\Training\Events\StepAttemptEvent;
 use App\Domain\Training\Events\StepSkippedEvent;
 use App\Domain\Training\Factories\CompletionConditionFactory;
-use App\Domain\Training\Service\TrainingService;
+use App\Domain\Training\Services\TrainingService;
 
 class CheckTrainingCompletionListener
 {

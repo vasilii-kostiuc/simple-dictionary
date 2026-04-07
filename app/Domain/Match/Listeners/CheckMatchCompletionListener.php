@@ -5,7 +5,7 @@ namespace App\Domain\Match\Listeners;
 use App\Domain\Match\Events\MatchStepSkippedEvent;
 use App\Domain\Match\Events\MatchUserAnsweredEvent;
 use App\Domain\Match\Factories\CompletionConditionFactory;
-use App\Domain\Match\Service\MatchService;
+use App\Domain\Match\Services\MatchService;
 
 class CheckMatchCompletionListener
 {

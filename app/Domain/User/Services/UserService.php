@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Service;
+namespace App\Domain\User\Services;
 
-use App\Domain\Dictionary\Services\DictionaryService;
-use App\Models\User;
+use App\Infrastructure\Uploads\ImageUploaderInterface;
+use App\Domain\User\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\UploadedFile;
@@ -12,11 +12,9 @@ use Illuminate\Support\Str;
 
 class UserService
 {
-    private ImageUploader $imageUploader;
-
-    public function __construct(ImageUploader $imageUploader)
-    {
-        $this->imageUploader = $imageUploader;
+    public function __construct(
+        private readonly ImageUploaderInterface $imageUploader
+    ) {
     }
 
     public function register(string $email, string $password, ?string $name = null): User
@@ -49,7 +47,7 @@ class UserService
         if (isset($attributes['avatar'])) {
             /** @var UploadedFile $file */
             $file = $attributes['avatar'];
-            $name = 'profile/avatar/'.Str::uuid().'.'.$file->getClientOriginalExtension();
+            $name = 'profile/avatar/' . Str::uuid() . '.' . $file->getClientOriginalExtension();
 
             $this->imageUploader->uploadImage($name, $file);
 

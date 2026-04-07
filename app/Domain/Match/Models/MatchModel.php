@@ -7,7 +7,7 @@ use App\Domain\Match\Enums\MatchCompletionReason;
 use App\Domain\Match\Enums\MatchStatus;
 use App\Domain\Match\Enums\MatchType;
 use App\Domain\Match\Events\MatchCompletedEvent;
-use App\Models\User;
+use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;

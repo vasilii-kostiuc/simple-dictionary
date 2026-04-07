@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Domain\User\Services\UserService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ProfileUpdateRequest;
 use App\Http\Resources\Auth\ProfileResource;
-use App\Service\UserService;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller

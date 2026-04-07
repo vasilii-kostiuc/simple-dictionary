@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Match\Service;
+namespace App\Domain\Match\Services;
 
 use App\Domain\Match\Events\MatchStepSkippedEvent;
 use App\Domain\Match\Factories\MatchStrategyFactory;
@@ -11,7 +11,7 @@ use App\Domain\Step\Steps\Step;
 class MatchStepService
 {
     public function __construct(
-        private MatchStrategyFactory $strategyFactory
+        private readonly MatchStrategyFactory $strategyFactory
     ) {
     }
 
@@ -36,19 +36,6 @@ class MatchStepService
         ]);
     }
 
-    private function calculateNextStepNumber(MatchModel $match, ?int $userId, ?string $guestId): int
-    {
-        return $match->steps()
-            ->where(function ($q) use ($userId, $guestId) {
-                if ($userId) {
-                    $q->where('user_id', $userId);
-                } elseif ($guestId) {
-                    $q->where('guest_id', $guestId);
-                }
-            })
-            ->count() + 1;
-    }
-
     public function skip(MatchStep $step): MatchStep
     {
         if ($step->isPassedOrSkipped()) {
@@ -62,5 +49,18 @@ class MatchStepService
         event(new MatchStepSkippedEvent($step->match, $step));
 
         return $step;
+    }
+
+    private function calculateNextStepNumber(MatchModel $match, ?int $userId, ?string $guestId): int
+    {
+        return $match->steps()
+            ->where(function ($q) use ($userId, $guestId) {
+                if ($userId) {
+                    $q->where('user_id', $userId);
+                } elseif ($guestId) {
+                    $q->where('guest_id', $guestId);
+                }
+            })
+            ->count() + 1;
     }
 }

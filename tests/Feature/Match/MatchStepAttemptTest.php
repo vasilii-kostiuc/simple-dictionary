@@ -6,7 +6,7 @@ use App\Domain\Language\Models\Language;
 use App\Domain\Match\Enums\MatchType;
 use App\Domain\Step\Enums\StepType;
 use App\Domain\Step\StepResolverFactory;
-use App\Models\User;
+use App\Domain\User\Models\User;
 use Database\Seeders\TopWordSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

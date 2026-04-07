@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Service\JwtTokenService;
+use App\Infrastructure\Auth\JwtTokenService;
 use Illuminate\Console\Command;
 
 class GenerateServiceToken extends Command

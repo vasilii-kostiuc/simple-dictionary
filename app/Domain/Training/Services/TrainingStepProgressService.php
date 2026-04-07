@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Training\Service;
+namespace App\Domain\Training\Services;
 
 use App\Domain\Training\Models\TrainingStep;
 
@@ -12,7 +12,7 @@ class TrainingStepProgressService
 
         $answered = $this->getCorrectAnswersCount($step);
 
-        return (object)[
+        return (object) [
             'id' => $step->id,
             'required_answers_count' => $total,
             'answered' => $answered,
@@ -35,6 +35,4 @@ class TrainingStepProgressService
             ->where('is_correct', true)
             ->count();
     }
-
-
 }

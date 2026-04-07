@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Infrastructure\Auth;
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -8,6 +8,7 @@ use Firebase\JWT\Key;
 class JwtTokenService
 {
     private string $secret;
+
     private string $algorithm = 'HS256';
 
     public function __construct()
@@ -19,13 +20,13 @@ class JwtTokenService
         }
     }
 
-        public function generateServiceToken(string $serviceName, int $expiresInSeconds = 3600): string
+    public function generateServiceToken(string $serviceName, int $expiresInSeconds = 3600): string
     {
         $payload = [
-            'iss' => config('app.name'), // Issuer
-            'sub' => $serviceName, // Subject (service name)
-            'iat' => time(), // Issued at
-            'exp' => time() + $expiresInSeconds, // Expiration
+            'iss' => config('app.name'),
+            'sub' => $serviceName,
+            'iat' => time(),
+            'exp' => time() + $expiresInSeconds,
             'type' => 'service',
         ];
 
@@ -36,19 +37,17 @@ class JwtTokenService
     {
         try {
             return JWT::decode($token, new Key($this->secret, $this->algorithm));
-        } catch (\Exception $e) {
-
+        } catch (\Exception) {
+            return null;
         }
-
-        return null;
     }
 
     public function isValidServiceToken(string $token): bool
     {
         $decoded = $this->validateToken($token);
 
-        return $decoded !== null &&
-               isset($decoded->type) &&
-               $decoded->type === 'service';
+        return $decoded !== null
+            && isset($decoded->type)
+            && $decoded->type === 'service';
     }
 }

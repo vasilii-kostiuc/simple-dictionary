@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\V1\Match;
 
 use App\Domain\Match\Enums\{MatchStatus, MatchCompletionReason, MatchType};
 use App\Domain\Match\Models\MatchModel;
-use App\Domain\Match\Service\{MatchService, MatchSummaryBuilder};
+use App\Domain\Match\Services\{MatchService, MatchSummaryBuilder};
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Match\CreateMatchRequest;
 use App\Http\Resources\ApiResponseResource;

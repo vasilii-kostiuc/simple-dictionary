@@ -3,7 +3,7 @@
 namespace App\Domain\Dictionary\Models;
 
 use App\Domain\Language\Models\Language;
-use App\Models\User;
+use App\Domain\User\Models\User;
 use Database\Factories\DictionaryFactory as DictionaryFactoryAlias;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;

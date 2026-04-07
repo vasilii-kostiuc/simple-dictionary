@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Match\Service;
+namespace App\Domain\Match\Services;
 
 use App\Domain\Match\Enums\MatchCompletionReason;
 use App\Domain\Match\Enums\MatchStatus;
@@ -8,13 +8,14 @@ use App\Domain\Match\Events\MatchCreatedEvent;
 use App\Domain\Match\Events\MatchStartedEvent;
 use App\Domain\Match\Models\MatchModel;
 use App\Domain\Match\Models\MatchUser;
-use App\Models\User;
+use App\Domain\User\Models\User;
 
 class MatchService
 {
     public function __construct(
         private readonly MatchStepService $matchStepService
-    ) {}
+    ) {
+    }
 
     public function create(array $data, array $participants): MatchModel
     {
@@ -27,24 +28,21 @@ class MatchService
             'status' => MatchStatus::New,
         ]);
 
-        // $participants = [
-        //   ['type' => 'user', 'id' => 123],
-        //   ['type' => 'guest', 'id' => 'uuid-guest-1', 'name' => 'Guest Name'],
-        // ]
-
         foreach ($participants as $participant) {
             if ($participant['type'] === 'user') {
                 $user = User::find($participant['id']);
-                if ($user) {
+                if ($user !== null) {
                     MatchUser::fromUser($user, $match->id);
                 }
-            } else {
-                MatchUser::fromGuest(
-                    $participant['id'],
-                    $match->id,
-                    $participant['name'] ?? null
-                );
+
+                continue;
             }
+
+            MatchUser::fromGuest(
+                $participant['id'],
+                $match->id,
+                $participant['name'] ?? null
+            );
         }
 
         $match->refresh();
@@ -65,7 +63,6 @@ class MatchService
 
         event(new MatchStartedEvent($match));
 
-        // Генерируем первый шаг для каждого участника
         foreach ($match->matchUsers as $matchUser) {
             $this->matchStepService->generateNextStepForParticipant(
                 $match,

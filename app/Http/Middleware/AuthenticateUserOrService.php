@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\Service\JwtTokenService;
 use App\Http\Resources\ApiResponseResource;
+use App\Infrastructure\Auth\JwtTokenService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -34,7 +34,7 @@ class AuthenticateUserOrService
         }
 
         $token = $request->bearerToken();
-        if (!$token) {
+        if (! $token) {
             $header = $request->header('Authorization');
             if ($header && str_starts_with($header, 'Bearer ')) {
                 $token = substr($header, 7);

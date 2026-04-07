@@ -14,7 +14,7 @@ use App\Domain\Training\Enums\TrainingType;
 use App\Domain\Training\Factories\TrainingStrategyFactory;
 use App\Domain\Training\Models\Training;
 use App\Domain\Training\Strategies\SpecificStepTypeTrainingStrategy;
-use App\Models\User;
+use App\Domain\User\Models\User;
 use Database\Seeders\TopWordSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Training\Service;
+namespace App\Domain\Training\Services;
 
 use App\Domain\Training\Enums\TrainingCompletionReason;
 use App\Domain\Training\Enums\TrainingStatus;
@@ -11,7 +11,7 @@ class TrainingService
 {
     public function create(array $data): Training
     {
-        $training = new Training;
+        $training = new Training();
         $training->fill($data);
         $training->status = TrainingStatus::New;
         $training->save();
@@ -19,7 +19,7 @@ class TrainingService
         return $training;
     }
 
-    public function start(Training $training)
+    public function start(Training $training): Training
     {
         if ($training->status == TrainingStatus::InProgress) {
             return $training;
@@ -29,8 +29,8 @@ class TrainingService
         $training->started_at = now();
         $training->save();
 
-
         event(new TrainingStartedEvent($training));
+
         return $training;
     }
 
@@ -44,5 +44,4 @@ class TrainingService
 
         return $training;
     }
-
 }

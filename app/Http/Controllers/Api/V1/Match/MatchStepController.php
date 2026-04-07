@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1\Match;
 use App\Domain\Match\Enums\MatchStatus;
 use App\Domain\Match\Models\MatchModel;
 use App\Domain\Match\Models\MatchStep;
-use App\Domain\Match\Service\MatchStepService;
+use App\Domain\Match\Services\MatchStepService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiResponseResource;
 use App\Http\Resources\Match\MatchStepResource;

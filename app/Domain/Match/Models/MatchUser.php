@@ -4,7 +4,7 @@ namespace App\Domain\Match\Models;
 
 use App\Domain\Match\Enums\MatchUserStatus;
 use App\Domain\Match\Events\MatchUserStatusChangedEvent;
-use App\Models\User;
+use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

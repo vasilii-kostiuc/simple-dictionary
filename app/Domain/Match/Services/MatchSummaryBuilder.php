@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Match\Service;
+namespace App\Domain\Match\Services;
 
 use App\Domain\Match\Models\MatchModel;
 

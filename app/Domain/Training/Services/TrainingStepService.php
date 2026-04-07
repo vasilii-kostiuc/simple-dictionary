@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Training\Service;
+namespace App\Domain\Training\Services;
 
 use App\Domain\Step\Steps\Step;
 use App\Domain\Training\Events\StepSkippedEvent;
@@ -11,21 +11,19 @@ class TrainingStepService
 {
     public function create(Step $wordTrainingStep, Training $training): TrainingStep
     {
-        $step = TrainingStep::create([
+        return TrainingStep::create([
             'training_id' => $training->id,
             'step_data' => $wordTrainingStep->toArray(),
             'step_type_id' => $wordTrainingStep->getStepType()->value,
             'step_number' => $this->calculateNextStepNumber($training),
             'required_answers_count' => $wordTrainingStep->getRequiredAnswersCount(),
         ]);
-
-        return $step;
     }
 
-    public function skip(TrainingStep $step)
+    public function skip(TrainingStep $step): ?TrainingStep
     {
         if ($step->isPassedOrSkipped()) {
-            return;
+            return null;
         }
 
         $step->skipped = true;

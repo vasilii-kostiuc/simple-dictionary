@@ -4,7 +4,7 @@ namespace Tests\Feature\Match;
 
 use App\Domain\Language\Models\Language;
 use App\Domain\Match\Enums\{MatchStatus, MatchType, MatchCompletionReason};
-use App\Models\User;
+use App\Domain\User\Models\User;
 use Database\Seeders\TopWordSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

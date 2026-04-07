@@ -13,7 +13,7 @@ class LanguageFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
-            'code' => $this->faker->languageCode(),
+            'code' => $this->faker->unique()->languageCode(),
             'icon' => $this->faker->imageUrl(),
         ];
     }

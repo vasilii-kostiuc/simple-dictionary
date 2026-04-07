@@ -3,7 +3,7 @@
 namespace App\Domain\Dictionary\Services;
 
 use App\Domain\Dictionary\Models\Dictionary;
-use App\Models\User;
+use App\Domain\User\Models\User;
 
 class DictionaryService
 {

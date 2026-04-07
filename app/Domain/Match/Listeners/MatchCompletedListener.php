@@ -5,7 +5,7 @@ namespace App\Domain\Match\Listeners;
 use App\Domain\Match\Events\MatchCompletedEvent;
 use App\Domain\Match\Factories\CompletionConditionFactory;
 use VasiliiKostiuc\LaravelMessagingLibrary\Messaging\MessageBrokerFactory;
-use App\Domain\Match\Service\MatchSummaryBuilder;
+use App\Domain\Match\Services\MatchSummaryBuilder;
 
 class MatchCompletedListener
 {
