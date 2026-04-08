@@ -11,6 +11,68 @@ final class MatchApi
 {
     // ── Matches ───────────────────────────────────────────────────────────────
 
+    #[OA\Post(
+        path: '/api/v1/match-links',
+        operationId: 'storeMatchInvite',
+        summary: 'Create a match invite link',
+        description: 'Creates a public invite link for a future match and returns a QR SVG representation.',
+        tags: ['Matches'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['language_from_id', 'language_to_id', 'match_type', 'match_type_params'],
+                properties: [
+                    new OA\Property(property: 'language_from_id', type: 'integer', example: 1),
+                    new OA\Property(property: 'language_to_id', type: 'integer', example: 2),
+                    new OA\Property(property: 'dictionary_id', type: 'integer', nullable: true, example: 1),
+                    new OA\Property(property: 'match_type', type: 'string', enum: ['time', 'steps', 'race'], example: 'time'),
+                    new OA\Property(property: 'match_type_params', type: 'object', example: '{"duration": 300}'),
+                    new OA\Property(property: 'participants_limit', type: 'integer', nullable: true, example: 2),
+                    new OA\Property(property: 'expires_at', type: 'string', format: 'date-time', nullable: true),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Invite created successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'data', ref: '#/components/schemas/MatchInvite', type: 'object'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Match invite created successfully'),
+                    ]
+                )
+            ),
+            new OA\Response(response: 422, description: 'Validation error'),
+            new OA\Response(response: 429, description: 'Rate limit exceeded'),
+        ]
+    )]
+    public function storeMatchInvite(): void {}
+
+    #[OA\Get(
+        path: '/api/v1/match-links/{token}',
+        operationId: 'showMatchInvite',
+        summary: 'Show match invite link',
+        description: 'Returns public static information for a previously created match invite link.',
+        tags: ['Matches'],
+        parameters: [
+            new OA\Parameter(name: 'token', in: 'path', required: true, description: 'Invite token', schema: new OA\Schema(type: 'string')),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Invite details',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'data', ref: '#/components/schemas/MatchInvite', type: 'object'),
+                    ]
+                )
+            ),
+            new OA\Response(response: 404, description: 'Invite not found'),
+        ]
+    )]
+    public function showMatchInvite(): void {}
+
     #[OA\Get(
         path: '/api/v1/matches',
         operationId: 'listMatches',
@@ -34,9 +96,7 @@ final class MatchApi
             ),
         ]
     )]
-    public function listMatches(): void
-    {
-    }
+    public function listMatches(): void {}
 
     #[OA\Post(
         path: '/api/v1/matches',
@@ -91,9 +151,7 @@ final class MatchApi
             new OA\Response(response: 422, description: 'Validation error'),
         ]
     )]
-    public function storeMatch(): void
-    {
-    }
+    public function storeMatch(): void {}
 
     #[OA\Get(
         path: '/api/v1/matches/{match}',
@@ -117,9 +175,7 @@ final class MatchApi
             ),
         ]
     )]
-    public function showMatch(): void
-    {
-    }
+    public function showMatch(): void {}
 
     #[OA\Get(
         path: '/api/v1/matches/active',
@@ -143,9 +199,7 @@ final class MatchApi
             ),
         ]
     )]
-    public function getActiveMatch(): void
-    {
-    }
+    public function getActiveMatch(): void {}
 
     #[OA\Post(
         path: '/api/v1/matches/{match}/start',
@@ -171,9 +225,7 @@ final class MatchApi
             new OA\Response(response: 409, description: 'Match already started'),
         ]
     )]
-    public function startMatch(): void
-    {
-    }
+    public function startMatch(): void {}
 
     #[OA\Post(
         path: '/api/v1/matches/{match}/complete',
@@ -207,9 +259,7 @@ final class MatchApi
             new OA\Response(response: 409, description: 'Match already completed'),
         ]
     )]
-    public function completeMatch(): void
-    {
-    }
+    public function completeMatch(): void {}
 
     #[OA\Get(
         path: '/api/v1/matches/{match}/summary',
@@ -233,9 +283,7 @@ final class MatchApi
             ),
         ]
     )]
-    public function matchSummary(): void
-    {
-    }
+    public function matchSummary(): void {}
 
     // ── Match Steps ───────────────────────────────────────────────────────────
 
@@ -262,9 +310,7 @@ final class MatchApi
             ),
         ]
     )]
-    public function showMatchStep(): void
-    {
-    }
+    public function showMatchStep(): void {}
 
     #[OA\Get(
         path: '/api/v1/matches/{match}/steps/next',
@@ -292,9 +338,7 @@ final class MatchApi
             new OA\Response(response: 409, description: 'Match finished or previous step not completed'),
         ]
     )]
-    public function nextMatchStep(): void
-    {
-    }
+    public function nextMatchStep(): void {}
 
     #[OA\Get(
         path: '/api/v1/matches/{match}/steps/current',
@@ -322,9 +366,7 @@ final class MatchApi
             new OA\Response(response: 409, description: 'Match finished'),
         ]
     )]
-    public function currentMatchStep(): void
-    {
-    }
+    public function currentMatchStep(): void {}
 
     #[OA\Patch(
         path: '/api/v1/matches/{match}/steps/{step}/skip',
@@ -352,9 +394,7 @@ final class MatchApi
             new OA\Response(response: 403, description: 'Step does not belong to this participant'),
         ]
     )]
-    public function skipMatchStep(): void
-    {
-    }
+    public function skipMatchStep(): void {}
 
     // ── Match Step Attempts ───────────────────────────────────────────────────
 
@@ -382,9 +422,7 @@ final class MatchApi
             ),
         ]
     )]
-    public function listMatchStepAttempts(): void
-    {
-    }
+    public function listMatchStepAttempts(): void {}
 
     #[OA\Post(
         path: '/api/v1/matches/{match}/steps/{step}/attempts',
@@ -427,7 +465,5 @@ final class MatchApi
             new OA\Response(response: 409, description: 'Step already passed'),
         ]
     )]
-    public function storeMatchStepAttempt(): void
-    {
-    }
+    public function storeMatchStepAttempt(): void {}
 }

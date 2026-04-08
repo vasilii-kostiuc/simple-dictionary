@@ -83,6 +83,11 @@ Route::prefix('v1')->group(function () {
 
     // Match routes accessible to guests and authenticated users
     Route::middleware(['auth.optional'])->group(function () {
+        Route::post('match-links', [\App\Http\Controllers\Api\V1\Match\MatchInviteController::class, 'store'])
+            ->middleware('throttle:match-invites')
+            ->name('match-links.store');
+        Route::get('match-links/{matchInvite}', [\App\Http\Controllers\Api\V1\Match\MatchInviteController::class, 'show'])->name('match-links.show');
+
         Route::get('matches', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'index'])->name('matches.index');
         Route::get('matches/active', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'getActiveMatch'])->name('matches.active');
         Route::get('matches/{match}', [\App\Http\Controllers\Api\V1\Match\MatchController::class, 'show'])->name('matches.show');

@@ -637,6 +637,138 @@
                 ]
             }
         },
+        "/api/v1/match-links": {
+            "post": {
+                "tags": [
+                    "Matches"
+                ],
+                "summary": "Create a match invite link",
+                "description": "Creates a public invite link for a future match and returns a QR SVG representation.",
+                "operationId": "storeMatchInvite",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "language_from_id",
+                                    "language_to_id",
+                                    "match_type",
+                                    "match_type_params"
+                                ],
+                                "properties": {
+                                    "language_from_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "language_to_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "dictionary_id": {
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "match_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "time",
+                                            "steps",
+                                            "race"
+                                        ],
+                                        "example": "time"
+                                    },
+                                    "match_type_params": {
+                                        "type": "object",
+                                        "example": "{\"duration\": 300}"
+                                    },
+                                    "participants_limit": {
+                                        "type": "integer",
+                                        "example": 2,
+                                        "nullable": true
+                                    },
+                                    "expires_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Invite created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/MatchInvite"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Match invite created successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded"
+                    }
+                }
+            }
+        },
+        "/api/v1/match-links/{token}": {
+            "get": {
+                "tags": [
+                    "Matches"
+                ],
+                "summary": "Show match invite link",
+                "description": "Returns public static information for a previously created match invite link.",
+                "operationId": "showMatchInvite",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "description": "Invite token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Invite details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/MatchInvite"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Invite not found"
+                    }
+                }
+            }
+        },
         "/api/v1/matches": {
             "get": {
                 "tags": [
@@ -2350,6 +2482,44 @@
                     "icon": {
                         "type": "string",
                         "example": "http://example.com/storage/flags/en.svg"
+                    }
+                },
+                "type": "object"
+            },
+            "MatchInvite": {
+                "description": "Match invite resource",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "example": "01JRH4X4TKC5ATZ78QZN4M3C0Y"
+                    },
+                    "url": {
+                        "type": "string",
+                        "example": "https://example.com/api/v1/match-links/01JRH4X4TKC5ATZ78QZN4M3C0Y"
+                    },
+                    "qr_svg": {
+                        "type": "string",
+                        "example": "<svg>...</svg>"
+                    },
+                    "participants_limit": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "active"
+                    },
+                    "payload": {
+                        "type": "object"
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
