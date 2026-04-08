@@ -2,38 +2,40 @@
 
 namespace App\Http\Controllers\Api\V1\Training;
 
+use App\Domain\Training\Enums\TrainingCompletionReason;
+use App\Domain\Training\Enums\TrainingCompletionType;
+use App\Domain\Training\Enums\TrainingStatus;
+use App\Domain\Training\Enums\TrainingType;
+use App\Domain\Training\Models\Training;
+use App\Domain\Training\Services\TrainingService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Training\StoreTrainingRequest;
 use App\Http\Resources\ApiResponseResource;
 use App\Http\Resources\Training\TrainingResource;
-use App\Http\Resources\Training\TrainingStepAttemptResource;
-use App\Http\Resources\Training\TrainingStepResource;
-use App\Training\Enums\TrainingStatus;
-use App\Training\Factories\TrainingStrategyFactory;
-use App\Training\Models\Training;
-use App\Training\Models\TrainingStep;
-use App\Training\Service\StepCheckService;
-use App\Training\Service\TrainingService;
-use App\Training\Service\TrainingStepAttemptService;
-use Illuminate\Http\Request;
+use App\Http\Resources\Training\TrainingSummaryResource;
 use Illuminate\Http\Response;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class TrainingController extends Controller
 {
-    private const ERROR_TRAINING_FINISHED = 'training_finished';
-    private const ERROR_STEP_NOT_COMPLETED = 'previous_step_not_completed';
+    private const TRAINING_CAN_BE_STARTED_ONLY_IN_NEW_STATE = 'training_can_be_started_only_in_new_state';
 
     private TrainingService $trainingService;
-    private StepCheckService $stepCheckService;
-    private TrainingStepAttemptService $trainingStepAttemptService;
-    private TrainingStrategyFactory $trainingStrategyFactory;
 
-    public function __construct(TrainingStrategyFactory $trainingStrategyFactory, TrainingService $trainingService, TrainingStepAttemptService $trainingStepAttemptService, StepCheckService $stepCheckService)
+    public function __construct(TrainingService $trainingService)
     {
-        $this->trainingStrategyFactory = $trainingStrategyFactory;
         $this->trainingService = $trainingService;
-        $this->trainingStepAttemptService = $trainingStepAttemptService;
-        $this->stepCheckService = $stepCheckService;
+    }
+
+    public function index()
+    {
+        $trainings = QueryBuilder::for(Training::class)
+            ->select('trainings.*')
+            ->allowedFilters(['status'])
+            ->join('dictionaries', 'trainings.dictionary_id', '=', 'dictionaries.id')
+            ->where('dictionaries.user_id', auth()->user()->id)
+            ->orderBy('started_at', 'DESC')->get();
+        return new ApiResponseResource(['data' => TrainingResource::collection($trainings)])->response()->setStatusCode(Response::HTTP_OK);
     }
 
     public function store(StoreTrainingRequest $request)
@@ -43,50 +45,61 @@ class TrainingController extends Controller
         return new ApiResponseResource(['data' => new TrainingResource($training)])->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
+    public function show(Training $training)
+    {
+        return new ApiResponseResource(['data' => $training])->response()->setStatusCode(Response::HTTP_OK);
+    }
+
     public function start(Training $training)
     {
-        if ( TrainingStatus::from($training->status) !== TrainingStatus::New) {
-            return new ApiResponseResource(['message' => 'Training already started', 'errors' => ['training_can_be_started_only_in_new_state' => 'Training can be started only in new state']]);
+        if ($training->status !== TrainingStatus::New) {
+            return new ApiResponseResource(['message' => 'Training already started', 'errors' => [self::TRAINING_CAN_BE_STARTED_ONLY_IN_NEW_STATE => 'Training can be started only in new state']]);
         }
 
         $this->trainingService->start($training);
         return new ApiResponseResource(['message' => 'Training started successfully', 'data' => new TrainingResource($training)]);
     }
 
-
-    public function nextStep(Training $training)
+    public function expire(Training $training)
     {
-        if ($training->status == TrainingStatus::Finished) {
-            return (new ApiResponseResource(
-                [
-                    'succes' => false,
-                    'errors' => [self::ERROR_TRAINING_FINISHED => 'Training is finished'],
-                    'message' => 'Training is finished',
-                ]))->response()->setStatusCode(Response::HTTP_CONFLICT);
+        if ($training->completion_type === TrainingCompletionType::Time) {
+            $this->trainingService->complete($training, TrainingCompletionReason::Expired);
+            return new ApiResponseResource(['message' => 'Training completed successfully', 'data' => new TrainingResource($training)]);
         }
 
-        if ($this->trainingService->isLastStepCompletedOrSkipped($training)) {
-            return (new ApiResponseResource(
-                [
-                    'succes' => false,
-                    'errors' => [self::ERROR_STEP_NOT_COMPLETED => 'Previous step is not completed'],
-                    'message' => 'New step can be created only after compliting prev step',
-                ]))->response()->setStatusCode(Response::HTTP_CONFLICT);;
-        }
-
-        $nextStep = $this->trainingStrategyFactory->create($training)->generateNextStep();
-
-        return ApiResponseResource::make(['data' => new TrainingStepResource($nextStep), 'message' => 'Next step generated successfully']);
+        return new ApiResponseResource(['success' => false, 'message' => 'Training expiration is not supported for tris training type'])->response()->setStatusCode(Response::HTTP_CONFLICT);
     }
 
-    public function completeStep(TrainingStep $step, Request $request)
+    public function terminate(Training $training)
     {
-        $attemptData = $request->all('attempt_data');
+        if ($training->status === TrainingStatus::Completed) {
+            return new ApiResponseResource(['message' => 'Training already compleated'])->response()->setStatusCode(Response::HTTP_CONFLICT);
+        }
 
-        $isPassed = $this->stepCheckService->check($step, $attemptData);
+        $this->trainingService->complete($training, TrainingCompletionReason::Terminated);
 
-        $attempt = $this->trainingStepAttemptService->create($step->id, $attemptData, $isPassed);
+        return new ApiResponseResource(['success' => false, 'message' => 'Training terminated successfully', 'data' => new TrainingResource($training)]);
+    }
 
-        return new TrainingStepAttemptResource($attempt);
+
+    public function summary(Training $training)
+    {
+        $trainingTime = $training->completed_at ? $training->started_at->diffInSeconds($training->completed_at) : null;
+        $stepsCount = $training->steps()->count();
+        $correctAnswersCount = $training->stepAttempts()->where('is_correct', true)->select('id')->distinct()->count();
+        $skippedStepsCount = $training->steps()->where('skipped', true)->count();
+        $completionReason = $training->completion_reason?->name;
+
+        return new ApiResponseResource([
+            'data' => new TrainingSummaryResource((object) [
+                'training_time_seconds' => $trainingTime,
+                'steps_count' => $stepsCount,
+                'correct_answers_count' => $correctAnswersCount,
+                'skipped_steps_count' => $skippedStepsCount,
+                'completion_reason' => $completionReason,
+                'started_at' => $training->started_at,
+                'completed_at' => $training->completed_at,
+            ])
+        ])->response()->setStatusCode(Response::HTTP_OK);
     }
 }

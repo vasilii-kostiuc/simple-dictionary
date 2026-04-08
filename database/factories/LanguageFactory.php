@@ -2,23 +2,18 @@
 
 namespace Database\Factories;
 
+use App\Domain\Language\Models\Language;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Language>
- */
 class LanguageFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = Language::class;
+
     public function definition(): array
     {
         return [
             'name' => $this->faker->name(),
-            'code' => $this->faker->languageCode(),
+            'code' => $this->faker->unique()->languageCode(),
             'icon' => $this->faker->imageUrl(),
         ];
     }

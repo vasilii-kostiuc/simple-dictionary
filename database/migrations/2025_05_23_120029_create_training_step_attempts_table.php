@@ -1,6 +1,6 @@
 <?php
 
-use App\Training\Models\TrainingStep;
+use App\Domain\Training\Models\TrainingStep;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,7 +16,9 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(TrainingStep::class);
             $table->json('attempt_data')->nullable();
-            $table->boolean('is_passed')->default(false);
+            $table->boolean('is_correct')->default(false);
+            $table->integer('attempt_number')->default(1);
+            $table->integer('sub_index')->default(null);
             $table->timestamps();
         });
     }

@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('training_steps', function (Blueprint $table) {
             $table->id();
             $table->integer('step_number');
-            $table->foreignIdFor(\App\Training\Models\Training::class);
+            $table->foreignIdFor(\App\Domain\Training\Models\Training::class);
             $table->integer('step_type_id');
             $table->json('step_data')->nullable();
+            $table->integer('required_answers_count')->default(1);
+            $table->boolean('skipped')->default(false);
+            $table->timestamp('skipped_at')->nullable();
             $table->timestamps();
         });
     }

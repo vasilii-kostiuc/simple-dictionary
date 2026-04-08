@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Domain\User\Services\UserService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ProfileUpdateRequest;
-use App\Http\Resources\ProfileResource;
-use App\Service\UserService;
+use App\Http\Resources\Auth\ProfileResource;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
@@ -18,14 +18,14 @@ class ProfileController extends Controller
         $this->userService = $userService;
     }
 
-    public function show()
+    public function show(): ProfileResource
     {
         $user = Auth::user();
 
         return new ProfileResource($user);
     }
 
-    public function update(ProfileUpdateRequest $request)
+    public function update(ProfileUpdateRequest $request): ProfileResource
     {
         $user = $this->userService->updateProfile(Auth::user(), $request->validated());
 

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
+use App\Domain\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -26,6 +26,31 @@ class AuthTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function test_usear_after_registration_has_dictionary_succeeds(): void
+    {
+        $response = $this->postJson(route('auth.register'), [
+            'name' => 'Valid name',
+            'email' => 'valid@email.com',
+            'password' => '12345678',
+            'password_confirmation' => '12345678',
+        ]);
+
+        $response->assertStatus(200)->assertJsonStructure([
+            'access_token',
+        ]);
+
+        $user_id = $response->json('user.id');
+
+        $current_dictionary = $response->json('user.current_dictionary');
+
+        $this->assertDatabaseHas('dictionaries', ['user_id' => $user_id]);
+
+        $this->assertNotEmpty($current_dictionary);
+        $this->assertDatabaseHas('dictionaries', ['id' => $current_dictionary]);
+
+        $response->assertStatus(200);
+    }
+
     public function test_user_login_succeeds(): void
     {
         $user = User::factory()->create();
@@ -41,6 +66,19 @@ class AuthTest extends TestCase
         ]);
 
         $response->assertStatus(200);
+    }
+
+    public function test_user_login_fails_with_incorrect_credentials(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->postJson(route('auth.login'), [
+            'email' => $user->email,
+            'password' => 'wrong_password',
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure(['message']);
     }
 
     public function test_user_logout_success(): void

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Infrastructure\Uploads\ImageUploader;
+use App\Infrastructure\Uploads\ImageUploaderInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(ImageUploaderInterface::class, ImageUploader::class);
     }
 
     /**
