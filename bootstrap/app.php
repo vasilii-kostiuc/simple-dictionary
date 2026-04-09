@@ -18,10 +18,17 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, \Illuminate\Http\Request $request) {
+            if ($request->is('api/*') || $request->wantsJson()) {
+                return (new \App\Http\Resources\ApiResponseResource([
+                    'success' => false,
+                    'message' => 'Not found.',
+                ]))->response()->setStatusCode(404);
+            }
+        });
     })->withEvents([
-        __DIR__.'/../app/Domain/*/Listeners',
-        __DIR__.'/../app/Listeners',
-    ])
+            __DIR__.'/../app/Domain/*/Listeners',
+            __DIR__.'/../app/Listeners',
+        ])
 
     ->create();
