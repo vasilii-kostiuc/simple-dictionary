@@ -6,8 +6,10 @@ use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class MatchInvite extends Model
+class MatchLink extends Model
 {
+    protected $table = 'match_links';
+
     protected $fillable = [
         'token',
         'created_by_user_id',

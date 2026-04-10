@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        RateLimiter::for('match-invites', function (Request $request) {
+        RateLimiter::for('match-links', function (Request $request) {
             return Limit::perMinute(10)->by((string) ($request->user()?->id ?? $request->ip()));
         });
     }

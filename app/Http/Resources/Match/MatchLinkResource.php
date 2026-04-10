@@ -2,14 +2,14 @@
 
 namespace App\Http\Resources\Match;
 
-use App\Domain\Match\Models\MatchInvite;
+use App\Domain\Match\Models\MatchLink;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: 'MatchInvite',
-    description: 'Match invite resource',
+    schema: 'MatchLink',
+    description: 'Match link resource',
     properties: [
         new OA\Property(property: 'token', type: 'string', example: '01JRH4X4TKC5ATZ78QZN4M3C0Y'),
         new OA\Property(property: 'url', type: 'string', example: 'https://example.com/api/v1/match-links/01JRH4X4TKC5ATZ78QZN4M3C0Y'),
@@ -22,22 +22,22 @@ use OpenApi\Attributes as OA;
     ]
 )]
 
-class MatchInviteResource extends JsonResource
+class MatchLinkResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        /** @var MatchInvite $invite */
-        $invite = $this->resource;
+        /** @var MatchLink $matchLink */
+        $matchLink = $this->resource;
 
         return [
-            'token' => $invite->token,
-            'url' => route('match-links.show', ['matchInvite' => $invite]),
-            'qr_svg' => $invite->qr_svg,
-            'participants_limit' => $invite->participants_limit,
-            'status' => $invite->resolvedStatus(),
-            'payload' => $invite->payload,
-            'expires_at' => $invite->expires_at,
-            'created_at' => $invite->created_at,
+            'token' => $matchLink->token,
+            'url' => route('match-links.show', ['matchLink' => $matchLink]),
+            'qr_svg' => $matchLink->qr_svg,
+            'participants_limit' => $matchLink->participants_limit,
+            'status' => $matchLink->resolvedStatus(),
+            'payload' => $matchLink->payload,
+            'expires_at' => $matchLink->expires_at,
+            'created_at' => $matchLink->created_at,
         ];
     }
 }

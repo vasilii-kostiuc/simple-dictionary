@@ -2,19 +2,19 @@
 
 namespace App\Domain\Match\Actions;
 
-use App\Domain\Match\Models\MatchInvite;
+use App\Domain\Match\Models\MatchLink;
 use App\Domain\User\Models\User;
 use Illuminate\Support\Str;
 
-class CreateMatchInviteAction
+class CreateMatchLinkAction
 {
-    public function handle(array $data, ?User $user): MatchInvite
+    public function handle(array $data, ?User $user): MatchLink
     {
-        return MatchInvite::create([
+        return MatchLink::create([
             'token' => (string) Str::ulid(),
             'created_by_user_id' => $user?->id,
             'participants_limit' => $data['participants_limit'] ?? 2,
-            'status' => 'pending',
+            'status' => 'active',
             'payload' => [
                 'language_from_id' => $data['language_from_id'],
                 'language_to_id' => $data['language_to_id'],

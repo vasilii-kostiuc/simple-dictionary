@@ -642,9 +642,9 @@
                 "tags": [
                     "Matches"
                 ],
-                "summary": "Create a match invite link",
-                "description": "Creates a public invite link for a future match and returns a QR SVG representation.",
-                "operationId": "storeMatchInvite",
+                "summary": "Create a match link",
+                "description": "Creates a public link for a future match and returns a QR SVG representation.",
+                "operationId": "storeMatchLink",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -707,11 +707,11 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/MatchInvite"
+                                            "$ref": "#/components/schemas/MatchLink"
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Match invite created successfully"
+                                            "example": "Match link created successfully"
                                         }
                                     },
                                     "type": "object"
@@ -733,9 +733,9 @@
                 "tags": [
                     "Matches"
                 ],
-                "summary": "Show match invite link",
-                "description": "Returns public static information for a previously created match invite link.",
-                "operationId": "showMatchInvite",
+                "summary": "Show match link",
+                "description": "Returns public static information for a previously created match link.",
+                "operationId": "showMatchLink",
                 "parameters": [
                     {
                         "name": "token",
@@ -755,7 +755,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/MatchInvite"
+                                            "$ref": "#/components/schemas/MatchLink"
                                         }
                                     },
                                     "type": "object"
@@ -764,7 +764,7 @@
                         }
                     },
                     "404": {
-                        "description": "Invite not found"
+                        "description": "Link not found"
                     }
                 }
             }
@@ -2486,8 +2486,8 @@
                 },
                 "type": "object"
             },
-            "MatchInvite": {
-                "description": "Match invite resource",
+            "MatchLink": {
+                "description": "Match link resource",
                 "properties": {
                     "token": {
                         "type": "string",

@@ -9,11 +9,11 @@ use Database\Seeders\TopWordSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class MatchInviteTest extends TestCase
+class MatchLinkTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_guest_can_create_match_invite(): void
+    public function test_guest_can_create_match_link(): void
     {
         $languageTo = Language::factory()->create();
         $languageFrom = Language::factory()->create();
@@ -32,14 +32,14 @@ class MatchInviteTest extends TestCase
             ->assertJsonPath('data.status', 'active');
 
         $this->assertStringContainsString('<svg', $response->json('data.qr_svg'));
-        $this->assertDatabaseHas('match_invites', [
+        $this->assertDatabaseHas('match_links', [
             'token' => $response->json('data.token'),
             'participants_limit' => 2,
             'created_by_user_id' => null,
         ]);
     }
 
-    public function test_authenticated_user_can_create_match_invite(): void
+    public function test_authenticated_user_can_create_match_link(): void
     {
         $user = User::factory()->create();
         $languageTo = Language::factory()->create();
@@ -57,14 +57,14 @@ class MatchInviteTest extends TestCase
         $response->assertCreated()
             ->assertJsonPath('data.participants_limit', 4);
 
-        $this->assertDatabaseHas('match_invites', [
+        $this->assertDatabaseHas('match_links', [
             'token' => $response->json('data.token'),
             'created_by_user_id' => $user->id,
             'participants_limit' => 4,
         ]);
     }
 
-    public function test_can_show_match_invite_by_token(): void
+    public function test_can_show_match_link_by_token(): void
     {
         $languageTo = Language::factory()->create();
         $languageFrom = Language::factory()->create();
@@ -77,16 +77,16 @@ class MatchInviteTest extends TestCase
             'match_type_params' => ['duration' => 300],
         ])->json('data.token');
 
-        $response = $this->getJson(route('match-links.show', ['matchInvite' => $token]));
+        $response = $this->getJson(route('match-links.show', ['matchLink' => $token]));
 
         $response->assertOk()
             ->assertJsonPath('data.token', $token)
             ->assertJsonPath('data.participants_limit', 2);
     }
 
-    public function test_returns_not_found_for_unknown_invite(): void
+    public function test_returns_not_found_for_unknown_link(): void
     {
-        $response = $this->getJson(route('match-links.show', ['matchInvite' => '01JRH4X4TKC5ATZ78QZN4M3C0Y']));
+        $response = $this->getJson(route('match-links.show', ['matchLink' => '01JRH4X4TKC5ATZ78QZN4M3C0Y']));
 
         $response->assertNotFound();
     }
@@ -108,7 +108,7 @@ class MatchInviteTest extends TestCase
             ->assertJsonValidationErrors(['participants_limit']);
     }
 
-    public function test_rate_limits_match_invite_creation(): void
+    public function test_rate_limits_match_link_creation(): void
     {
         $languageTo = Language::factory()->create();
         $languageFrom = Language::factory()->create();

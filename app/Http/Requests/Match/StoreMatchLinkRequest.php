@@ -6,7 +6,7 @@ use App\Domain\Match\Enums\MatchType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreMatchInviteRequest extends FormRequest
+class StoreMatchLinkRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -31,8 +31,8 @@ class StoreMatchInviteRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'participants_limit.min' => 'Match invite requires at least 2 participants',
-            'participants_limit.max' => 'Match invite can have maximum 10 participants',
+            'participants_limit.min' => 'Match link requires at least 2 participants',
+            'participants_limit.max' => 'Match link can have maximum 10 participants',
         ];
     }
 }
