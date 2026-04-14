@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Match;
 
+use App\Domain\Language\Models\Language;
 use App\Domain\Match\Enums\MatchType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -11,6 +12,14 @@ class StoreMatchLinkRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->mergeIfMissing([
+            'language_from_id' => Language::query()->where('code', 'en')->value('id'),
+            'language_to_id' => Language::query()->where('code', 'ru')->value('id'),
+        ]);
     }
 
     public function rules(): array
