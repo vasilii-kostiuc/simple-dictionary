@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'wss' => [
+        'secret' => env('WSS_SERVICE_SECRET', ''),
+    ],
+
 ];

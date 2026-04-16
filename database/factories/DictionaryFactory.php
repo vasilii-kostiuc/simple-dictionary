@@ -2,18 +2,16 @@
 
 namespace Database\Factories;
 
+use App\Domain\Dictionary\Models\Dictionary;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Dictionary>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Domain\Dictionary\Models\Dictionary>
  */
 class DictionaryFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = Dictionary::class;
+
     public function definition(): array
     {
         return [];
