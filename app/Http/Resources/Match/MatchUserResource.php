@@ -4,6 +4,8 @@ namespace App\Http\Resources\Match;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
@@ -35,7 +37,7 @@ class MatchUserResource extends JsonResource
             'user_id' => $this->user_id,
             'guest_id' => $this->guest_id,
             'participant_name' => $this->participant_name,
-            'participant_avatar' => $this->isGuest() ? $this->participant_avatar : \Illuminate\Support\Facades\Storage::disk('public')->url($this->participant_avatar),
+            'participant_avatar' => $this->resolveParticipantAvatar(),
             'score' => $this->score,
             'answered_count' => $this->answered_count,
             'correct_answers_count' => $this->correct_answers_count,
@@ -46,5 +48,22 @@ class MatchUserResource extends JsonResource
             'skipped_steps_count' => $this->skippedStepsCount(),
             'status' => $this->status,
         ];
+    }
+
+    private function resolveParticipantAvatar(): ?string
+    {
+        if (blank($this->participant_avatar)) {
+            return null;
+        }
+
+        if ($this->isGuest()) {
+            return $this->participant_avatar;
+        }
+
+        if (Str::startsWith($this->participant_avatar, ['http://', 'https://'])) {
+            return $this->participant_avatar;
+        }
+
+        return Storage::disk('public')->url($this->participant_avatar);
     }
 }
