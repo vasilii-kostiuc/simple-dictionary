@@ -29,7 +29,7 @@ use OpenApi\Attributes as OA;
             format: 'email',
             description: 'User email address',
             example: 'john@example.com'
-        )
+        ),
     ]
 )]
 class UserResource extends JsonResource

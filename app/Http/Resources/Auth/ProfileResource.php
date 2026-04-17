@@ -5,7 +5,7 @@ namespace App\Http\Resources\Auth;
 use App\Http\Resources\Dictionary\DictionaryResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-
+use Illuminate\Support\Facades\Storage;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
@@ -44,7 +44,7 @@ use OpenApi\Attributes as OA;
             ref: '#/components/schemas/Dictionary',
             nullable: true,
             description: 'Current active dictionary'
-        )
+        ),
     ]
 )]
 class ProfileResource extends JsonResource
@@ -60,7 +60,7 @@ class ProfileResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'avatar' => env('APP_URL').$this->avatar,
+            'avatar' => $this->avatar ? Storage::disk('public')->url($this->avatar) : null,
             'current_dictionary' => new DictionaryResource($this->currentDictionary),
         ];
     }

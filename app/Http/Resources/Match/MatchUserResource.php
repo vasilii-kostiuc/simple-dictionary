@@ -35,7 +35,7 @@ class MatchUserResource extends JsonResource
             'user_id' => $this->user_id,
             'guest_id' => $this->guest_id,
             'participant_name' => $this->participant_name,
-            'participant_avatar' => $this->participant_avatar,
+            'participant_avatar' => ! $this->isGuest() ? \Illuminate\Support\Facades\Storage::disk('public')->url($this->participant_avatar) : null,
             'score' => $this->score,
             'answered_count' => $this->answered_count,
             'correct_answers_count' => $this->correct_answers_count,
