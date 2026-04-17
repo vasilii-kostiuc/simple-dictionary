@@ -250,7 +250,7 @@ final class MatchApi
             required: false,
             content: new OA\JsonContent(
                 properties: [
-                    new OA\Property(property: 'reason', type: 'string', nullable: true, enum: ['time_expired', 'steps_completed', 'all_players_left', 'forfeited', 'cancelled'], example: 'forfeited'),
+                    new OA\Property(property: 'reason', type: 'string', nullable: true, enum: ['time_expired', 'steps_completed', 'not_held', 'no_activity', 'all_players_left', 'forfeited', 'cancelled'], example: 'forfeited'),
                 ]
             )
         ),

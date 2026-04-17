@@ -96,7 +96,11 @@ class MatchModel extends Model
         $this->completion_reason = $reason;
         $this->completion_details = $details;
 
-        $this->determineWinner();
+        if ($reason === MatchCompletionReason::NotHeld) {
+            $this->clearPlacementsAndWinner();
+        } else {
+            $this->determineWinner();
+        }
 
         $this->save();
         $this->refresh();
@@ -117,5 +121,14 @@ class MatchModel extends Model
             $matchUser->is_winner = $matchUser->place === 1;
             $matchUser->save();
         }
+    }
+
+    private function clearPlacementsAndWinner(): void
+    {
+        $this->matchUsers()->each(function (MatchUser $matchUser) {
+            $matchUser->place = null;
+            $matchUser->is_winner = false;
+            $matchUser->save();
+        });
     }
 }
