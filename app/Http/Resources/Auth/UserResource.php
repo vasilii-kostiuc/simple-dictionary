@@ -29,21 +29,6 @@ use OpenApi\Attributes as OA;
             format: 'email',
             description: 'User email address',
             example: 'john@example.com'
-        ),
-        new OA\Property(
-            property: 'avatar',
-            type: 'string',
-            nullable: true,
-            description: 'User avatar URL',
-            example: 'https://example.com/avatars/user.jpg'
-        ),
-        new OA\Property(
-            property: 'current_dictionary',
-            type: 'integer',
-            format: 'int64',
-            nullable: true,
-            description: 'ID of current active dictionary',
-            example: 1
         )
     ]
 )]

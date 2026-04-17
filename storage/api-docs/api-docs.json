@@ -101,6 +101,7 @@
                                 "required": [
                                     "email",
                                     "password",
+                                    "password_confirmation",
                                     "name"
                                 ],
                                 "properties": {
@@ -110,6 +111,11 @@
                                         "example": "user@example.com"
                                     },
                                     "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "password_confirmation": {
                                         "type": "string",
                                         "format": "password",
                                         "example": "password123"
@@ -319,7 +325,7 @@
                     }
                 ]
             },
-            "patch": {
+            "post": {
                 "tags": [
                     "Profile"
                 ],
@@ -329,26 +335,29 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
-                                "required": [
-                                    "name",
-                                    "email"
-                                ],
                                 "properties": {
                                     "name": {
                                         "type": "string",
+                                        "maxLength": 255,
                                         "example": "John Doe"
                                     },
                                     "email": {
                                         "type": "string",
                                         "format": "email",
+                                        "maxLength": 255,
                                         "example": "john@example.com"
                                     },
                                     "avatar": {
                                         "type": "string",
-                                        "format": "uri",
-                                        "example": "https://example.com/avatar.jpg"
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "current_dictionary": {
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -651,19 +660,21 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "language_from_id",
-                                    "language_to_id",
                                     "match_type",
                                     "match_type_params"
                                 ],
                                 "properties": {
                                     "language_from_id": {
+                                        "description": "Optional. Defaults to English if omitted.",
                                         "type": "integer",
-                                        "example": 1
+                                        "example": 1,
+                                        "nullable": true
                                     },
                                     "language_to_id": {
+                                        "description": "Optional. Defaults to Russian if omitted.",
                                         "type": "integer",
-                                        "example": 2
+                                        "example": 2,
+                                        "nullable": true
                                     },
                                     "dictionary_id": {
                                         "type": "integer",
@@ -674,8 +685,7 @@
                                         "type": "string",
                                         "enum": [
                                             "time",
-                                            "steps",
-                                            "race"
+                                            "steps"
                                         ],
                                         "example": "time"
                                     },
@@ -728,7 +738,7 @@
                 }
             }
         },
-        "/api/v1/match-links/{token}": {
+        "/api/v1/match-links/{matchLink}": {
             "get": {
                 "tags": [
                     "Matches"
@@ -738,7 +748,7 @@
                 "operationId": "showMatchLink",
                 "parameters": [
                     {
-                        "name": "token",
+                        "name": "matchLink",
                         "in": "path",
                         "description": "Invite token",
                         "required": true,
@@ -816,12 +826,7 @@
                             }
                         }
                     }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
+                }
             },
             "post": {
                 "tags": [
@@ -864,8 +869,7 @@
                                         "type": "string",
                                         "enum": [
                                             "time",
-                                            "steps",
-                                            "race"
+                                            "steps"
                                         ],
                                         "example": "time"
                                     },
@@ -981,12 +985,7 @@
                             }
                         }
                     }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
+                }
             }
         },
         "/api/v1/matches/active": {
@@ -1030,12 +1029,7 @@
                             }
                         }
                     }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
+                }
             }
         },
         "/api/v1/matches/{match}/start": {
@@ -1080,12 +1074,7 @@
                     "409": {
                         "description": "Match already started"
                     }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
+                }
             }
         },
         "/api/v1/matches/{match}/complete": {
@@ -1154,12 +1143,7 @@
                     "409": {
                         "description": "Match already completed"
                     }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
+                }
             }
         },
         "/api/v1/matches/{match}/summary": {
@@ -1249,12 +1233,7 @@
                             }
                         }
                     }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
+                }
             }
         },
         "/api/v1/matches/{match}/steps/next": {
@@ -1311,12 +1290,7 @@
                     "409": {
                         "description": "Match finished or previous step not completed"
                     }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
+                }
             }
         },
         "/api/v1/matches/{match}/steps/current": {
@@ -1372,12 +1346,7 @@
                     "409": {
                         "description": "Match finished"
                     }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
+                }
             }
         },
         "/api/v1/matches/{match}/steps/{step}/skip": {
@@ -1440,12 +1409,7 @@
                     "403": {
                         "description": "Step does not belong to this participant"
                     }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
+                }
             }
         },
         "/api/v1/matches/{match}/steps/{step}/attempts": {
@@ -1504,12 +1468,7 @@
                             }
                         }
                     }
-                },
-                "security": [
-                    {
-                        "sanctum": []
-                    }
-                ]
+                }
             },
             "post": {
                 "tags": [
@@ -1546,7 +1505,8 @@
                                 "required": [
                                     "attempt_data",
                                     "attempt_number",
-                                    "participant_type"
+                                    "participant_type",
+                                    "participant_id"
                                 ],
                                 "properties": {
                                     "attempt_data": {
@@ -1569,10 +1529,9 @@
                                         "example": "user"
                                     },
                                     "participant_id": {
-                                        "description": "Guest ID if participant_type is guest",
+                                        "description": "Authenticated user ID or guest ID, depending on participant_type",
                                         "type": "string",
-                                        "example": null,
-                                        "nullable": true
+                                        "example": "42"
                                     }
                                 },
                                 "type": "object"
@@ -2378,36 +2337,6 @@
             "Profile": {
                 "description": "Profile resource",
                 "properties": {
-                    "name": {
-                        "description": "User name",
-                        "type": "string",
-                        "example": "John Doe"
-                    },
-                    "email": {
-                        "description": "User email address",
-                        "type": "string",
-                        "format": "email",
-                        "example": "john@example.com"
-                    },
-                    "avatar": {
-                        "description": "User avatar URL",
-                        "type": "string",
-                        "example": "https://example.com/avatars/user.jpg",
-                        "nullable": true
-                    },
-                    "current_dictionary": {
-                        "description": "ID of current active dictionary",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 1,
-                        "nullable": true
-                    }
-                },
-                "type": "object"
-            },
-            "User": {
-                "description": "User resource",
-                "properties": {
                     "id": {
                         "description": "User ID",
                         "type": "integer",
@@ -2432,11 +2361,36 @@
                         "nullable": true
                     },
                     "current_dictionary": {
-                        "description": "ID of current active dictionary",
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Dictionary"
+                            }
+                        ],
+                        "nullable": true,
+                        "description": "Current active dictionary"
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "description": "User resource",
+                "properties": {
+                    "id": {
+                        "description": "User ID",
                         "type": "integer",
                         "format": "int64",
-                        "example": 1,
-                        "nullable": true
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "User name",
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "description": "User email address",
+                        "type": "string",
+                        "format": "email",
+                        "example": "john@example.com"
                     }
                 },
                 "type": "object"
@@ -2548,8 +2502,7 @@
                         "type": "string",
                         "enum": [
                             "time",
-                            "steps",
-                            "race"
+                            "steps"
                         ],
                         "example": "time"
                     },

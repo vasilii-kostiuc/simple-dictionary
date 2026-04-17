@@ -13,6 +13,13 @@ use OpenApi\Attributes as OA;
     description: 'Profile resource',
     properties: [
         new OA\Property(
+            property: 'id',
+            type: 'integer',
+            format: 'int64',
+            description: 'User ID',
+            example: 1
+        ),
+        new OA\Property(
             property: 'name',
             type: 'string',
             description: 'User name',
@@ -34,11 +41,9 @@ use OpenApi\Attributes as OA;
         ),
         new OA\Property(
             property: 'current_dictionary',
-            type: 'integer',
-            format: 'int64',
+            ref: '#/components/schemas/Dictionary',
             nullable: true,
-            description: 'ID of current active dictionary',
-            example: 1
+            description: 'Current active dictionary'
         )
     ]
 )]

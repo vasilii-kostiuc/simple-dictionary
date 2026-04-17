@@ -14,7 +14,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'language_from_id', type: 'integer', example: 1),
         new OA\Property(property: 'language_to_id', type: 'integer', example: 2),
         new OA\Property(property: 'dictionary_id', type: 'integer', nullable: true, example: 1),
-        new OA\Property(property: 'match_type', type: 'string', enum: ['time', 'steps', 'race'], example: 'time'),
+        new OA\Property(property: 'match_type', type: 'string', enum: ['time', 'steps'], example: 'time'),
         new OA\Property(property: 'match_type_params', type: 'object', example: '{"duration": 120}'),
         new OA\Property(property: 'status', type: 'string', enum: ['new', 'in_progress', 'completed', 'cancelled'], example: 'in_progress'),
         new OA\Property(property: 'started_at', type: 'string', format: 'date-time', nullable: true, example: '2026-01-01T12:00:00Z'),
