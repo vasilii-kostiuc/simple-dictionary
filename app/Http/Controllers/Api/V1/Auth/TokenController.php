@@ -4,14 +4,13 @@ namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiResponseResource;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class TokenController extends Controller
 {
-
     public function validateToken(Request $request): JsonResponse
     {
         if ($request->has('user_token')) {
@@ -26,8 +25,8 @@ class TokenController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'avatar' => $user->avatar,
-            ]
+                'avatar' => $user->avatar ? \Illuminate\Support\Facades\Storage::disk('public')->url($user->avatar) : null,
+            ],
         ])->response()->setStatusCode(Response::HTTP_OK);
     }
 
@@ -42,7 +41,7 @@ class TokenController extends Controller
                 'data' => [
                     'valid' => false,
                     'message' => 'Invalid token',
-                ]
+                ],
             ]))->response()->setStatusCode(Response::HTTP_UNAUTHORIZED);
         }
 
@@ -51,7 +50,7 @@ class TokenController extends Controller
                 'data' => [
                     'valid' => false,
                     'message' => 'Token expired',
-                ]
+                ],
             ]))->response()->setStatusCode(Response::HTTP_UNAUTHORIZED);
         }
 
@@ -62,7 +61,7 @@ class TokenController extends Controller
                 'data' => [
                     'valid' => false,
                     'message' => 'User not found',
-                ]
+                ],
             ]))->response()->setStatusCode(Response::HTTP_UNAUTHORIZED);
         }
 
@@ -72,9 +71,8 @@ class TokenController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'avatar' => $user->avatar,
-            ]
+                'avatar' => $user->avatar ? \Illuminate\Support\Facades\Storage::disk('public')->url($user->avatar) : null,
+            ],
         ])->response()->setStatusCode(Response::HTTP_OK);
     }
-
 }

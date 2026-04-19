@@ -99,7 +99,7 @@ class MatchUser extends Model
             'user_id' => $user->id,
             'guest_id' => null,
             'participant_name' => $user->name,
-            'participant_avatar' => $user->avatar ?? null,
+            'participant_avatar' => $user->avatar,
             'status' => MatchUserStatus::Active,
             'joined_at' => now(),
         ]);

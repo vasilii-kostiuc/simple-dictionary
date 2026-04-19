@@ -14,7 +14,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'match_time_seconds', type: 'integer', nullable: true, example: 120),
         new OA\Property(property: 'participants', type: 'array', items: new OA\Items(ref: '#/components/schemas/MatchUser')),
         new OA\Property(property: 'winner', ref: '#/components/schemas/MatchUser', type: 'object', nullable: true),
-        new OA\Property(property: 'completion_reason', type: 'string', nullable: true, example: 'time_expired'),
+        new OA\Property(property: 'completion_reason', type: 'string', nullable: true, enum: ['time_expired', 'steps_completed', 'not_held', 'no_activity', 'all_players_left', 'forfeited', 'cancelled'], example: 'time_expired'),
         new OA\Property(property: 'started_at', type: 'string', format: 'date-time', nullable: true, example: '2026-01-01T12:00:00Z'),
         new OA\Property(property: 'completed_at', type: 'string', format: 'date-time', nullable: true, example: '2026-01-01T12:02:00Z'),
     ]

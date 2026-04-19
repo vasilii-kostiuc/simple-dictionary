@@ -36,5 +36,8 @@ echo "MySQL готов и база $MYSQL_DATABASE доступна!"
 echo "Запускаю миграции..."
 php artisan migrate --force
 
+echo "Создаю символическую ссылку для storage..."
+php artisan storage:link --force
+
 echo "Запуск основного процесса..."
 exec "$@"

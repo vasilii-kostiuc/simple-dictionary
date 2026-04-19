@@ -12,6 +12,11 @@ use App\Domain\User\Models\User;
 
 class MatchService
 {
+    public function __construct(
+        private readonly MatchCompletionReasonSelector $matchCompletionReasonSelector
+    ) {
+    }
+
     public function create(array $data, array $participants): MatchModel
     {
         $match = MatchModel::create([
@@ -64,9 +69,7 @@ class MatchService
 
     public function complete(MatchModel $match, ?MatchCompletionReason $reason = null, ?array $details = []): MatchModel
     {
-        if ($reason === null) {
-            $reason = MatchCompletionReason::defaultForMatchType($match->match_type);
-        }
+        $reason = $this->matchCompletionReasonSelector->normalizeCompletionReason($match, $reason);
 
         $match->completeMatch($reason, $details);
 

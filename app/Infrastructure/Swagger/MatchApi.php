@@ -20,12 +20,12 @@ final class MatchApi
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
-                required: ['language_from_id', 'language_to_id', 'match_type', 'match_type_params'],
+                required: ['match_type', 'match_type_params'],
                 properties: [
-                    new OA\Property(property: 'language_from_id', type: 'integer', example: 1),
-                    new OA\Property(property: 'language_to_id', type: 'integer', example: 2),
+                    new OA\Property(property: 'language_from_id', type: 'integer', nullable: true, example: 1, description: 'Optional. Defaults to English if omitted.'),
+                    new OA\Property(property: 'language_to_id', type: 'integer', nullable: true, example: 2, description: 'Optional. Defaults to Russian if omitted.'),
                     new OA\Property(property: 'dictionary_id', type: 'integer', nullable: true, example: 1),
-                    new OA\Property(property: 'match_type', type: 'string', enum: ['time', 'steps', 'race'], example: 'time'),
+                    new OA\Property(property: 'match_type', type: 'string', enum: ['time', 'steps'], example: 'time'),
                     new OA\Property(property: 'match_type_params', type: 'object', example: '{"duration": 300}'),
                     new OA\Property(property: 'participants_limit', type: 'integer', nullable: true, example: 2),
                     new OA\Property(property: 'expires_at', type: 'string', format: 'date-time', nullable: true),
@@ -52,13 +52,13 @@ final class MatchApi
     }
 
     #[OA\Get(
-        path: '/api/v1/match-links/{token}',
+        path: '/api/v1/match-links/{matchLink}',
         operationId: 'showMatchLink',
         summary: 'Show match link',
         description: 'Returns public static information for a previously created match link.',
         tags: ['Matches'],
         parameters: [
-            new OA\Parameter(name: 'token', in: 'path', required: true, description: 'Invite token', schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(name: 'matchLink', in: 'path', required: true, description: 'Invite token', schema: new OA\Schema(type: 'string')),
         ],
         responses: [
             new OA\Response(
@@ -82,7 +82,6 @@ final class MatchApi
         operationId: 'listMatches',
         summary: 'List matches',
         description: 'Returns all matches for the authenticated user or guest. Can be filtered by status.',
-        security: [['sanctum' => []]],
         tags: ['Matches'],
         parameters: [
             new OA\Parameter(name: 'filter[status]', in: 'query', required: false, description: 'Filter by status (new/in_progress/completed/cancelled)', schema: new OA\Schema(type: 'string')),
@@ -119,7 +118,7 @@ final class MatchApi
                     new OA\Property(property: 'language_from_id', type: 'integer', description: 'Source language ID', example: 1),
                     new OA\Property(property: 'language_to_id', type: 'integer', description: 'Target language ID', example: 2),
                     new OA\Property(property: 'dictionary_id', type: 'integer', nullable: true, description: 'Optional dictionary ID', example: null),
-                    new OA\Property(property: 'match_type', type: 'string', enum: ['time', 'steps', 'race'], description: 'Match completion type', example: 'time'),
+                    new OA\Property(property: 'match_type', type: 'string', enum: ['time', 'steps'], description: 'Match completion type', example: 'time'),
                     new OA\Property(
                         property: 'match_type_params',
                         type: 'object',
@@ -166,7 +165,6 @@ final class MatchApi
         operationId: 'showMatch',
         summary: 'Show match',
         description: 'Returns details of a specific match',
-        security: [['sanctum' => []]],
         tags: ['Matches'],
         parameters: [
             new OA\Parameter(name: 'match', in: 'path', required: true, description: 'Match ID', schema: new OA\Schema(type: 'integer')),
@@ -192,7 +190,6 @@ final class MatchApi
         operationId: 'getActiveMatch',
         summary: 'Get active match',
         description: 'Returns the currently active (in_progress) match for the authenticated user or guest',
-        security: [['sanctum' => []]],
         tags: ['Matches'],
         parameters: [
             new OA\Parameter(name: 'guest_id', in: 'query', required: false, description: 'Guest identifier (if not authenticated)', schema: new OA\Schema(type: 'string')),
@@ -218,7 +215,6 @@ final class MatchApi
         operationId: 'startMatch',
         summary: 'Start match',
         description: 'Starts a match that is in New status',
-        security: [['sanctum' => []]],
         tags: ['Matches'],
         parameters: [
             new OA\Parameter(name: 'match', in: 'path', required: true, description: 'Match ID', schema: new OA\Schema(type: 'integer')),
@@ -246,7 +242,6 @@ final class MatchApi
         operationId: 'completeMatch',
         summary: 'Complete match',
         description: 'Manually completes an ongoing match',
-        security: [['sanctum' => []]],
         tags: ['Matches'],
         parameters: [
             new OA\Parameter(name: 'match', in: 'path', required: true, description: 'Match ID', schema: new OA\Schema(type: 'integer')),
@@ -255,7 +250,7 @@ final class MatchApi
             required: false,
             content: new OA\JsonContent(
                 properties: [
-                    new OA\Property(property: 'reason', type: 'string', nullable: true, enum: ['time_expired', 'steps_completed', 'all_players_left', 'forfeited', 'cancelled'], example: 'forfeited'),
+                    new OA\Property(property: 'reason', type: 'string', nullable: true, enum: ['time_expired', 'steps_completed', 'not_held', 'no_activity', 'all_players_left', 'forfeited', 'cancelled'], example: 'forfeited'),
                 ]
             )
         ),
@@ -310,7 +305,6 @@ final class MatchApi
         operationId: 'showMatchStep',
         summary: 'Show match step',
         description: 'Returns details of a specific match step',
-        security: [['sanctum' => []]],
         tags: ['Match Steps'],
         parameters: [
             new OA\Parameter(name: 'match', in: 'path', required: true, description: 'Match ID', schema: new OA\Schema(type: 'integer')),
@@ -337,7 +331,6 @@ final class MatchApi
         operationId: 'nextMatchStep',
         summary: 'Get next match step',
         description: 'Generates and returns the next step for the participant in a match',
-        security: [['sanctum' => []]],
         tags: ['Match Steps'],
         parameters: [
             new OA\Parameter(name: 'match', in: 'path', required: true, description: 'Match ID', schema: new OA\Schema(type: 'integer')),
@@ -367,7 +360,6 @@ final class MatchApi
         operationId: 'currentMatchStep',
         summary: 'Get current match step',
         description: 'Returns the current unanswered step for the participant in a match',
-        security: [['sanctum' => []]],
         tags: ['Match Steps'],
         parameters: [
             new OA\Parameter(name: 'match', in: 'path', required: true, description: 'Match ID', schema: new OA\Schema(type: 'integer')),
@@ -397,7 +389,6 @@ final class MatchApi
         operationId: 'skipMatchStep',
         summary: 'Skip match step',
         description: 'Marks a match step as skipped for the participant',
-        security: [['sanctum' => []]],
         tags: ['Match Steps'],
         parameters: [
             new OA\Parameter(name: 'match', in: 'path', required: true, description: 'Match ID', schema: new OA\Schema(type: 'integer')),
@@ -429,7 +420,6 @@ final class MatchApi
         operationId: 'listMatchStepAttempts',
         summary: 'List match step attempts',
         description: 'Returns all attempts for a specific match step. Can be filtered by correctness.',
-        security: [['sanctum' => []]],
         tags: ['Match Steps'],
         parameters: [
             new OA\Parameter(name: 'match', in: 'path', required: true, description: 'Match ID', schema: new OA\Schema(type: 'integer')),
@@ -466,12 +456,12 @@ final class MatchApi
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
-                required: ['attempt_data', 'attempt_number', 'participant_type'],
+                required: ['attempt_data', 'attempt_number', 'participant_type', 'participant_id'],
                 properties: [
                     new OA\Property(property: 'attempt_data', type: 'object', description: 'Answer data (varies by step type)', example: '{"answer": "Привет"}'),
                     new OA\Property(property: 'attempt_number', type: 'integer', description: 'Attempt number (1-based)', example: 1),
                     new OA\Property(property: 'participant_type', type: 'string', enum: ['user', 'guest'], description: 'Type of participant', example: 'user'),
-                    new OA\Property(property: 'participant_id', type: 'string', nullable: true, description: 'Guest ID if participant_type is guest', example: null),
+                    new OA\Property(property: 'participant_id', type: 'string', description: 'Authenticated user ID or guest ID, depending on participant_type', example: '42'),
                 ]
             )
         ),
