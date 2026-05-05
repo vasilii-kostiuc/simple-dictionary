@@ -33,8 +33,13 @@ final class AuthApi
                 description: 'Successful login',
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: 'access_token', type: 'string', example: '1|laravel_sanctum_token...'),
-                        new OA\Property(property: 'user', ref: '#/components/schemas/User', type: 'object'),
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'errors', type: 'object', nullable: true, example: null),
+                        new OA\Property(property: 'message', type: 'string', nullable: true, example: null),
+                        new OA\Property(property: 'data', type: 'object', properties: [
+                            new OA\Property(property: 'access_token', type: 'string', example: '1|laravel_sanctum_token...'),
+                            new OA\Property(property: 'user', ref: '#/components/schemas/User', type: 'object'),
+                        ]),
                     ]
                 )
             ),
@@ -43,8 +48,10 @@ final class AuthApi
                 description: 'Validation error',
                 content: new OA\JsonContent(
                     properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: false),
                         new OA\Property(property: 'message', type: 'string', example: 'The provided credentials are incorrect.'),
                         new OA\Property(property: 'errors', type: 'object'),
+                        new OA\Property(property: 'data', nullable: true, example: null),
                     ]
                 )
             ),
@@ -78,8 +85,13 @@ final class AuthApi
                 description: 'Successful registration',
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: 'access_token', type: 'string', example: '1|laravel_sanctum_token...'),
-                        new OA\Property(property: 'user', type: 'object', ref: '#/components/schemas/User'),
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'errors', type: 'object', nullable: true, example: null),
+                        new OA\Property(property: 'message', type: 'string', nullable: true, example: null),
+                        new OA\Property(property: 'data', type: 'object', properties: [
+                            new OA\Property(property: 'access_token', type: 'string', example: '1|laravel_sanctum_token...'),
+                            new OA\Property(property: 'user', type: 'object', ref: '#/components/schemas/Profile'),
+                        ]),
                     ]
                 )
             ),
@@ -88,8 +100,10 @@ final class AuthApi
                 description: 'Validation error',
                 content: new OA\JsonContent(
                     properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: false),
                         new OA\Property(property: 'message', type: 'string', example: 'The email has already been taken.'),
                         new OA\Property(property: 'errors', type: 'object'),
+                        new OA\Property(property: 'data', nullable: true, example: null),
                     ]
                 )
             ),
@@ -104,6 +118,7 @@ final class AuthApi
         summary: 'User logout',
         description: 'Revoke all user tokens',
         operationId: 'logout',
+        security: [['sanctum' => []]],
         tags: ['Authentication'],
         responses: [
             new OA\Response(
@@ -111,10 +126,14 @@ final class AuthApi
                 description: 'Successfully logged out',
                 content: new OA\JsonContent(
                     properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'errors', type: 'object', nullable: true, example: null),
                         new OA\Property(property: 'message', type: 'string', example: 'Logged out successfully'),
+                        new OA\Property(property: 'data', nullable: true, example: null),
                     ]
                 )
             ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function logout(): void
@@ -187,8 +206,16 @@ final class AuthApi
             new OA\Response(
                 response: 200,
                 description: 'Successful operation',
-                content: new OA\JsonContent(ref: '#/components/schemas/Profile')
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'errors', type: 'object', nullable: true, example: null),
+                        new OA\Property(property: 'message', type: 'string', nullable: true, example: null),
+                        new OA\Property(property: 'data', ref: '#/components/schemas/Profile', type: 'object'),
+                    ]
+                )
             ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function showProfile(): void
@@ -220,18 +247,28 @@ final class AuthApi
             new OA\Response(
                 response: 200,
                 description: 'Profile updated successfully',
-                content: new OA\JsonContent(ref: '#/components/schemas/Profile')
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'errors', type: 'object', nullable: true, example: null),
+                        new OA\Property(property: 'message', type: 'string', nullable: true, example: null),
+                        new OA\Property(property: 'data', ref: '#/components/schemas/Profile', type: 'object'),
+                    ]
+                )
             ),
             new OA\Response(
                 response: 422,
                 description: 'Validation error',
                 content: new OA\JsonContent(
                     properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: false),
                         new OA\Property(property: 'message', type: 'string'),
                         new OA\Property(property: 'errors', type: 'object'),
+                        new OA\Property(property: 'data', nullable: true, example: null),
                     ]
                 )
             ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function updateProfile(): void

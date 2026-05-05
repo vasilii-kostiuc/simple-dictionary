@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ApiResponseResource;
 use Illuminate\Support\Facades\Auth;
 
 class LogoutController extends Controller
@@ -12,6 +13,6 @@ class LogoutController extends Controller
         $user = Auth::user();
         $user->tokens()->delete();
 
-        return response(['message' => 'Logged out successfully']);
+        return new ApiResponseResource(['message' => 'Logged out successfully'])->response();
     }
 }

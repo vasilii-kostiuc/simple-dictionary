@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V1\Training;
 use App\Domain\Training\Enums\TrainingCompletionReason;
 use App\Domain\Training\Enums\TrainingCompletionType;
 use App\Domain\Training\Enums\TrainingStatus;
-use App\Domain\Training\Enums\TrainingType;
 use App\Domain\Training\Models\Training;
 use App\Domain\Training\Services\TrainingService;
 use App\Http\Controllers\Controller;
@@ -35,6 +34,7 @@ class TrainingController extends Controller
             ->join('dictionaries', 'trainings.dictionary_id', '=', 'dictionaries.id')
             ->where('dictionaries.user_id', auth()->user()->id)
             ->orderBy('started_at', 'DESC')->get();
+
         return new ApiResponseResource(['data' => TrainingResource::collection($trainings)])->response()->setStatusCode(Response::HTTP_OK);
     }
 
@@ -57,6 +57,7 @@ class TrainingController extends Controller
         }
 
         $this->trainingService->start($training);
+
         return new ApiResponseResource(['message' => 'Training started successfully', 'data' => new TrainingResource($training)]);
     }
 
@@ -64,6 +65,7 @@ class TrainingController extends Controller
     {
         if ($training->completion_type === TrainingCompletionType::Time) {
             $this->trainingService->complete($training, TrainingCompletionReason::Expired);
+
             return new ApiResponseResource(['message' => 'Training completed successfully', 'data' => new TrainingResource($training)]);
         }
 
@@ -80,7 +82,6 @@ class TrainingController extends Controller
 
         return new ApiResponseResource(['success' => false, 'message' => 'Training terminated successfully', 'data' => new TrainingResource($training)]);
     }
-
 
     public function summary(Training $training)
     {
@@ -99,7 +100,7 @@ class TrainingController extends Controller
                 'completion_reason' => $completionReason,
                 'started_at' => $training->started_at,
                 'completed_at' => $training->completed_at,
-            ])
+            ]),
         ])->response()->setStatusCode(Response::HTTP_OK);
     }
 }

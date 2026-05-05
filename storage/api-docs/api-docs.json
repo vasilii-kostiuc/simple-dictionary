@@ -50,12 +50,31 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "access_token": {
-                                            "type": "string",
-                                            "example": "1|laravel_sanctum_token..."
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
                                         },
-                                        "user": {
-                                            "$ref": "#/components/schemas/User"
+                                        "errors": {
+                                            "type": "object",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "access_token": {
+                                                    "type": "string",
+                                                    "example": "1|laravel_sanctum_token..."
+                                                },
+                                                "user": {
+                                                    "$ref": "#/components/schemas/User"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -69,12 +88,20 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
                                         "message": {
                                             "type": "string",
                                             "example": "The provided credentials are incorrect."
                                         },
                                         "errors": {
                                             "type": "object"
+                                        },
+                                        "data": {
+                                            "example": null,
+                                            "nullable": true
                                         }
                                     },
                                     "type": "object"
@@ -137,12 +164,31 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "access_token": {
-                                            "type": "string",
-                                            "example": "1|laravel_sanctum_token..."
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
                                         },
-                                        "user": {
-                                            "$ref": "#/components/schemas/User"
+                                        "errors": {
+                                            "type": "object",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "access_token": {
+                                                    "type": "string",
+                                                    "example": "1|laravel_sanctum_token..."
+                                                },
+                                                "user": {
+                                                    "$ref": "#/components/schemas/Profile"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -156,12 +202,20 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
                                         "message": {
                                             "type": "string",
                                             "example": "The email has already been taken."
                                         },
                                         "errors": {
                                             "type": "object"
+                                        },
+                                        "data": {
+                                            "example": null,
+                                            "nullable": true
                                         }
                                     },
                                     "type": "object"
@@ -187,17 +241,38 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": null,
+                                            "nullable": true
+                                        },
                                         "message": {
                                             "type": "string",
                                             "example": "Logged out successfully"
+                                        },
+                                        "data": {
+                                            "example": null,
+                                            "nullable": true
                                         }
                                     },
                                     "type": "object"
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/v1/auth/token/validate": {
@@ -313,10 +388,32 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Profile"
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Profile"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
                 },
                 "security": [
@@ -371,7 +468,26 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Profile"
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Profile"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -382,17 +498,28 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
                                         "message": {
                                             "type": "string"
                                         },
                                         "errors": {
                                             "type": "object"
+                                        },
+                                        "data": {
+                                            "example": null,
+                                            "nullable": true
                                         }
                                     },
                                     "type": "object"
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
                 },
                 "security": [
@@ -1107,6 +1234,8 @@
                                         "enum": [
                                             "time_expired",
                                             "steps_completed",
+                                            "not_held",
+                                            "no_activity",
                                             "all_players_left",
                                             "forfeited",
                                             "cancelled"
@@ -2537,6 +2666,8 @@
                         "enum": [
                             "time_expired",
                             "steps_completed",
+                            "not_held",
+                            "no_activity",
                             "all_players_left",
                             "forfeited",
                             "cancelled"
@@ -2674,6 +2805,15 @@
                     },
                     "completion_reason": {
                         "type": "string",
+                        "enum": [
+                            "time_expired",
+                            "steps_completed",
+                            "not_held",
+                            "no_activity",
+                            "all_players_left",
+                            "forfeited",
+                            "cancelled"
+                        ],
                         "example": "time_expired",
                         "nullable": true
                     },

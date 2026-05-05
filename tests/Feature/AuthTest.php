@@ -20,10 +20,8 @@ class AuthTest extends TestCase
         ]);
 
         $response->assertStatus(200)->assertJsonStructure([
-            'access_token',
+            'data' => ['access_token'],
         ]);
-
-        $response->assertStatus(200);
     }
 
     public function test_usear_after_registration_has_dictionary_succeeds(): void
@@ -36,12 +34,12 @@ class AuthTest extends TestCase
         ]);
 
         $response->assertStatus(200)->assertJsonStructure([
-            'access_token',
+            'data' => ['access_token'],
         ]);
 
-        $user_id = $response->json('user.id');
+        $user_id = $response->json('data.user.id');
 
-        $current_dictionary = $response->json('user.current_dictionary');
+        $current_dictionary = $response->json('data.user.current_dictionary');
 
         $this->assertDatabaseHas('dictionaries', ['user_id' => $user_id]);
 
@@ -62,7 +60,7 @@ class AuthTest extends TestCase
         ]);
 
         $response->assertStatus(200)->assertJsonStructure([
-            'access_token',
+            'data' => ['access_token'],
         ]);
 
         $response->assertStatus(200);
@@ -91,7 +89,7 @@ class AuthTest extends TestCase
         ]);
 
         $response->assertStatus(200)->assertJsonStructure([
-            'access_token',
+            'data' => ['access_token'],
         ]);
 
         $response = $this->actingAs($user)->getJson(route('dictionaries.index'));
