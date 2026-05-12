@@ -22,3 +22,5 @@ yarn-error.log
 /.vscode
 /.zed
 /tmp
+bootstrap/cache/packages.php
+bootstrap/cache/services.php
