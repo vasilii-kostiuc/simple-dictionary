@@ -21,6 +21,7 @@ services:
       dockerfile: _docker/app/Dockerfile.dev
     volumes:
       - ./:/var/www/simple_dictionary_api
+      - ../packages:/var/www/simple_dictionary_api/packages
     depends_on:
       - db
     environment:
