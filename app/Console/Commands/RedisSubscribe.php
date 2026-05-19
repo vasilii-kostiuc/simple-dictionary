@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Redis;
-use VasiliiKostiuc\LaravelMessagingLibrary\Messaging\RedisMessageBroker;
+use VasiliiKostiuc\PubSubBroker\Messaging\RedisBroker;
 
 class RedisSubscribe extends Command
 {
@@ -30,9 +30,9 @@ class RedisSubscribe extends Command
     public function handle()
     {
         Redis::publish('test-channel', json_encode([
-            'name' => 'Adam Wathan'
+            'name' => 'Adam Wathan',
         ]));
-        new RedisMessageBroker()->publish('test-channel', 'Hello World');
+        new RedisBroker()->publish('test-channel', 'Hello World');
         Redis::subscribe(['test-channel'], function ($message, $channel) {
             dump($channel);
             dump($message);

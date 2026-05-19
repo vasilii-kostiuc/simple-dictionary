@@ -4,17 +4,16 @@ namespace App\Domain\Match\Listeners;
 
 use App\Domain\Match\Events\MatchCompletedEvent;
 use App\Domain\Match\Factories\CompletionConditionFactory;
-use VasiliiKostiuc\LaravelMessagingLibrary\Messaging\MessageBrokerFactory;
 use App\Domain\Match\Services\MatchSummaryBuilder;
+use VasiliiKostiuc\PubSubBroker\Messaging\BrokerFactory;
 
 class MatchCompletedListener
 {
     public function __construct(
         private CompletionConditionFactory $completionConditionFactory,
-        private MessageBrokerFactory $messageBrokerFactory,
+        private BrokerFactory $messageBrokerFactory,
         private MatchSummaryBuilder $matchSummaryBuilder
-    ) {
-    }
+    ) {}
 
     /**
      * Handle the event.
@@ -27,7 +26,7 @@ class MatchCompletedListener
 
         $payload = [
             'type' => 'match_completed',
-            'data' => $this->matchSummaryBuilder->build($event->match)
+            'data' => $this->matchSummaryBuilder->build($event->match),
         ];
 
         $messageBroker->publish('api.match', json_encode($payload));

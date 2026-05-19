@@ -11,7 +11,7 @@
     "repositories": [
         {
             "type": "path",
-            "url": "./packages/laravel-messaging-library",
+            "url": "./packages/pubsub-broker",
             "options": {
                 "symlink": true
             }
@@ -27,7 +27,7 @@
         "php-amqplib/php-amqplib": "^3.5",
         "predis/predis": "2.0",
         "spatie/laravel-query-builder": "^6.3",
-        "vasilii-kostiuc/laravel-messaging-library": "*"
+        "vasilii-kostiuc/pubsub-broker": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

@@ -5,12 +5,12 @@ namespace App\Domain\Match\Listeners;
 use App\Domain\Match\Events\MatchUserAnsweredEvent;
 use App\Domain\Match\Services\MatchSummaryBuilder;
 use App\Http\Resources\Match\MatchSummaryResource;
-use VasiliiKostiuc\LaravelMessagingLibrary\Messaging\MessageBrokerFactory;
+use VasiliiKostiuc\PubSubBroker\Messaging\BrokerFactory;
 
 class PublishMatchSummaryOnUserAnsweredListener
 {
     public function __construct(
-        private MessageBrokerFactory $messageBrokerFactory,
+        private BrokerFactory $messageBrokerFactory,
         private MatchSummaryBuilder $matchSummaryBuilder
     ) {}
 

@@ -4,14 +4,13 @@ namespace App\Domain\Match\Listeners;
 
 use App\Domain\Match\Events\MatchNextStepGeneratedEvent;
 use App\Http\Resources\Match\MatchStepResource;
-use VasiliiKostiuc\LaravelMessagingLibrary\Messaging\MessageBrokerFactory;
+use VasiliiKostiuc\PubSubBroker\Messaging\BrokerFactory;
 
 class MatchNextStepGeneratedListener
 {
     public function __construct(
-        private MessageBrokerFactory $messageBrokerFactory
-    ) {
-    }
+        private BrokerFactory $messageBrokerFactory
+    ) {}
 
     public function handle(MatchNextStepGeneratedEvent $event): void
     {

@@ -4,7 +4,6 @@ use App\Http\Resources\ApiResponseResource;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 use React\EventLoop\Loop;
-use VasiliiKostiuc\LaravelMessagingLibrary\Messaging\MessageBrokerFactory;
 
 // ОТКЛЮЧЕНО: Эти роуты блокируют PHP-FPM процессы
 // Route::get('publish', function () {
@@ -27,7 +26,7 @@ Route::prefix('v1')->group(function () {
             $channel = $data['channel'] ?? '';
             unset($data['channel']);
 
-            $broker = app(MessageBrokerFactory::class)->create();
+            $broker = app(\VasiliiKostiuc\PubSubBroker\Messaging\BrokerFactory::class)->create();
             // Используем нативный Redis Laravel вместо ReactPHP
             $broker->publish($channel, json_encode($data));
 

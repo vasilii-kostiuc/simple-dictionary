@@ -4,17 +4,18 @@ namespace App\Domain\Training\Listeners;
 
 use App\Domain\Training\Events\TrainingCompleted;
 use App\Domain\Training\Factories\CompletionConditionFactory;
-use VasiliiKostiuc\LaravelMessagingLibrary\Messaging\MessageBrokerFactory;
+use VasiliiKostiuc\PubSubBroker\Messaging\BrokerFactory;
 
 class TrainingCompletedListener
 {
     private CompletionConditionFactory $completionConditionFactory;
-    private MessageBrokerFactory $messageBrokerFactory;
+
+    private BrokerFactory $messageBrokerFactory;
 
     /**
      * Create the event listener.
      */
-    public function __construct(CompletionConditionFactory $completionConditionFactory, MessageBrokerFactory $messageBrokerFactory)
+    public function __construct(CompletionConditionFactory $completionConditionFactory, BrokerFactory $messageBrokerFactory)
     {
         $this->completionConditionFactory = $completionConditionFactory;
         $this->messageBrokerFactory = $messageBrokerFactory;
@@ -36,7 +37,7 @@ class TrainingCompletedListener
                 'completion_type' => $event->training->completion_type,
                 'started_at' => $event->training->started_at,
                 'completed_at' => $event->training->completed_at,
-            ]
+            ],
         ];
 
         $messageBroker->publish('api.training', json_encode($payload));

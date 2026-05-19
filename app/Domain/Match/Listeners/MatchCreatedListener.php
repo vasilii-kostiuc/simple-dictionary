@@ -4,14 +4,13 @@ namespace App\Domain\Match\Listeners;
 
 use App\Domain\Match\Events\MatchCreatedEvent;
 use App\Http\Resources\Match\MatchResource;
-use VasiliiKostiuc\LaravelMessagingLibrary\Messaging\MessageBrokerFactory;
+use VasiliiKostiuc\PubSubBroker\Messaging\BrokerFactory;
 
 class MatchCreatedListener
 {
     public function __construct(
-        private MessageBrokerFactory $messageBrokerFactory
-    ) {
-    }
+        private BrokerFactory $messageBrokerFactory
+    ) {}
 
     /**
      * Handle the event.
@@ -24,7 +23,7 @@ class MatchCreatedListener
 
         $payload = [
             'type' => 'match_created',
-            'data' => MatchResource::make($event->match)
+            'data' => MatchResource::make($event->match),
         ];
 
         $messageBroker->publish('api.match', json_encode($payload));
