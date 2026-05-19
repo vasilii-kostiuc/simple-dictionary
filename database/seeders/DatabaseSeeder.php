@@ -17,10 +17,10 @@ class DatabaseSeeder extends Seeder
         if (app()->environment('local')) {
             // User::factory(10)->create();
 
-            User::factory()->create([
-                'name' => 'Test User',
-                'email' => 'test@example.com',
-            ]);
+            User::query()->firstOrCreate(
+                ['email' => 'test@example.com'],
+                User::factory()->make(['name' => 'Test User'])->toArray()
+            );
         }
 
         // Дефолтные данные для всех окружений

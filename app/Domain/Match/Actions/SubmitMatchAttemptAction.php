@@ -18,8 +18,7 @@ class SubmitMatchAttemptAction
         private readonly CompletionConditionFactory $completionConditionFactory,
         private readonly CompleteMatchAction $completeMatchAction,
         private readonly GenerateNextMatchStepAction $generateNextMatchStepAction
-    ) {
-    }
+    ) {}
 
     public function handle(MatchStep $step, array $attemptData, int $attemptNumber): MatchStepAttempt
     {
@@ -55,6 +54,7 @@ class SubmitMatchAttemptAction
     {
         if ($this->completionConditionFactory->create($match)->isCompleted()) {
             $this->completeMatchAction->handle($match);
+
             return;
         }
 

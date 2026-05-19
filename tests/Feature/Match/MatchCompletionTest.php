@@ -4,6 +4,8 @@ namespace Tests\Feature\Match;
 
 use App\Domain\Language\Models\Language;
 use App\Domain\Match\Enums\{MatchStatus, MatchType, MatchCompletionReason};
+use App\Domain\Step\Enums\StepType;
+use App\Domain\Step\StepResolverFactory;
 use App\Domain\User\Models\User;
 use Database\Seeders\TopWordSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,6 +19,7 @@ class MatchCompletionTest extends TestCase
     protected User $user2;
     protected Language $languageTo;
     protected Language $languageFrom;
+    protected StepResolverFactory $stepResolverFactory;
 
     protected function setUp(): void
     {
@@ -28,6 +31,8 @@ class MatchCompletionTest extends TestCase
         // TopWordSeeder uses language_from_id=2, language_to_id=1
         $this->languageTo = Language::factory()->create();   // id=1
         $this->languageFrom = Language::factory()->create(); // id=2
+
+        $this->stepResolverFactory = new StepResolverFactory();
     }
 
     private function createMatch(): array
@@ -44,6 +49,14 @@ class MatchCompletionTest extends TestCase
         ]);
 
         return $response->json('data');
+    }
+
+    private function getValidAttemptData(array $stepData): array
+    {
+        $stepType = StepType::from($stepData['step_type_id']);
+        $resolver = $this->stepResolverFactory->create($stepType);
+
+        return $resolver->resolve($stepData['step_data']);
     }
 
     public function test_can_complete_match(): void
@@ -116,7 +129,7 @@ class MatchCompletionTest extends TestCase
             $this->actingAs($this->user1)->postJson(
                 "/api/v1/matches/{$match['id']}/steps/{$step['id']}/attempts",
                 [
-                    'answer' => 'test',
+                    'attempt_data' => $this->getValidAttemptData($step),
                     'attempt_number' => 1,
                     'participant_type' => 'user',
                     'participant_id' => $this->user1->id,
@@ -132,7 +145,7 @@ class MatchCompletionTest extends TestCase
         $this->actingAs($this->user2)->postJson(
             "/api/v1/matches/{$match['id']}/steps/{$step['id']}/attempts",
             [
-                'answer' => 'test',
+                'attempt_data' => $this->getValidAttemptData($step),
                 'attempt_number' => 1,
                 'participant_type' => 'user',
                 'participant_id' => $this->user2->id,
@@ -173,7 +186,7 @@ class MatchCompletionTest extends TestCase
         $this->actingAs($this->user1)->postJson(
             "/api/v1/matches/{$match['id']}/steps/{$step['id']}/attempts",
             [
-                'answer' => 'test',
+                'attempt_data' => $this->getValidAttemptData($step),
                 'attempt_number' => 1,
                 'participant_type' => 'user',
                 'participant_id' => $this->user1->id,
@@ -256,7 +269,7 @@ class MatchCompletionTest extends TestCase
             $this->actingAs($user)->postJson(
                 "/api/v1/matches/{$match['id']}/steps/{$step['id']}/attempts",
                 [
-                    'answer' => 'test',
+                    'attempt_data' => $this->getValidAttemptData($step),
                     'attempt_number' => 1,
                     'participant_type' => 'user',
                     'participant_id' => $user->id,

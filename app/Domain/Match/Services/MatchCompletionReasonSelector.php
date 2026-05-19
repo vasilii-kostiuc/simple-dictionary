@@ -12,12 +12,12 @@ class MatchCompletionReasonSelector
 {
     public function normalizeCompletionReason(MatchModel $match, ?MatchCompletionReason $reason = null): MatchCompletionReason
     {
-        if ($reason === MatchCompletionReason::NoActivity) {
-            return MatchCompletionReason::NoActivity;
+        if ($reason !== null) {
+            return $reason;
         }
 
         if ($this->hasAttempts($match)) {
-            return $reason ?? MatchCompletionReason::defaultForMatchType($match->match_type);
+            return MatchCompletionReason::defaultForMatchType($match->match_type);
         }
 
         return MatchCompletionReason::NotHeld;

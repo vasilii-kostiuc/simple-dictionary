@@ -115,14 +115,10 @@ class TopWordSeeder extends Seeder
             ['language_from_id' => 2, 'language_to_id' => 1, 'word' => 'education', 'translation' => 'образование'],
         ];
 
-        DB::table('top_words')->delete();
-
-        foreach ($words as $word) {
-            try {
-                DB::table('top_words')->insert($word);
-            } catch (\Exception $exception) {
-
-            }
-        }
+        DB::table('top_words')->upsert(
+            $words,
+            ['language_from_id', 'language_to_id', 'word'],
+            ['translation']
+        );
     }
 }

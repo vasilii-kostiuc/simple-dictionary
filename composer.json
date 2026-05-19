@@ -24,6 +24,7 @@
         "laravel/framework": "^11.31",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "php-amqplib/php-amqplib": "^3.5",
         "predis/predis": "2.0",
         "spatie/laravel-query-builder": "^6.3",
         "vasilii-kostiuc/laravel-messaging-library": "*"
