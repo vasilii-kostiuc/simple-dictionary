@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c3f58bc07fcf822f35eb1e78d7d04223",
+    "content-hash": "d10064fe1048b589c654dbe4bd43fdad",
     "packages": [
         {
             "name": "brick/math",
@@ -7567,11 +7567,17 @@
         },
         {
             "name": "vasilii-kostiuc/pubsub-broker",
-            "version": "dev-main",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:vasilii-kostiuc/pubsub-broker.git",
+                "reference": "e92088a9bb68922a1f6ff9215a154a555fd61a1a"
+            },
             "dist": {
-                "type": "path",
-                "url": "./packages/pubsub-broker",
-                "reference": "f712bc1dbd7620453f4857c47d3c7783d80841ad"
+                "type": "zip",
+                "url": "https://api.github.com/repos/vasilii-kostiuc/pubsub-broker/zipball/e92088a9bb68922a1f6ff9215a154a555fd61a1a",
+                "reference": "e92088a9bb68922a1f6ff9215a154a555fd61a1a",
+                "shasum": ""
             },
             "require": {
                 "clue/redis-react": "^v2.8.0",
@@ -7599,10 +7605,7 @@
                 "MIT"
             ],
             "description": "PubSub broker abstraction over Redis and RabbitMQ with ReactPHP event loop integration",
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
+            "time": "2026-05-19T18:20:24+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
