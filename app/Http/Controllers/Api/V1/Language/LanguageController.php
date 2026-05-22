@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Language;
 
-use App\Domain\Language\Models\Language;
+use App\Core\Language\Models\Language;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiResponseResource;
 use App\Http\Resources\Language\LanguageResource;

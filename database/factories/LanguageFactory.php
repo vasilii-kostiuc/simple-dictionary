@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Domain\Language\Models\Language;
+use App\Core\Language\Models\Language;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class LanguageFactory extends Factory

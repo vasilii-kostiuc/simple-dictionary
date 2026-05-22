@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Match;
 
-use App\Domain\Match\Models\MatchLink;
+use App\Core\Match\Models\MatchLink;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;

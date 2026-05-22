@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Domain\User\Models\User;
+use App\Core\User\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 

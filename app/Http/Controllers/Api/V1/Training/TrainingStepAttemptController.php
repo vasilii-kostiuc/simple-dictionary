@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api\V1\Training;
 
-use App\Domain\Training\Factories\CompletionConditionFactory;
-use App\Domain\Training\Models\Training;
-use App\Domain\Training\Models\TrainingStep;
-use App\Domain\Training\Services\TrainingStepAttemptService;
-use App\Domain\Training\Services\TrainingStepProgressService;
+use App\Core\Training\Factories\CompletionConditionFactory;
+use App\Core\Training\Models\Training;
+use App\Core\Training\Models\TrainingStep;
+use App\Core\Training\Services\TrainingStepAttemptService;
+use App\Core\Training\Services\TrainingStepProgressService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiResponseResource;
 use App\Http\Resources\Training\TrainingStepAttemptResource;

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api\V1\Match;
 
-use App\Domain\Match\Actions\CompleteMatchAction;
-use App\Domain\Match\Actions\CreateMatchAction;
-use App\Domain\Match\Actions\StartMatchAction;
-use App\Domain\Match\Enums\{MatchStatus, MatchCompletionReason, MatchType};
-use App\Domain\Match\Models\MatchModel;
-use App\Domain\Match\Services\MatchSummaryBuilder;
+use App\Core\Match\Actions\CompleteMatchAction;
+use App\Core\Match\Actions\CreateMatchAction;
+use App\Core\Match\Actions\StartMatchAction;
+use App\Core\Match\Enums\{MatchStatus, MatchCompletionReason, MatchType};
+use App\Core\Match\Models\MatchModel;
+use App\Core\Match\Services\MatchSummaryBuilder;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Match\CreateMatchRequest;
 use App\Http\Resources\ApiResponseResource;

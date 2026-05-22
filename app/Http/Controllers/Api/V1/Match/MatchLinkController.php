@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1\Match;
 
-use App\Domain\Match\Actions\CreateMatchLinkAction;
-use App\Domain\Match\Models\MatchLink;
-use App\Domain\Match\Services\MatchLinkQrCodeGenerator;
+use App\Core\Match\Actions\CreateMatchLinkAction;
+use App\Core\Match\Models\MatchLink;
+use App\Core\Match\Services\MatchLinkQrCodeGenerator;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Match\StoreMatchLinkRequest;
 use App\Http\Resources\ApiResponseResource;

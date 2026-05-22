@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1\Match;
 
-use App\Domain\Match\Actions\SubmitMatchAttemptAction;
-use App\Domain\Match\Models\MatchModel;
-use App\Domain\Match\Models\MatchStep;
+use App\Core\Match\Actions\SubmitMatchAttemptAction;
+use App\Core\Match\Models\MatchModel;
+use App\Core\Match\Models\MatchStep;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Match\SubmitMatchAnswerRequest;
 use App\Http\Resources\ApiResponseResource;

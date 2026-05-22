@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Domain\User\Models\User;
+use App\Core\User\Models\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginUserRequest;
 use App\Http\Resources\ApiResponseResource;

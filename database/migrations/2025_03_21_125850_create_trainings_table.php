@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('trainings', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Domain\Dictionary\Models\Dictionary::class);
+            $table->foreignIdFor(\App\Core\Dictionary\Models\Dictionary::class);
             $table->integer('training_type_id');
             $table->integer('status')->nullable();
             $table->timestamps();

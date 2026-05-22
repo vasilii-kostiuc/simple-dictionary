@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Domain\Match\Actions\CompleteMatchAction;
-use App\Domain\Match\Enums\MatchStatus;
-use App\Domain\Match\Models\MatchModel;
-use App\Domain\Match\Services\MatchCompletionReasonSelector;
+use App\Core\Match\Actions\CompleteMatchAction;
+use App\Core\Match\Enums\MatchStatus;
+use App\Core\Match\Models\MatchModel;
+use App\Core\Match\Services\MatchCompletionReasonSelector;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 

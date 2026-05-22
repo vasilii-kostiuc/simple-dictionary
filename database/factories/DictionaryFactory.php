@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Domain\Dictionary\Models\Dictionary;
+use App\Core\Dictionary\Models\Dictionary;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Domain\Dictionary\Models\Dictionary>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Core\Dictionary\Models\Dictionary>
  */
 class DictionaryFactory extends Factory
 {

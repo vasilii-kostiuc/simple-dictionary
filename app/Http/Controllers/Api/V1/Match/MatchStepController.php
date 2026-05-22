@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api\V1\Match;
 
-use App\Domain\Match\Actions\GenerateNextMatchStepAction;
-use App\Domain\Match\Actions\SkipMatchStepAction;
-use App\Domain\Match\Enums\MatchStatus;
-use App\Domain\Match\Models\MatchModel;
-use App\Domain\Match\Models\MatchStep;
+use App\Core\Match\Actions\GenerateNextMatchStepAction;
+use App\Core\Match\Actions\SkipMatchStepAction;
+use App\Core\Match\Enums\MatchStatus;
+use App\Core\Match\Models\MatchModel;
+use App\Core\Match\Models\MatchStep;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiResponseResource;
 use App\Http\Resources\Match\MatchStepResource;

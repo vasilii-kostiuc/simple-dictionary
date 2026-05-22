@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use App\Domain\Dictionary\Models\Dictionary;
-use App\Domain\Step\StepFactory;
-use App\Domain\Training\Models\Training;
+use App\Core\Dictionary\Models\Dictionary;
+use App\Core\Step\StepFactory;
+use App\Core\Training\Models\Training;
 use Database\Seeders\TopWordSeeder;
 use Tests\TestCase;
 

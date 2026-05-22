@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Training;
 
-use App\Domain\Training\Enums\TrainingCompletionType;
-use App\Domain\Training\Enums\TrainingType;
+use App\Core\Training\Enums\TrainingCompletionType;
+use App\Core\Training\Enums\TrainingType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 

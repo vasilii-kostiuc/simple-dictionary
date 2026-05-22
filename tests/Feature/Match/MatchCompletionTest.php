@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Match;
 
-use App\Domain\Language\Models\Language;
-use App\Domain\Match\Enums\{MatchStatus, MatchType, MatchCompletionReason};
-use App\Domain\Step\Enums\StepType;
-use App\Domain\Step\StepResolverFactory;
-use App\Domain\User\Models\User;
+use App\Core\Language\Models\Language;
+use App\Core\Match\Enums\{MatchStatus, MatchType, MatchCompletionReason};
+use App\Core\Step\Enums\StepType;
+use App\Core\Step\StepResolverFactory;
+use App\Core\User\Models\User;
 use Database\Seeders\TopWordSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

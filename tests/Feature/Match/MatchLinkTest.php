@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Match;
 
-use App\Domain\Language\Models\Language;
-use App\Domain\Match\Enums\MatchType;
-use App\Domain\User\Models\User;
+use App\Core\Language\Models\Language;
+use App\Core\Match\Enums\MatchType;
+use App\Core\User\Models\User;
 use Database\Seeders\TopWordSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

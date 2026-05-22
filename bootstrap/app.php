@@ -27,8 +27,8 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
     })->withEvents([
-            __DIR__.'/../app/Domain/*/Listeners',
-            __DIR__.'/../app/Listeners',
-        ])
+        __DIR__.'/../app/Core/*/Listeners',
+        __DIR__.'/../app/Listeners',
+    ])
 
     ->create();

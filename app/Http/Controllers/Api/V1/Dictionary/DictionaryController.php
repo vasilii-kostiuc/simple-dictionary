@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1\Dictionary;
 
-use App\Domain\Dictionary\Models\Dictionary;
-use App\Domain\Dictionary\Services\DictionaryService;
+use App\Core\Dictionary\Models\Dictionary;
+use App\Core\Dictionary\Services\DictionaryService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dictionary\StoreDictionaryRequest;
 use App\Http\Resources\ApiResponseResource;

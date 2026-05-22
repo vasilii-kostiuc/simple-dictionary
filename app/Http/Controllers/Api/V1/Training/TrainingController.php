@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api\V1\Training;
 
-use App\Domain\Training\Enums\TrainingCompletionReason;
-use App\Domain\Training\Enums\TrainingCompletionType;
-use App\Domain\Training\Enums\TrainingStatus;
-use App\Domain\Training\Models\Training;
-use App\Domain\Training\Services\TrainingService;
+use App\Core\Training\Enums\TrainingCompletionReason;
+use App\Core\Training\Enums\TrainingCompletionType;
+use App\Core\Training\Enums\TrainingStatus;
+use App\Core\Training\Models\Training;
+use App\Core\Training\Services\TrainingService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Training\StoreTrainingRequest;
 use App\Http\Resources\ApiResponseResource;

@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Match;
 
-use App\Domain\Match\Enums\MatchType;
+use App\Core\Match\Enums\MatchType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 

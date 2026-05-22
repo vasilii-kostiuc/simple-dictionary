@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Match;
 
-use App\Domain\Language\Models\Language;
-use App\Domain\Match\Enums\MatchType;
+use App\Core\Language\Models\Language;
+use App\Core\Match\Enums\MatchType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 

@@ -2,16 +2,16 @@
 
 namespace Tests\Feature\Match;
 
-use App\Domain\Language\Models\Language;
-use App\Domain\Match\Enums\MatchCompletionReason;
-use App\Domain\Match\Enums\MatchStatus;
-use App\Domain\Match\Enums\MatchType;
-use App\Domain\Match\Enums\MatchUserStatus;
-use App\Domain\Match\Models\MatchModel;
-use App\Domain\Match\Models\MatchStep;
-use App\Domain\Match\Models\MatchStepAttempt;
-use App\Domain\Match\Models\MatchUser;
-use App\Domain\User\Models\User;
+use App\Core\Language\Models\Language;
+use App\Core\Match\Enums\MatchCompletionReason;
+use App\Core\Match\Enums\MatchStatus;
+use App\Core\Match\Enums\MatchType;
+use App\Core\Match\Enums\MatchUserStatus;
+use App\Core\Match\Models\MatchModel;
+use App\Core\Match\Models\MatchStep;
+use App\Core\Match\Models\MatchStepAttempt;
+use App\Core\Match\Models\MatchUser;
+use App\Core\User\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
