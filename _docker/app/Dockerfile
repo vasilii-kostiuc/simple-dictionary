@@ -29,6 +29,10 @@ WORKDIR /var/www/simple_dictionary_api
 # Copy application code first (needed for local packages)
 COPY . .
 
+# Ensure writable cache directory exists before composer post-install scripts run
+RUN mkdir -p bootstrap/cache storage/framework/{sessions,views,cache} storage/logs \
+    && chmod -R 775 bootstrap/cache storage
+
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
