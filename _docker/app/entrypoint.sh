@@ -5,6 +5,8 @@ echo "Проверка папок Laravel..."
 mkdir -p storage/framework/{sessions,views,cache}
 mkdir -p storage/{logs,app/public}
 mkdir -p bootstrap/cache
+# Clear stale bootstrap cache left over from previous deployments on the volume
+rm -f bootstrap/cache/packages.php bootstrap/cache/services.php bootstrap/cache/config.php
 chown -R www-data:www-data storage bootstrap/cache
 chmod -R 775 storage bootstrap/cache
 
