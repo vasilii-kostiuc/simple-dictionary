@@ -6,6 +6,7 @@ use App\Core\Dictionary\Models\Dictionary;
 use App\Core\Step\StepFactory;
 use App\Core\Training\Models\Training;
 use Database\Seeders\TopWordSeeder;
+use Mockery;
 use Tests\TestCase;
 
 class TrainingStepFactoryTest extends TestCase
@@ -35,6 +36,11 @@ class TrainingStepFactoryTest extends TestCase
     {
         Mockery::close();
         parent::tearDown();
+    }
+
+    public function test_skipped(): void
+    {
+        $this->markTestSkipped('Tests pending implementation.');
     }
 
     /*   public function testCreateChooseCorrectAnswer()
