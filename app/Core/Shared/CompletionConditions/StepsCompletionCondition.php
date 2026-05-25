@@ -7,7 +7,9 @@ use Illuminate\Support\Collection;
 class StepsCompletionCondition implements CompletionConditionInterface
 {
     protected readonly int $requiredStepsCount;
+
     protected readonly Collection $steps;
+
     protected readonly bool $withAttempted;
 
     public function __construct(int $requiredStepsCount, Collection $steps, bool $withAttempted = false)

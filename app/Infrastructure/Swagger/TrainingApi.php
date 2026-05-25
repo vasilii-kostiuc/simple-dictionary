@@ -33,9 +33,7 @@ final class TrainingApi
             ),
         ]
     )]
-    public function listTrainings(): void
-    {
-    }
+    public function listTrainings(): void {}
 
     #[OA\Post(
         path: '/api/v1/trainings',
@@ -69,9 +67,7 @@ final class TrainingApi
             new OA\Response(response: 422, description: 'Validation error'),
         ]
     )]
-    public function storeTraining(): void
-    {
-    }
+    public function storeTraining(): void {}
 
     #[OA\Get(
         path: '/api/v1/trainings/{training}',
@@ -95,9 +91,7 @@ final class TrainingApi
             ),
         ]
     )]
-    public function showTraining(): void
-    {
-    }
+    public function showTraining(): void {}
 
     #[OA\Post(
         path: '/api/v1/trainings/{training}/start',
@@ -122,9 +116,7 @@ final class TrainingApi
             ),
         ]
     )]
-    public function startTraining(): void
-    {
-    }
+    public function startTraining(): void {}
 
     #[OA\Post(
         path: '/api/v1/trainings/{training}/expire',
@@ -150,9 +142,7 @@ final class TrainingApi
             new OA\Response(response: 409, description: 'Expiration not supported for this training type'),
         ]
     )]
-    public function expireTraining(): void
-    {
-    }
+    public function expireTraining(): void {}
 
     #[OA\Post(
         path: '/api/v1/trainings/{training}/terminate',
@@ -178,9 +168,7 @@ final class TrainingApi
             new OA\Response(response: 409, description: 'Training already completed'),
         ]
     )]
-    public function terminateTraining(): void
-    {
-    }
+    public function terminateTraining(): void {}
 
     #[OA\Get(
         path: '/api/v1/trainings/{training}/summary',
@@ -204,9 +192,7 @@ final class TrainingApi
             ),
         ]
     )]
-    public function trainingSummary(): void
-    {
-    }
+    public function trainingSummary(): void {}
 
     // ── Training Steps ────────────────────────────────────────────────────────
 
@@ -233,9 +219,7 @@ final class TrainingApi
             ),
         ]
     )]
-    public function showTrainingStep(): void
-    {
-    }
+    public function showTrainingStep(): void {}
 
     #[OA\Get(
         path: '/api/v1/trainings/{training}/steps/next',
@@ -261,9 +245,7 @@ final class TrainingApi
             new OA\Response(response: 409, description: 'Training finished or previous step not completed'),
         ]
     )]
-    public function nextTrainingStep(): void
-    {
-    }
+    public function nextTrainingStep(): void {}
 
     #[OA\Get(
         path: '/api/v1/trainings/{training}/steps/current',
@@ -288,9 +270,7 @@ final class TrainingApi
             new OA\Response(response: 409, description: 'Training finished or no current step found'),
         ]
     )]
-    public function currentTrainingStep(): void
-    {
-    }
+    public function currentTrainingStep(): void {}
 
     #[OA\Patch(
         path: '/api/v1/trainings/{training}/steps/{step}/skip',
@@ -316,9 +296,7 @@ final class TrainingApi
             ),
         ]
     )]
-    public function skipTrainingStep(): void
-    {
-    }
+    public function skipTrainingStep(): void {}
 
     #[OA\Get(
         path: '/api/v1/trainings/{training}/steps/{step}/progress',
@@ -343,9 +321,7 @@ final class TrainingApi
             ),
         ]
     )]
-    public function trainingStepProgress(): void
-    {
-    }
+    public function trainingStepProgress(): void {}
 
     // ── Training Step Attempts ─────────────────────────────────────────────────
 
@@ -373,9 +349,7 @@ final class TrainingApi
             ),
         ]
     )]
-    public function listTrainingStepAttempts(): void
-    {
-    }
+    public function listTrainingStepAttempts(): void {}
 
     #[OA\Post(
         path: '/api/v1/trainings/{training}/steps/{step}/attempts',
@@ -409,7 +383,5 @@ final class TrainingApi
             new OA\Response(response: 409, description: 'Step already passed'),
         ]
     )]
-    public function storeTrainingStepAttempt(): void
-    {
-    }
+    public function storeTrainingStepAttempt(): void {}
 }

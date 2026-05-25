@@ -9,8 +9,7 @@ class AllParticipantsCompletedCondition implements CompletionConditionInterface
 {
     public function __construct(
         private readonly Collection $matchUsers,
-    ) {
-    }
+    ) {}
 
     public function isCompleted(): bool
     {

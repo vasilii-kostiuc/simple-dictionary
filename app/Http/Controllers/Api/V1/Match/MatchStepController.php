@@ -16,20 +16,22 @@ use Illuminate\Http\Response;
 class MatchStepController extends Controller
 {
     private const ERROR_MATCH_FINISHED = 'match_finished';
+
     private const ERROR_STEP_NOT_COMPLETED = 'previous_step_not_completed';
+
     private const ERROR_CURRENT_STEP_NOT_FOUND = 'current_step_not_found';
+
     private const ERROR_PARTICIPANT_REQUIRED = 'participant_required';
 
     public function __construct(
         private readonly GenerateNextMatchStepAction $generateNextMatchStepAction,
         private readonly SkipMatchStepAction $skipMatchStepAction
-    ) {
-    }
+    ) {}
 
     public function show(MatchModel $match, MatchStep $step)
     {
         return ApiResponseResource::make([
-            'data' => new MatchStepResource($step)
+            'data' => new MatchStepResource($step),
         ])->response()->setStatusCode(Response::HTTP_OK);
     }
 
@@ -82,7 +84,7 @@ class MatchStepController extends Controller
             if ($previousStep && ($previousStep->isPassedOrSkipped() || $previousStep->hasAttempts())) {
                 return ApiResponseResource::make([
                     'data' => new MatchStepResource($lastStep),
-                    'message' => 'Next step already exists'
+                    'message' => 'Next step already exists',
                 ]);
             }
 
@@ -109,7 +111,7 @@ class MatchStepController extends Controller
 
         return ApiResponseResource::make([
             'data' => new MatchStepResource($nextStep),
-            'message' => 'Next step generated successfully'
+            'message' => 'Next step generated successfully',
         ]);
     }
 
@@ -156,7 +158,7 @@ class MatchStepController extends Controller
         }
 
         return ApiResponseResource::make([
-            'data' => new MatchStepResource($currentStep)
+            'data' => new MatchStepResource($currentStep),
         ])->response()->setStatusCode(Response::HTTP_OK);
     }
 
@@ -179,7 +181,7 @@ class MatchStepController extends Controller
 
         return ApiResponseResource::make([
             'data' => new MatchStepResource($step),
-            'message' => 'Step skipped successfully'
+            'message' => 'Step skipped successfully',
         ]);
     }
 }

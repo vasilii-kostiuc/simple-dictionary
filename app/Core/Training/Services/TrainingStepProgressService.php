@@ -26,7 +26,7 @@ class TrainingStepProgressService
     {
         $lastAttemptNum = $step->attempts()->max('attempt_number');
 
-        if (!$lastAttemptNum) {
+        if (! $lastAttemptNum) {
             return 0;
         }
 

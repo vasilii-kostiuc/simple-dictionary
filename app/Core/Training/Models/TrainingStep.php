@@ -5,7 +5,6 @@ namespace App\Core\Training\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Core\Traits\HasAttempts;
 
 class TrainingStep extends Model
 {
@@ -15,13 +14,12 @@ class TrainingStep extends Model
         'step_number',
         'skipped',
         'required_answers_count',
-        'step_data'
+        'step_data',
     ];
 
     protected $casts = [
-        'step_data' => 'array'
+        'step_data' => 'array',
     ];
-
 
     public function training(): BelongsTo
     {
@@ -69,7 +67,6 @@ class TrainingStep extends Model
         return $this->isPassed() || $this->skipped;
     }
 
-
     public function getNextAttemptSubIndex(): int
     {
         if ($this->attempts->isEmpty()) {
@@ -78,5 +75,4 @@ class TrainingStep extends Model
 
         return $this->attempts()->max('sub_index') + 1;
     }
-
 }

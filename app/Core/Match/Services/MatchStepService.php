@@ -12,8 +12,7 @@ class MatchStepService
 {
     public function __construct(
         private readonly MatchStrategyFactory $strategyFactory
-    ) {
-    }
+    ) {}
 
     public function generateNextStepForParticipant(MatchModel $match, ParticipantIdentifier $participant): MatchStep
     {

@@ -10,7 +10,9 @@ use App\Core\Training\Models\Training;
 abstract class TrainingStrategyAbstract
 {
     protected Training $training;
+
     protected StepFactory $trainingStepFactory;
+
     protected WordsProviderInterface $wordsProvider;
 
     public function __construct(Training $training, StepFactory $trainingStepFactory, WordsProviderInterface $wordsProvider)
@@ -20,5 +22,5 @@ abstract class TrainingStrategyAbstract
         $this->wordsProvider = $wordsProvider;
     }
 
-    public abstract function generateNextStep(): Step;
+    abstract public function generateNextStep(): Step;
 }

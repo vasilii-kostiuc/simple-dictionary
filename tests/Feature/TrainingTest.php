@@ -33,17 +33,17 @@ class TrainingTest extends TestCase
     private const TRAINING_PARAMS_WITH_STEPS = [
         'training_type_id' => TrainingType::TopWords,
         'completion_type' => TrainingCompletionType::Steps,
-        'completion_type_params' => ['steps_count' => 10]
+        'completion_type_params' => ['steps_count' => 10],
     ];
 
     protected User $user;
+
     protected Language $sourceLang;
+
     protected Language $targetLang;
+
     protected Dictionary $dictionary;
 
-    /**
-     * @return void
-     */
     public function mockTrainingStrategy(): void
     {
         $this->mock(TrainingStrategyFactory::class, function ($mock) {
@@ -62,12 +62,6 @@ class TrainingTest extends TestCase
         });
     }
 
-    /**
-     * @param array $stepData
-     * @param int $trainingId
-     * @param mixed $stepId
-     * @return \Illuminate\Testing\TestResponse
-     */
     public function submitStepAttempt(array $stepData, int $trainingId, mixed $stepId): \Illuminate\Testing\TestResponse
     {
         $attempt_data = new StepResolverFactory()
@@ -117,7 +111,7 @@ class TrainingTest extends TestCase
         $startResponse->assertOk()
             ->assertJsonFragment([
                 'id' => $trainingId,
-                'status' => TrainingStatus::InProgress->value
+                'status' => TrainingStatus::InProgress->value,
             ]);
     }
 
@@ -254,7 +248,7 @@ class TrainingTest extends TestCase
                 "/api/v1/trainings/{$trainingId}/steps/{$stepId}/progress",
             );
         $isPassed = $progressResponse->json('data.is_passed');
-        //dd($progressResponse->json());
+        // dd($progressResponse->json());
         $this->assertTrue($isPassed);
 
         $attemptResult = $this->submitStepAttempt($stepData, $trainingId, $stepId);
@@ -262,8 +256,8 @@ class TrainingTest extends TestCase
         $attemptResult->assertStatus(Response::HTTP_CONFLICT);
         $attemptResult->assertJsonStructure([
             'errors' => [
-                'training_step_is_already_passed'
-            ]
+                'training_step_is_already_passed',
+            ],
         ]);
     }
 
@@ -274,7 +268,7 @@ class TrainingTest extends TestCase
             [
                 'training_type_id' => TrainingType::TopWords,
                 'completion_type' => TrainingCompletionType::Time,
-                'completion_type_params' => ['time_limit' => 2]
+                'completion_type_params' => ['time_limit' => 2],
             ]
         );
 
@@ -289,9 +283,8 @@ class TrainingTest extends TestCase
         $expireResponse->assertOk()
             ->assertJsonFragment([
                 'message' => 'Training completed successfully',
-                'status' => TrainingStatus::Completed->value
+                'status' => TrainingStatus::Completed->value,
             ]);
-
 
         $training = Training::find($trainingId);
         $this->assertEquals(TrainingStatus::Completed, $training->status);
@@ -309,7 +302,7 @@ class TrainingTest extends TestCase
         $expireResponse->assertStatus(Response::HTTP_CONFLICT)
             ->assertJsonFragment([
                 'success' => false,
-                'message' => 'Training expiration is not supported for tris training type'
+                'message' => 'Training expiration is not supported for tris training type',
             ]);
 
         $training = Training::find($trainingId);
@@ -328,7 +321,7 @@ class TrainingTest extends TestCase
         $terminateResponse->assertOk()
             ->assertJsonFragment([
                 'message' => 'Training terminated successfully',
-                'status' => TrainingStatus::Completed->value
+                'status' => TrainingStatus::Completed->value,
             ]);
 
         $training = Training::find($trainingId);

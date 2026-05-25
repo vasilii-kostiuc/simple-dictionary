@@ -18,5 +18,4 @@ class Language extends Model
     {
         return LanguageFactory::new();
     }
-
 }

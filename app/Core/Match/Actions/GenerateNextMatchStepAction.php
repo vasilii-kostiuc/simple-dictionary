@@ -14,8 +14,7 @@ class GenerateNextMatchStepAction
 {
     public function __construct(
         private readonly MatchStepService $matchStepService
-    ) {
-    }
+    ) {}
 
     public function handle(MatchModel $match, ParticipantIdentifier $participant, bool $dispatchEvent = false): ?MatchStep
     {

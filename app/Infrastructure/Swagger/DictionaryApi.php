@@ -28,9 +28,7 @@ final class DictionaryApi
             ),
         ]
     )]
-    public function index(): void
-    {
-    }
+    public function index(): void {}
 
     #[OA\Get(
         path: '/api/v1/dictionaries/{dictionary}',
@@ -54,9 +52,7 @@ final class DictionaryApi
             ),
         ]
     )]
-    public function show(): void
-    {
-    }
+    public function show(): void {}
 
     #[OA\Post(
         path: '/api/v1/dictionaries',
@@ -88,9 +84,7 @@ final class DictionaryApi
             new OA\Response(response: 422, description: 'Validation error'),
         ]
     )]
-    public function store(): void
-    {
-    }
+    public function store(): void {}
 
     #[OA\Delete(
         path: '/api/v1/dictionaries/{dictionary}',
@@ -106,7 +100,5 @@ final class DictionaryApi
             new OA\Response(response: 204, description: 'Dictionary deleted successfully'),
         ]
     )]
-    public function destroy(): void
-    {
-    }
+    public function destroy(): void {}
 }

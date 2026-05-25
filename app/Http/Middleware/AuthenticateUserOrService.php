@@ -6,9 +6,8 @@ use App\Http\Resources\ApiResponseResource;
 use App\Infrastructure\Auth\JwtTokenService;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Log;
 
 class AuthenticateUserOrService
 {
@@ -21,12 +20,13 @@ class AuthenticateUserOrService
 
     public function handle(Request $request, Closure $next)
     {
-        Log::info(__METHOD__ . ' called', ['path' => $request->path(), 'method' => $request->method()]);
+        Log::info(__METHOD__.' called', ['path' => $request->path(), 'method' => $request->method()]);
 
         try {
             if (auth('sanctum')->check()) {
                 $user = auth('sanctum')->user();
                 Auth::setUser($user);
+
                 return $next($request);
             }
         } catch (\Exception $e) {

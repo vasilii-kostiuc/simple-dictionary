@@ -17,8 +17,7 @@ class MatchStepAttemptService
 {
     public function __construct(
         private readonly StepAttemptVerifierFactory $verifierFactory
-    ) {
-    }
+    ) {}
 
     public function submitAnswer(MatchStep $step, array $attemptData, int $attemptNumber): MatchStepAttempt
     {

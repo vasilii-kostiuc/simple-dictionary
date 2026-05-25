@@ -22,12 +22,12 @@ class TokenValidationTest extends TestCase
                 'data' => [
                     'valid',
 
-                ]
+                ],
             ])
             ->assertJson([
                 'data' => [
                     'valid' => true,
-                ]
+                ],
             ]);
     }
 
@@ -57,12 +57,12 @@ class TokenValidationTest extends TestCase
             ->assertJsonStructure([
                 'data' => [
                     'valid',
-                ]
+                ],
             ])
             ->assertJson([
                 'data' => [
                     'valid' => true,
-                ]
+                ],
             ]);
     }
 
@@ -80,7 +80,7 @@ class TokenValidationTest extends TestCase
                 'data' => [
                     'valid' => false,
                     'message' => 'Invalid token',
-                ]
+                ],
             ]);
     }
 }

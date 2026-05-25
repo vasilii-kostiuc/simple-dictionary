@@ -21,6 +21,7 @@ class SpecificStepTypeTrainingStrategy extends TrainingStrategyAbstract
     public function generateNextStep(): Step
     {
         $stepType = $this->stepTypes[array_rand($this->stepTypes)];
+
         return $this->trainingStepFactory->createStep($stepType, $this->wordsProvider);
     }
 }

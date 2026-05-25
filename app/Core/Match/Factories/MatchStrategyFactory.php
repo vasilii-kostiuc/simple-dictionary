@@ -3,9 +3,11 @@
 namespace App\Core\Match\Factories;
 
 use App\Core\Match\Models\MatchModel;
-use App\Core\Match\Strategies\{MatchStrategyAbstract, RandomMatchStrategy};
+use App\Core\Match\Strategies\MatchStrategyAbstract;
+use App\Core\Match\Strategies\RandomMatchStrategy;
 use App\Core\Step\StepFactory;
-use App\Core\Step\WordProviders\{TopWordsProvider, WordsProviderInterface};
+use App\Core\Step\WordProviders\TopWordsProvider;
+use App\Core\Step\WordProviders\WordsProviderInterface;
 
 class MatchStrategyFactory
 {

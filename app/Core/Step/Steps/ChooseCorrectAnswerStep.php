@@ -7,8 +7,11 @@ use App\Core\Step\Enums\StepType;
 class ChooseCorrectAnswerStep extends Step
 {
     private bool $isTopWord;
+
     private array $answers;
+
     private int $wordId;
+
     private string $word;
 
     public function __construct($wordId, $word, $answers, $isTopWord)

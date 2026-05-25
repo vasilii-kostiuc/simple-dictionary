@@ -14,10 +14,10 @@ class ChooseCorrectAnswerStepAttemptVerifier implements StepAttemptVerifier
 
         $wordIds = array_column($words, 'word_id');
 
-        if (!in_array($atteptWordId, $wordIds)) {
+        if (! in_array($atteptWordId, $wordIds)) {
             return false;
         }
 
-        return $atteptWordId === $stepWordId;;
+        return $atteptWordId === $stepWordId;
     }
 }

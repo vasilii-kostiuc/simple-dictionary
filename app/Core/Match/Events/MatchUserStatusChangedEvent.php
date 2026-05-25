@@ -15,6 +15,5 @@ class MatchUserStatusChangedEvent
     public function __construct(
         public MatchModel $match,
         public MatchUser $matchUser,
-    ) {
-    }
+    ) {}
 }

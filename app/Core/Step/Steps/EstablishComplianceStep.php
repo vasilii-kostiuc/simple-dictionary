@@ -7,6 +7,7 @@ use App\Core\Step\Enums\StepType;
 class EstablishComplianceStep extends Step
 {
     private array $words;
+
     private array $answersOrder;
 
     public function __construct(array $words, array $answersOrder)

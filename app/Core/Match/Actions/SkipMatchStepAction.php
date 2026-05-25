@@ -6,7 +6,6 @@ use App\Core\Match\DTO\ParticipantIdentifier;
 use App\Core\Match\Events\MatchStepSkippedEvent;
 use App\Core\Match\Factories\CompletionConditionFactory;
 use App\Core\Match\Models\MatchStep;
-use App\Core\Match\Models\MatchUser;
 use App\Core\Match\Services\MatchStepAttemptService;
 use App\Core\Match\Services\MatchStepService;
 
@@ -18,8 +17,7 @@ class SkipMatchStepAction
         private readonly CompletionConditionFactory $completionConditionFactory,
         private readonly CompleteMatchAction $completeMatchAction,
         private readonly GenerateNextMatchStepAction $generateNextMatchStepAction
-    ) {
-    }
+    ) {}
 
     public function handle(MatchStep $step): MatchStep
     {

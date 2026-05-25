@@ -33,7 +33,7 @@ class TopWordsProvider implements WordsProviderInterface
             ->where('language_to_id', $this->langTo)
             ->select('id');
 
-        if (!empty($exceptIds)) {
+        if (! empty($exceptIds)) {
             $query->whereNotIn('id', $exceptIds);
         }
 

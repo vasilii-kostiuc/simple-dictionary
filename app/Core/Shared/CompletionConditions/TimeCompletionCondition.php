@@ -3,11 +3,11 @@
 namespace App\Core\Shared\CompletionConditions;
 
 use Carbon\Carbon;
-use Carbon\Traits\Timestamp;
 
 class TimeCompletionCondition implements CompletionConditionInterface
 {
     protected readonly int $duration;
+
     protected readonly string $startedAt;
 
     public function __construct(int $duration, string $startedAt)

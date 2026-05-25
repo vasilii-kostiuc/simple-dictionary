@@ -13,13 +13,15 @@ class TrainingStepFactoryTest extends TestCase
     use \Illuminate\Foundation\Testing\RefreshDatabase;
 
     private StepFactory $factory;
+
     private Training $training;
+
     private Dictionary $dictionary;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->factory = new StepFactory();
+        $this->factory = new StepFactory;
 
         $this->dictionary = Dictionary::factory()->make(['id' => 1, 'language_from_id' => 1, 'language_to_id' => 2]);
 

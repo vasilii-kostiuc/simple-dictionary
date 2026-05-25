@@ -47,9 +47,7 @@ final class MatchApi
             new OA\Response(response: 429, description: 'Rate limit exceeded'),
         ]
     )]
-    public function storeMatchLink(): void
-    {
-    }
+    public function storeMatchLink(): void {}
 
     #[OA\Get(
         path: '/api/v1/match-links/{matchLink}',
@@ -73,9 +71,7 @@ final class MatchApi
             new OA\Response(response: 404, description: 'Link not found'),
         ]
     )]
-    public function showMatchLink(): void
-    {
-    }
+    public function showMatchLink(): void {}
 
     #[OA\Get(
         path: '/api/v1/matches',
@@ -99,9 +95,7 @@ final class MatchApi
             ),
         ]
     )]
-    public function listMatches(): void
-    {
-    }
+    public function listMatches(): void {}
 
     #[OA\Post(
         path: '/api/v1/matches',
@@ -156,9 +150,7 @@ final class MatchApi
             new OA\Response(response: 422, description: 'Validation error'),
         ]
     )]
-    public function storeMatch(): void
-    {
-    }
+    public function storeMatch(): void {}
 
     #[OA\Get(
         path: '/api/v1/matches/{match}',
@@ -181,9 +173,7 @@ final class MatchApi
             ),
         ]
     )]
-    public function showMatch(): void
-    {
-    }
+    public function showMatch(): void {}
 
     #[OA\Get(
         path: '/api/v1/matches/active',
@@ -206,9 +196,7 @@ final class MatchApi
             ),
         ]
     )]
-    public function getActiveMatch(): void
-    {
-    }
+    public function getActiveMatch(): void {}
 
     #[OA\Post(
         path: '/api/v1/matches/{match}/start',
@@ -233,9 +221,7 @@ final class MatchApi
             new OA\Response(response: 409, description: 'Match already started'),
         ]
     )]
-    public function startMatch(): void
-    {
-    }
+    public function startMatch(): void {}
 
     #[OA\Post(
         path: '/api/v1/matches/{match}/complete',
@@ -268,9 +254,7 @@ final class MatchApi
             new OA\Response(response: 409, description: 'Match already completed'),
         ]
     )]
-    public function completeMatch(): void
-    {
-    }
+    public function completeMatch(): void {}
 
     #[OA\Get(
         path: '/api/v1/matches/{match}/summary',
@@ -294,9 +278,7 @@ final class MatchApi
             ),
         ]
     )]
-    public function matchSummary(): void
-    {
-    }
+    public function matchSummary(): void {}
 
     // ── Match Steps ───────────────────────────────────────────────────────────
 
@@ -322,9 +304,7 @@ final class MatchApi
             ),
         ]
     )]
-    public function showMatchStep(): void
-    {
-    }
+    public function showMatchStep(): void {}
 
     #[OA\Get(
         path: '/api/v1/matches/{match}/steps/next',
@@ -351,9 +331,7 @@ final class MatchApi
             new OA\Response(response: 409, description: 'Match finished or previous step not completed'),
         ]
     )]
-    public function nextMatchStep(): void
-    {
-    }
+    public function nextMatchStep(): void {}
 
     #[OA\Get(
         path: '/api/v1/matches/{match}/steps/current',
@@ -380,9 +358,7 @@ final class MatchApi
             new OA\Response(response: 409, description: 'Match finished'),
         ]
     )]
-    public function currentMatchStep(): void
-    {
-    }
+    public function currentMatchStep(): void {}
 
     #[OA\Patch(
         path: '/api/v1/matches/{match}/steps/{step}/skip',
@@ -409,9 +385,7 @@ final class MatchApi
             new OA\Response(response: 403, description: 'Step does not belong to this participant'),
         ]
     )]
-    public function skipMatchStep(): void
-    {
-    }
+    public function skipMatchStep(): void {}
 
     // ── Match Step Attempts ───────────────────────────────────────────────────
 
@@ -438,9 +412,7 @@ final class MatchApi
             ),
         ]
     )]
-    public function listMatchStepAttempts(): void
-    {
-    }
+    public function listMatchStepAttempts(): void {}
 
     #[OA\Post(
         path: '/api/v1/matches/{match}/steps/{step}/attempts',
@@ -483,7 +455,5 @@ final class MatchApi
             new OA\Response(response: 409, description: 'Step already passed'),
         ]
     )]
-    public function storeMatchStepAttempt(): void
-    {
-    }
+    public function storeMatchStepAttempt(): void {}
 }

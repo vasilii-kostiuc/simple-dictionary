@@ -3,7 +3,8 @@
 namespace Tests\Feature\Match;
 
 use App\Core\Language\Models\Language;
-use App\Core\Match\Enums\{MatchStatus, MatchType};
+use App\Core\Match\Enums\MatchStatus;
+use App\Core\Match\Enums\MatchType;
 use App\Core\User\Models\User;
 use Database\Seeders\TopWordSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,8 +15,11 @@ class MatchCreationTest extends TestCase
     use RefreshDatabase;
 
     protected User $user1;
+
     protected User $user2;
+
     protected Language $languageTo;
+
     protected Language $languageFrom;
 
     protected function setUp(): void
@@ -54,7 +58,7 @@ class MatchCreationTest extends TestCase
                     'match_type',
                     'status',
                     'participants',
-                ]
+                ],
             ])
             ->assertJsonPath('data.status', MatchStatus::InProgress->value)
             ->assertJsonPath('data.match_type', MatchType::Time->value);

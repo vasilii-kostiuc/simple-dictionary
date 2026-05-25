@@ -11,8 +11,7 @@ class StartMatchAction
     public function __construct(
         private readonly MatchService $matchService,
         private readonly GenerateNextMatchStepAction $generateNextMatchStepAction
-    ) {
-    }
+    ) {}
 
     public function handle(MatchModel $match): MatchModel
     {
@@ -26,6 +25,7 @@ class StartMatchAction
                 ->where(function ($query) use ($participant) {
                     if ($participant->userId !== null) {
                         $query->where('user_id', $participant->userId);
+
                         return;
                     }
 

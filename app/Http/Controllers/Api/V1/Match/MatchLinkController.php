@@ -17,8 +17,7 @@ class MatchLinkController extends Controller
     public function __construct(
         private readonly CreateMatchLinkAction $createMatchLinkAction,
         private readonly MatchLinkQrCodeGenerator $matchLinkQrCodeGenerator
-    ) {
-    }
+    ) {}
 
     public function store(StoreMatchLinkRequest $request): JsonResponse
     {

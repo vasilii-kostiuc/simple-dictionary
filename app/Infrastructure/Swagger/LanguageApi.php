@@ -32,9 +32,7 @@ final class LanguageApi
             ),
         ]
     )]
-    public function index(): void
-    {
-    }
+    public function index(): void {}
 
     #[OA\Get(
         path: '/api/v1/languages/{language}',
@@ -67,7 +65,5 @@ final class LanguageApi
             ),
         ]
     )]
-    public function show(): void
-    {
-    }
+    public function show(): void {}
 }

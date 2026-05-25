@@ -2,7 +2,6 @@
 
 namespace App\Core\Training\Listeners;
 
-use App\Core\Training\Enums\TrainingCompletionReason;
 use App\Core\Training\Events\StepAttemptEvent;
 use App\Core\Training\Events\StepSkippedEvent;
 use App\Core\Training\Factories\CompletionConditionFactory;
@@ -11,7 +10,9 @@ use App\Core\Training\Services\TrainingService;
 class CheckTrainingCompletionListener
 {
     private CompletionConditionFactory $completionConditionFactory;
+
     private TrainingService $trainingService;
+
     /**
      * Create the event listener.
      */

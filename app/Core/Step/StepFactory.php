@@ -38,7 +38,7 @@ class StepFactory
         shuffle($allWords);
 
         $answers = array_map(
-            fn($word) => [
+            fn ($word) => [
                 'word_id' => $word->id,
                 'word' => $word->word,
                 'translation' => $word->translation,
@@ -68,7 +68,7 @@ class StepFactory
 
     private function createEstablishComplianceStep(WordsProviderInterface $wordsProvider): EstablishComplianceStep
     {
-        $words = $wordsProvider->getRandomWords(self::MULTIPLE_CHOICE_OPTIONS_COUNT)->map(fn($word) => [
+        $words = $wordsProvider->getRandomWords(self::MULTIPLE_CHOICE_OPTIONS_COUNT)->map(fn ($word) => [
             'word_id' => $word->id,
             'word' => $word->word,
             'translation' => $word->translation,

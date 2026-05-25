@@ -38,8 +38,6 @@ class Training extends Model
         return $this->steps()->orderBy('step_number', 'desc')->first();
     }
 
-
-
     public function completeTraining(TrainingCompletionReason $reason, ?array $details = null): void
     {
         $this->validateCompletionReason($reason);
@@ -53,7 +51,7 @@ class Training extends Model
     {
         $allowedReasons = TrainingCompletionReason::forCompletionType($this->completion_type);
 
-        if (!in_array($reason, $allowedReasons, true)) {
+        if (! in_array($reason, $allowedReasons, true)) {
             throw new \InvalidArgumentException(
                 sprintf(
                     'Completion reason "%s" is not allowed for training type "%s"',
@@ -71,5 +69,4 @@ class Training extends Model
         $this->completion_reason = $reason;
         $this->completion_details = $details;
     }
-
 }

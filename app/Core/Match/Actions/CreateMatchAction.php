@@ -10,8 +10,7 @@ class CreateMatchAction
     public function __construct(
         private readonly MatchService $matchService,
         private readonly StartMatchAction $startMatchAction
-    ) {
-    }
+    ) {}
 
     public function handle(array $data, array $participants): MatchModel
     {

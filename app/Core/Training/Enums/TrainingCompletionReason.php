@@ -18,12 +18,12 @@ enum TrainingCompletionReason: int
         };
     }
 
-    public static function defaultForCompletionType(TrainingCompletionType $type): self{
+    public static function defaultForCompletionType(TrainingCompletionType $type): self
+    {
         return match ($type) {
             TrainingCompletionType::Time => self::Expired,
             TrainingCompletionType::Steps => self::AllStepsCompleted,
             TrainingCompletionType::Unlimited => self::Terminated,
         };
     }
-
 }

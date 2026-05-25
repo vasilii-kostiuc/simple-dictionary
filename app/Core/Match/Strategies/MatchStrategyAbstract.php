@@ -10,7 +10,9 @@ use App\Core\Step\WordProviders\WordsProviderInterface;
 abstract class MatchStrategyAbstract
 {
     protected MatchModel $match;
+
     protected StepFactory $stepFactory;
+
     protected WordsProviderInterface $wordsProvider;
 
     public function __construct(

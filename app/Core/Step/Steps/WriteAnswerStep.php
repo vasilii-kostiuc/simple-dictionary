@@ -7,11 +7,14 @@ use App\Core\Step\Enums\StepType;
 class WriteAnswerStep extends Step
 {
     private array $acceptableAnswers;
+
     private int $isTopWord;
+
     private int $wordId;
+
     private string $word;
 
-    public function __construct($wordId, $word,$acceptableAnswers, $isTopWord)
+    public function __construct($wordId, $word, $acceptableAnswers, $isTopWord)
     {
         parent::__construct(StepType::WriteCorrectAnswer);
 

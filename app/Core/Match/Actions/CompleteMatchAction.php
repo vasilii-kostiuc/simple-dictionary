@@ -10,8 +10,7 @@ class CompleteMatchAction
 {
     public function __construct(
         private readonly MatchService $matchService
-    ) {
-    }
+    ) {}
 
     public function handle(MatchModel $match, ?MatchCompletionReason $reason = null, ?array $details = []): MatchModel
     {

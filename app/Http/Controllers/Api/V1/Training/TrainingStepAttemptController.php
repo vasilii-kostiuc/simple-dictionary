@@ -10,7 +10,6 @@ use App\Core\Training\Services\TrainingStepProgressService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiResponseResource;
 use App\Http\Resources\Training\TrainingStepAttemptResource;
-use App\Http\Resources\Training\TrainingStepProgressResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -18,7 +17,9 @@ use Illuminate\Http\Response;
 class TrainingStepAttemptController extends Controller
 {
     private TrainingStepAttemptService $trainingStepAttemptService;
+
     private CompletionConditionFactory $completionConditionFactory;
+
     private TrainingStepProgressService $trainingStepProgressService;
 
     public function __construct(TrainingStepAttemptService $trainingStepAttemptService, CompletionConditionFactory $completionConditionFactory, TrainingStepProgressService $trainingStepProgressService)
@@ -42,7 +43,7 @@ class TrainingStepAttemptController extends Controller
 
     public function store(Training $training, TrainingStep $step, Request $request): JsonResponse
     {
-        //sleep(1);
+        // sleep(1);
         if ($step->isPassed()) {
             return new ApiResponseResource(['success' => false, 'message' => 'Training step is passed, there is unposible to attempt already passed step', 'data' => null, 'errors' => ['training_step_is_already_passed' => 'Training step is passed']])
                 ->response()
@@ -55,5 +56,4 @@ class TrainingStepAttemptController extends Controller
 
         return ApiResponseResource::make(['data' => new TrainingStepAttemptResource($attempt)])->response();
     }
-
 }

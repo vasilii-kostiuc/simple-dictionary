@@ -14,6 +14,7 @@ class StepSkippedEvent
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public Training $training;
+
     public TrainingStep $step;
 
     /**

@@ -10,8 +10,7 @@ readonly class ParticipantIdentifier
     private function __construct(
         public ?int $userId,
         public ?string $guestId,
-    ) {
-    }
+    ) {}
 
     public static function forUser(int $userId): self
     {

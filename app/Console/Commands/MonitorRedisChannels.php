@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Redis;
 class MonitorRedisChannels extends Command
 {
     protected $signature = 'redis:monitor {pattern=*}';
+
     protected $description = 'Monitor Redis pub/sub messages';
 
     public function handle(): void
@@ -20,7 +21,7 @@ class MonitorRedisChannels extends Command
         Redis::psubscribe([$pattern], function (string $message, string $channel) {
             $timestamp = now()->format('H:i:s');
 
-            $this->line("─────────────────────────────────────────");
+            $this->line('─────────────────────────────────────────');
             $this->info("⏰ [{$timestamp}] Channel: {$channel}");
 
             $decoded = json_decode($message, true);

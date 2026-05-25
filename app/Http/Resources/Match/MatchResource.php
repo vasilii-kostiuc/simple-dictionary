@@ -45,6 +45,7 @@ class MatchResource extends JsonResource
                 function () {
                     $elapsed = now()->diffInSeconds($this->started_at);
                     $duration = $this->match_type_params['duration'] ?? 0;
+
                     return max(0, $duration - $elapsed);
                 }
             ),

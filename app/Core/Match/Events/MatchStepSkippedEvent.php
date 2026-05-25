@@ -15,6 +15,5 @@ class MatchStepSkippedEvent
     public function __construct(
         public MatchModel $match,
         public MatchStep $step
-    ) {
-    }
+    ) {}
 }

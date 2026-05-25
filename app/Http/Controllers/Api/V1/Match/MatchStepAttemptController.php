@@ -8,7 +8,8 @@ use App\Core\Match\Models\MatchStep;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Match\SubmitMatchAnswerRequest;
 use App\Http\Resources\ApiResponseResource;
-use App\Http\Resources\Match\{MatchStepAttemptResource, MatchStepResource};
+use App\Http\Resources\Match\MatchStepAttemptResource;
+use App\Http\Resources\Match\MatchStepResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -17,8 +18,7 @@ class MatchStepAttemptController extends Controller
 {
     public function __construct(
         private readonly SubmitMatchAttemptAction $submitMatchAttemptAction
-    ) {
-    }
+    ) {}
 
     public function index(Request $request, MatchModel $match, MatchStep $step): JsonResponse
     {
@@ -30,7 +30,7 @@ class MatchStepAttemptController extends Controller
         }
 
         return new ApiResponseResource([
-            'data' => MatchStepAttemptResource::collection($attempts)
+            'data' => MatchStepAttemptResource::collection($attempts),
         ])->response();
     }
 
@@ -59,7 +59,7 @@ class MatchStepAttemptController extends Controller
             return new ApiResponseResource([
                 'success' => false,
                 'message' => 'Match step is already passed',
-                'errors' => ['match_step_already_passed' => 'Match step is already passed']
+                'errors' => ['match_step_already_passed' => 'Match step is already passed'],
             ])->response()->setStatusCode(Response::HTTP_CONFLICT);
         }
 
@@ -77,7 +77,7 @@ class MatchStepAttemptController extends Controller
                 'attempt' => new MatchStepAttemptResource($attempt),
                 'step' => new MatchStepResource($step),
             ],
-            'message' => $attempt->is_correct ? 'Correct answer!' : 'Incorrect answer'
+            'message' => $attempt->is_correct ? 'Correct answer!' : 'Incorrect answer',
         ])->response();
     }
 }

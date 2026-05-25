@@ -14,6 +14,7 @@ class StepAttemptEvent
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public Training $training;
+
     public TrainingStepAttempt $attempt;
 
     /**

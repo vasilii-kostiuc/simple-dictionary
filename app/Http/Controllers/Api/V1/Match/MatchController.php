@@ -5,13 +5,16 @@ namespace App\Http\Controllers\Api\V1\Match;
 use App\Core\Match\Actions\CompleteMatchAction;
 use App\Core\Match\Actions\CreateMatchAction;
 use App\Core\Match\Actions\StartMatchAction;
-use App\Core\Match\Enums\{MatchStatus, MatchCompletionReason, MatchType};
+use App\Core\Match\Enums\MatchCompletionReason;
+use App\Core\Match\Enums\MatchStatus;
+use App\Core\Match\Enums\MatchType;
 use App\Core\Match\Models\MatchModel;
 use App\Core\Match\Services\MatchSummaryBuilder;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Match\CreateMatchRequest;
 use App\Http\Resources\ApiResponseResource;
-use App\Http\Resources\Match\{MatchResource, MatchSummaryResource};
+use App\Http\Resources\Match\MatchResource;
+use App\Http\Resources\Match\MatchSummaryResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -25,8 +28,7 @@ class MatchController extends Controller
         private readonly StartMatchAction $startMatchAction,
         private readonly CompleteMatchAction $completeMatchAction,
         private readonly MatchSummaryBuilder $matchSummaryBuilder
-    ) {
-    }
+    ) {}
 
     public function index(Request $request)
     {
@@ -35,7 +37,7 @@ class MatchController extends Controller
 
         if (! $userId && ! $guestId) {
             return new ApiResponseResource([
-                'data' => []
+                'data' => [],
             ])->response()->setStatusCode(Response::HTTP_OK);
         }
 
@@ -56,7 +58,7 @@ class MatchController extends Controller
             ->get();
 
         return new ApiResponseResource([
-            'data' => MatchResource::collection($matches)
+            'data' => MatchResource::collection($matches),
         ])->response()->setStatusCode(Response::HTTP_OK);
     }
 
@@ -72,7 +74,7 @@ class MatchController extends Controller
 
         return new ApiResponseResource([
             'data' => new MatchResource($match),
-            'message' => 'Match created successfully'
+            'message' => 'Match created successfully',
         ])->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
@@ -81,7 +83,7 @@ class MatchController extends Controller
         $match->load('matchUsers', 'steps');
 
         return new ApiResponseResource([
-            'data' => new MatchResource($match)
+            'data' => new MatchResource($match),
         ])->response()->setStatusCode(Response::HTTP_OK);
     }
 
@@ -91,8 +93,8 @@ class MatchController extends Controller
             return new ApiResponseResource([
                 'message' => 'Match already started',
                 'errors' => [
-                    self::MATCH_CAN_BE_STARTED_ONLY_IN_NEW_STATE => 'Match can be started only in new state'
-                ]
+                    self::MATCH_CAN_BE_STARTED_ONLY_IN_NEW_STATE => 'Match can be started only in new state',
+                ],
             ])->response()->setStatusCode(Response::HTTP_CONFLICT);
         }
 
@@ -100,7 +102,7 @@ class MatchController extends Controller
 
         return new ApiResponseResource([
             'message' => 'Match started successfully',
-            'data' => new MatchResource($match->load('matchUsers'))
+            'data' => new MatchResource($match->load('matchUsers')),
         ]);
     }
 
@@ -108,7 +110,7 @@ class MatchController extends Controller
     {
         if ($match->status === MatchStatus::Completed) {
             return new ApiResponseResource([
-                'message' => 'Match already completed'
+                'message' => 'Match already completed',
             ])->response()->setStatusCode(Response::HTTP_CONFLICT);
         }
 
@@ -120,7 +122,7 @@ class MatchController extends Controller
 
         return new ApiResponseResource([
             'message' => 'Match completed successfully',
-            'data' => new MatchResource($match->load('matchUsers'))
+            'data' => new MatchResource($match->load('matchUsers')),
         ]);
     }
 
@@ -129,6 +131,7 @@ class MatchController extends Controller
         if ($match->match_type === MatchType::Time) {
             $this->completeMatchAction->handle($match, MatchCompletionReason::TimeExpired);
             $match->refresh();
+
             return new ApiResponseResource(['message' => 'Match completed successfully', 'data' => new MatchResource($match)]);
         }
 
@@ -143,7 +146,7 @@ class MatchController extends Controller
         if (! $userId && ! $guestId) {
             return new ApiResponseResource([
                 'data' => null,
-                'message' => 'No active match found'
+                'message' => 'No active match found',
             ])->response()->setStatusCode(Response::HTTP_OK);
         }
 
@@ -161,14 +164,14 @@ class MatchController extends Controller
             ->first();
 
         return new ApiResponseResource([
-            'data' => $match ? new MatchResource($match) : null
+            'data' => $match ? new MatchResource($match) : null,
         ])->response()->setStatusCode(Response::HTTP_OK);
     }
 
     public function summary(MatchModel $match)
     {
         return new ApiResponseResource([
-            'data' => new MatchSummaryResource($this->matchSummaryBuilder->build($match))
+            'data' => new MatchSummaryResource($this->matchSummaryBuilder->build($match)),
         ])->response()->setStatusCode(Response::HTTP_OK);
     }
 }

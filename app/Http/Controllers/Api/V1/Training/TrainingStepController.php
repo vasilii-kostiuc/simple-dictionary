@@ -17,10 +17,15 @@ use Illuminate\Http\Response;
 class TrainingStepController extends Controller
 {
     private const ERROR_TRAINING_FINISHED = 'training_finished';
+
     private const ERROR_STEP_NOT_COMPLETED = 'previous_step_not_completed';
+
     private const ERROR_CURRENT_STEP_NOT_FOUND = 'current_step_not_found';
+
     private TrainingStrategyFactory $trainingStrategyFactory;
+
     private TrainingStepService $trainingStepService;
+
     private TrainingStepProgressService $trainingStepProgressService;
 
     public function __construct(
@@ -36,7 +41,7 @@ class TrainingStepController extends Controller
     public function show(Training $training, TrainingStep $step)
     {
         return ApiResponseResource::make(['data' => new TrainingStepResource($step)])->response()->setStatusCode(Response::HTTP_OK);
-        ;
+
     }
 
     public function next(Training $training)
@@ -60,18 +65,19 @@ class TrainingStepController extends Controller
                     'message' => 'New step can be created only after compliting prev step',
                 ]
             )->response()->setStatusCode(Response::HTTP_CONFLICT);
-            ;
+
         }
 
         $generatedStep = $this->trainingStrategyFactory->create($training)->generateNextStep();
 
         $nextStep = $this->trainingStepService->create($generatedStep, $training);
+
         return ApiResponseResource::make(['data' => new TrainingStepResource($nextStep), 'message' => 'Next step generated successfully']);
     }
 
     public function current(Training $training)
     {
-        //sleep(1);
+        // sleep(1);
         if ($training->status == TrainingStatus::Completed) {
             return new ApiResponseResource(
                 [
@@ -97,13 +103,14 @@ class TrainingStepController extends Controller
     public function skip(Training $training, TrainingStep $step)
     {
         $step = $this->trainingStepService->skip($step);
+
         return ApiResponseResource::make(['message' => 'Step skipped successfully', 'data' => new TrainingStepResource($step)]);
-        ;
+
     }
 
     public function progress(Training $training, TrainingStep $step)
     {
-        //sleep(1);
+        // sleep(1);
         $progress = $this->trainingStepProgressService->getProgress($step);
 
         return ApiResponseResource::make(['data' => new TrainingStepProgressResource($progress)]);

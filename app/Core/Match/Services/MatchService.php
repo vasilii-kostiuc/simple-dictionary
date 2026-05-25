@@ -14,8 +14,7 @@ class MatchService
 {
     public function __construct(
         private readonly MatchCompletionReasonSelector $matchCompletionReasonSelector
-    ) {
-    }
+    ) {}
 
     public function create(array $data, array $participants): MatchModel
     {
@@ -25,7 +24,7 @@ class MatchService
             'dictionary_id' => $data['dictionary_id'] ?? null,
             'match_type' => $data['match_type'],
             'match_type_params' => $data['match_type_params'],
-            'status' => MatchStatus::New ,
+            'status' => MatchStatus::New,
         ]);
 
         foreach ($participants as $participant) {

@@ -13,9 +13,9 @@ class StepAttemptVerifierFactory
     public function create(StepType $stepType): StepAttemptVerifier
     {
         return match ($stepType) {
-            StepType::ChooseCorrectAnswer => new ChooseCorrectAnswerStepAttemptVerifier(),
-            StepType::WriteCorrectAnswer => new WriteCorrectAnswerStepAttemptVerifier(),
-            StepType::EstablishCompliance => new EstablishComplianceStepAttemptVerifier(),
+            StepType::ChooseCorrectAnswer => new ChooseCorrectAnswerStepAttemptVerifier,
+            StepType::WriteCorrectAnswer => new WriteCorrectAnswerStepAttemptVerifier,
+            StepType::EstablishCompliance => new EstablishComplianceStepAttemptVerifier,
             default => throw new \Exception('Step Verifier not found'),
         };
     }

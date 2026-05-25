@@ -4,8 +4,8 @@ namespace App\Core\Match\Models;
 
 use App\Core\User\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
-use App\Core\Traits\HasAttempts;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MatchStep extends Model
 {
@@ -18,7 +18,7 @@ class MatchStep extends Model
         'step_data',
         'required_answers_count',
         'skipped',
-        'skipped_at'
+        'skipped_at',
     ];
 
     protected $casts = [

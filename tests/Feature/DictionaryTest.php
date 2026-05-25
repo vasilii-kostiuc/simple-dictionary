@@ -13,7 +13,9 @@ class DictionaryTest extends TestCase
     use RefreshDatabase;
 
     private User $user;
+
     private Language $languageFrom;
+
     private Language $languageTo;
 
     protected function setUp(): void
@@ -59,7 +61,7 @@ class DictionaryTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonStructure([
-                'data' => ['id', 'language_from_id', 'language_to_id', 'language_from', 'language_to']
+                'data' => ['id', 'language_from_id', 'language_to_id', 'language_from', 'language_to'],
             ]);
     }
 
@@ -72,7 +74,7 @@ class DictionaryTest extends TestCase
 
         $response->assertStatus(201)
             ->assertJsonStructure([
-                'data' => ['id', 'language_from_id', 'language_to_id', 'language_from', 'language_to']
+                'data' => ['id', 'language_from_id', 'language_to_id', 'language_from', 'language_to'],
             ]);
     }
 

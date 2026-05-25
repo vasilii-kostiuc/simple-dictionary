@@ -12,8 +12,7 @@ class TrainingStepAttemptService
 {
     public function __construct(
         private readonly StepAttemptVerifierFactory $stepAttemptVerifierFactory
-    ) {
-    }
+    ) {}
 
     public function create(TrainingStep $trainingStep, array $attemptData): TrainingStepAttempt
     {

@@ -28,11 +28,12 @@ class GenerateWssToken extends Command
             ->where('name', 'wss-server-token')
             ->first();
 
-        if ($existingToken && !$this->option('force')) {
+        if ($existingToken && ! $this->option('force')) {
             $this->warn('WSS token already exists!');
             $this->info('Use --force flag to regenerate the token');
             $this->newLine();
-            $this->line('Existing token created at: ' . $existingToken->created_at);
+            $this->line('Existing token created at: '.$existingToken->created_at);
+
             return 1;
         }
 

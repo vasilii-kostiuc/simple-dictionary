@@ -11,6 +11,7 @@ enum StepType: int
     public static function getRandomInstance()
     {
         $cases = self::cases();
+
         return $cases[array_rand($cases)];
     }
 }

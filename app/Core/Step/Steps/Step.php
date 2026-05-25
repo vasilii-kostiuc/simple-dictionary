@@ -25,5 +25,5 @@ abstract class Step
         return $this->requiredAnswersCount;
     }
 
-    public abstract function toArray(): array;
+    abstract public function toArray(): array;
 }

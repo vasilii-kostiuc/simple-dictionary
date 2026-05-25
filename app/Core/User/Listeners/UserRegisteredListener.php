@@ -9,8 +9,7 @@ class UserRegisteredListener
 {
     public function __construct(
         private readonly DictionaryService $dictionaryService
-    ) {
-    }
+    ) {}
 
     public function handle(Registered $event): void
     {

@@ -11,7 +11,7 @@ class TrainingService
 {
     public function create(array $data): Training
     {
-        $training = new Training();
+        $training = new Training;
         $training->fill($data);
         $training->status = TrainingStatus::New;
         $training->save();

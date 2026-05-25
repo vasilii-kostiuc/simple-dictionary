@@ -57,9 +57,7 @@ final class AuthApi
             ),
         ]
     )]
-    public function login(): void
-    {
-    }
+    public function login(): void {}
 
     #[OA\Post(
         path: '/api/v1/auth/register',
@@ -109,9 +107,7 @@ final class AuthApi
             ),
         ]
     )]
-    public function register(): void
-    {
-    }
+    public function register(): void {}
 
     #[OA\Post(
         path: '/api/v1/auth/logout',
@@ -136,9 +132,7 @@ final class AuthApi
             new OA\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
-    public function logout(): void
-    {
-    }
+    public function logout(): void {}
 
     #[OA\Post(
         path: '/api/v1/auth/token/validate',
@@ -191,9 +185,7 @@ final class AuthApi
             ),
         ]
     )]
-    public function validateToken(): void
-    {
-    }
+    public function validateToken(): void {}
 
     #[OA\Get(
         path: '/api/v1/profile',
@@ -218,9 +210,7 @@ final class AuthApi
             new OA\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
-    public function showProfile(): void
-    {
-    }
+    public function showProfile(): void {}
 
     #[OA\Post(
         path: '/api/v1/profile',
@@ -271,7 +261,5 @@ final class AuthApi
             new OA\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
-    public function updateProfile(): void
-    {
-    }
+    public function updateProfile(): void {}
 }

@@ -15,7 +15,5 @@ class MatchNextStepGeneratedEvent
     public function __construct(
         public MatchModel $match,
         public MatchStep $nextStep
-    ) {
-    }
+    ) {}
 }
-

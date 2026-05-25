@@ -16,9 +16,13 @@ class MatchStepAttemptTest extends TestCase
     use RefreshDatabase;
 
     protected User $user1;
+
     protected User $user2;
+
     protected Language $languageTo;
+
     protected Language $languageFrom;
+
     protected StepResolverFactory $stepResolverFactory;
 
     protected function setUp(): void
@@ -32,7 +36,7 @@ class MatchStepAttemptTest extends TestCase
         $this->languageTo = Language::factory()->create();   // id=1
         $this->languageFrom = Language::factory()->create(); // id=2
 
-        $this->stepResolverFactory = new StepResolverFactory();
+        $this->stepResolverFactory = new StepResolverFactory;
     }
 
     private function createMatch(): array
@@ -86,7 +90,7 @@ class MatchStepAttemptTest extends TestCase
                 'data' => [
                     'attempt' => ['id', 'attempt_data', 'is_correct'],
                     'step' => ['id', 'is_passed'],
-                ]
+                ],
             ]);
 
         $this->assertDatabaseHas('match_step_attempts', [

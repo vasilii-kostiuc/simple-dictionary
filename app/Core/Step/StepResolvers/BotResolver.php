@@ -24,11 +24,12 @@ class BotResolver implements StepResolverInterface
         if (isset($step_data['answers'])) {
             $wrong = array_filter(
                 $step_data['answers'],
-                fn($a) => $a['word_id'] !== $step_data['word_id']
+                fn ($a) => $a['word_id'] !== $step_data['word_id']
             );
 
-            if (!empty($wrong)) {
+            if (! empty($wrong)) {
                 $pick = $wrong[array_rand($wrong)];
+
                 return ['word_id' => $pick['word_id']];
             }
         }
@@ -42,6 +43,7 @@ class BotResolver implements StepResolverInterface
         if (isset($step_data['answers_order'])) {
             $order = $step_data['answers_order'];
             $wrongId = $order[array_rand($order)];
+
             return ['word_id' => $wrongId, 'answer_id' => ($wrongId + 1)];
         }
 

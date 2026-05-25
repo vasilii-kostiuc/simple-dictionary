@@ -18,9 +18,9 @@ class BotStepResolverFactory
     public function create(StepType $stepType): StepResolverInterface
     {
         $inner = match ($stepType) {
-            StepType::ChooseCorrectAnswer => new ChooseCorrectAnswerResolver(),
-            StepType::WriteCorrectAnswer  => new WriteAnswerResolver(),
-            StepType::EstablishCompliance => new EstablishComplianceResolver(),
+            StepType::ChooseCorrectAnswer => new ChooseCorrectAnswerResolver,
+            StepType::WriteCorrectAnswer => new WriteAnswerResolver,
+            StepType::EstablishCompliance => new EstablishComplianceResolver,
         };
 
         return new BotResolver($inner, $this->accuracy);

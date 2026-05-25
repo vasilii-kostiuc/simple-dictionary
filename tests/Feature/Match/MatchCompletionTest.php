@@ -3,7 +3,9 @@
 namespace Tests\Feature\Match;
 
 use App\Core\Language\Models\Language;
-use App\Core\Match\Enums\{MatchStatus, MatchType, MatchCompletionReason};
+use App\Core\Match\Enums\MatchCompletionReason;
+use App\Core\Match\Enums\MatchStatus;
+use App\Core\Match\Enums\MatchType;
 use App\Core\Step\Enums\StepType;
 use App\Core\Step\StepResolverFactory;
 use App\Core\User\Models\User;
@@ -16,9 +18,13 @@ class MatchCompletionTest extends TestCase
     use RefreshDatabase;
 
     protected User $user1;
+
     protected User $user2;
+
     protected Language $languageTo;
+
     protected Language $languageFrom;
+
     protected StepResolverFactory $stepResolverFactory;
 
     protected function setUp(): void
@@ -32,7 +38,7 @@ class MatchCompletionTest extends TestCase
         $this->languageTo = Language::factory()->create();   // id=1
         $this->languageFrom = Language::factory()->create(); // id=2
 
-        $this->stepResolverFactory = new StepResolverFactory();
+        $this->stepResolverFactory = new StepResolverFactory;
     }
 
     private function createMatch(): array
@@ -211,7 +217,7 @@ class MatchCompletionTest extends TestCase
                     'completion_reason',
                     'started_at',
                     'completed_at',
-                ]
+                ],
             ])
             ->assertJsonPath('data.match_id', $match['id']);
 
@@ -247,7 +253,7 @@ class MatchCompletionTest extends TestCase
 
         // Запрашиваем только активные матчи
         $response = $this->actingAs($this->user1)
-            ->getJson('/api/v1/matches?filter[status]=' . MatchStatus::InProgress->value);
+            ->getJson('/api/v1/matches?filter[status]='.MatchStatus::InProgress->value);
 
         $response->assertOk()
             ->assertJsonCount(1, 'data')

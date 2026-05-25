@@ -2,8 +2,8 @@
 
 namespace App\Core\User\Services;
 
-use App\Infrastructure\Uploads\ImageUploaderInterface;
 use App\Core\User\Models\User;
+use App\Infrastructure\Uploads\ImageUploaderInterface;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\UploadedFile;
@@ -14,8 +14,7 @@ class UserService
 {
     public function __construct(
         private readonly ImageUploaderInterface $imageUploader
-    ) {
-    }
+    ) {}
 
     public function register(string $email, string $password, ?string $name = null): User
     {
@@ -47,7 +46,7 @@ class UserService
         if (isset($attributes['avatar'])) {
             /** @var UploadedFile $file */
             $file = $attributes['avatar'];
-            $name = 'profile/avatar/' . Str::uuid() . '.' . $file->getClientOriginalExtension();
+            $name = 'profile/avatar/'.Str::uuid().'.'.$file->getClientOriginalExtension();
 
             $this->imageUploader->uploadImage($name, $file);
 
