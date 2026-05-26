@@ -3,10 +3,22 @@
 namespace App\Core\Dictionary\Services;
 
 use App\Core\Dictionary\Models\Dictionary;
+use App\Core\Shared\Cache\CacheInterface;
 use App\Core\User\Models\User;
 
 class DictionaryService
 {
+    public function __construct(private readonly CacheInterface $cache) {}
+
+    public function forUser(int $userId): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->cache->remember(
+            "user.{$userId}.dictionaries",
+            3600,
+            fn () => Dictionary::query()->where('user_id', $userId)->get()
+        );
+    }
+
     public function create(array $data): Dictionary
     {
         $dictionary = Dictionary::create([
@@ -24,11 +36,15 @@ class DictionaryService
 
         $user->refresh();
 
+        $this->cache->forget("user.{$data['user_id']}.dictionaries");
+
         return $dictionary;
     }
 
     public function delete(Dictionary $dictionary): void
     {
+        $userId = $dictionary->user_id;
         $dictionary->delete();
+        $this->cache->forget("user.{$userId}.dictionaries");
     }
 }

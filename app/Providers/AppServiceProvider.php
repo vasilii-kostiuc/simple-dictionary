@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Core\Shared\Cache\CacheInterface;
+use App\Infrastructure\Cache\LaravelCache;
 use App\Infrastructure\Uploads\ImageUploader;
 use App\Infrastructure\Uploads\ImageUploaderInterface;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -17,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(CacheInterface::class, LaravelCache::class);
         $this->app->bind(ImageUploaderInterface::class, ImageUploader::class);
 
         $this->app->singleton(BrokerFactory::class, function () {

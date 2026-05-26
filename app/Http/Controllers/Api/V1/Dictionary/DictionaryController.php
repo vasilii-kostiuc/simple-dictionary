@@ -12,14 +12,11 @@ use Illuminate\Http\Response;
 
 class DictionaryController extends Controller
 {
-    public function __construct(DictionaryService $dictionaryService)
-    {
-        $this->dictionaryService = $dictionaryService;
-    }
+    public function __construct(private readonly DictionaryService $dictionaryService) {}
 
     public function index()
     {
-        $dictionaries = Dictionary::all();
+        $dictionaries = $this->dictionaryService->forUser(auth()->id());
 
         return new ApiResponseResource(['data' => DictionaryResource::collection($dictionaries)]);
     }

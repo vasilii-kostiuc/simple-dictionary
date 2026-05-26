@@ -5,6 +5,7 @@ namespace App\Core\Match\Factories;
 use App\Core\Match\Models\MatchModel;
 use App\Core\Match\Strategies\MatchStrategyAbstract;
 use App\Core\Match\Strategies\RandomMatchStrategy;
+use App\Core\Shared\Cache\CacheInterface;
 use App\Core\Step\StepFactory;
 use App\Core\Step\WordProviders\TopWordsProvider;
 use App\Core\Step\WordProviders\WordsProviderInterface;
@@ -12,7 +13,8 @@ use App\Core\Step\WordProviders\WordsProviderInterface;
 class MatchStrategyFactory
 {
     public function __construct(
-        private StepFactory $stepFactory
+        private readonly StepFactory $stepFactory,
+        private readonly CacheInterface $cache,
     ) {}
 
     public function make(MatchModel $match): MatchStrategyAbstract
@@ -31,7 +33,8 @@ class MatchStrategyFactory
     {
         return new TopWordsProvider(
             $match->language_from_id,
-            $match->language_to_id
+            $match->language_to_id,
+            $this->cache,
         );
     }
 }

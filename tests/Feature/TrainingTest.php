@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Core\Dictionary\Models\Dictionary;
 use App\Core\Language\Models\Language;
+use App\Core\Shared\Cache\CacheInterface;
 use App\Core\Step\Enums\StepType;
 use App\Core\Step\StepFactory;
 use App\Core\Step\StepResolverFactory;
@@ -55,6 +56,7 @@ class TrainingTest extends TestCase
                         new TopWordsProvider(
                             $training->dictionary->language_from_id,
                             $training->dictionary->language_to_id,
+                            app(CacheInterface::class),
                         ),
                         [StepType::EstablishCompliance]
                     );
